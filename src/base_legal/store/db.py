@@ -44,6 +44,7 @@ CREATE TABLE IF NOT EXISTS provisions (
     text        text NOT NULL,
     amendments  text[] NOT NULL DEFAULT '{{}}',
     revoked     boolean NOT NULL DEFAULT false,
+    vetoed      boolean NOT NULL DEFAULT false,
     ordinal     integer NOT NULL,
     valid_from  date,
     valid_to    date
@@ -95,9 +96,11 @@ class Store:
 
     @classmethod
     def connect(cls, database_url: str) -> Store:
-        conn = psycopg.connect(database_url, row_factory=dict_row, autocommit=False)
+        # Autocommit: reads never open a lingering transaction, and every
+        # `with conn.transaction()` block is a real, committed transaction
+        # (not a savepoint that `close()` would roll back).
+        conn = psycopg.connect(database_url, row_factory=dict_row, autocommit=True)
         conn.execute("CREATE EXTENSION IF NOT EXISTS vector")
-        conn.commit()
         register_vector(conn)
         return cls(conn)
 
@@ -175,8 +178,8 @@ class Store:
             with self.conn.cursor() as cur:
                 cur.executemany(
                     "INSERT INTO provisions (id, document_id, parent_id, kind, label, path, text,"
-                    " amendments, revoked, ordinal, valid_from, valid_to)"
-                    " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                    " amendments, revoked, vetoed, ordinal, valid_from, valid_to)"
+                    " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
                     [
                         (
                             p.id,
@@ -188,6 +191,7 @@ class Store:
                             p.text,
                             list(p.amendments),
                             p.revoked,
+                            p.vetoed,
                             p.ordinal,
                             p.valid_from,
                             p.valid_to,

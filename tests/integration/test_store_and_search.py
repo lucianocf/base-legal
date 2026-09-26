@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 import pytest
@@ -161,3 +162,18 @@ def test_precomputed_tampering_is_rejected(
             precomputed_model="voyage-4-large",
             document_embedder=None,
         )
+
+
+def test_ingest_is_committed_and_visible_to_other_connections(
+    store: Store, document: Document, manifest: Manifest, tmp_path: Path
+) -> None:
+    # Regression: reads used to open an implicit transaction, turning the ingest
+    # into a savepoint that was rolled back on close.
+    store.get_meta()
+    _ingest(store, document, manifest, tmp_path)
+    store.close()
+    other = Store.connect(os.environ["DATABASE_URL"])
+    try:
+        assert other.count_chunks() == len(document.in_force())
+    finally:
+        other.close()
