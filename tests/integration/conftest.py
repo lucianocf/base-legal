@@ -1,7 +1,9 @@
 import os
+import uuid
 from collections.abc import Iterator
 from pathlib import Path
 
+import psycopg
 import pytest
 
 from base_legal.corpus.html import decode_html, html_to_lines
@@ -15,11 +17,30 @@ DATABASE_URL = os.environ.get("DATABASE_URL")
 pytestmark = pytest.mark.integration
 
 
-@pytest.fixture
-def store() -> Iterator[Store]:
+@pytest.fixture(scope="session")
+def database_url() -> Iterator[str]:
+    """A connection string bound to a throwaway schema, dropped after the session.
+
+    Tests never touch the tables of the database named by ``DATABASE_URL``
+    itself, so a developer's ingested index survives a test run.
+    """
     if not DATABASE_URL:
         pytest.skip("DATABASE_URL not set (PostgreSQL with pgvector required)")
-    store = Store.connect(DATABASE_URL)
+    schema = f"test_{uuid.uuid4().hex[:12]}"
+    with psycopg.connect(DATABASE_URL, autocommit=True) as conn:
+        conn.execute("CREATE EXTENSION IF NOT EXISTS vector")
+        conn.execute(f"CREATE SCHEMA {schema}".encode())
+    try:
+        options = f"-c search_path={schema},public"
+        yield psycopg.conninfo.make_conninfo(DATABASE_URL, options=options)
+    finally:
+        with psycopg.connect(DATABASE_URL, autocommit=True) as conn:
+            conn.execute(f"DROP SCHEMA {schema} CASCADE".encode())
+
+
+@pytest.fixture
+def store(database_url: str) -> Iterator[Store]:
+    store = Store.connect(database_url)
     with store.conn.transaction():
         store.conn.execute(
             b"DROP TABLE IF EXISTS chunks, provisions, documents, index_meta CASCADE"

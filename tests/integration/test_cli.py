@@ -14,7 +14,11 @@ pytestmark = pytest.mark.integration
 
 
 def test_build_ingest_search_end_to_end(
-    store: Store, fixtures_dir: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    store: Store,
+    database_url: str,
+    fixtures_dir: Path,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     corpus_dir, raw_dir = tmp_path / "corpus", tmp_path / "corpus" / "raw"
     raw_dir.mkdir(parents=True)
@@ -34,6 +38,7 @@ def test_build_ingest_search_end_to_end(
         ]
     ).dump(corpus_dir / "manifest.yaml")
 
+    monkeypatch.setenv("DATABASE_URL", database_url)
     monkeypatch.setenv("BASE_LEGAL_CORPUS_DIR", str(corpus_dir))
     monkeypatch.setenv("BASE_LEGAL_RAW_DIR", str(raw_dir))
     monkeypatch.setenv("BASE_LEGAL_QUERY_EMBEDDER", "test-hashing")

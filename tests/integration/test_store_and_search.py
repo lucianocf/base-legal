@@ -1,4 +1,3 @@
-import os
 from pathlib import Path
 
 import pytest
@@ -165,15 +164,24 @@ def test_precomputed_tampering_is_rejected(
 
 
 def test_ingest_is_committed_and_visible_to_other_connections(
-    store: Store, document: Document, manifest: Manifest, tmp_path: Path
+    store: Store, database_url: str, document: Document, manifest: Manifest, tmp_path: Path
 ) -> None:
     # Regression: reads used to open an implicit transaction, turning the ingest
     # into a savepoint that was rolled back on close.
     store.get_meta()
     _ingest(store, document, manifest, tmp_path)
     store.close()
-    other = Store.connect(os.environ["DATABASE_URL"])
+    other = Store.connect(database_url)
     try:
         assert other.count_chunks() == len(document.in_force())
     finally:
         other.close()
+
+
+def test_tests_run_in_an_isolated_schema(store: Store) -> None:
+    # Regression: tests used to drop and re-create the tables of the database
+    # named by DATABASE_URL, clobbering a developer's index (and leaving
+    # index_meta set to test-hashing).
+    row = store.conn.execute("SELECT current_schema() AS s").fetchone()
+    assert row is not None
+    assert str(row["s"]).startswith("test_")
