@@ -29,7 +29,7 @@ def _entry(**overrides: object) -> ManifestEntry:
 
 def _client(body: bytes) -> httpx.Client:
     def handler(request: httpx.Request) -> httpx.Response:
-        assert request.headers["User-Agent"].startswith("base-legal/")
+        assert "base-legal/" in request.headers["User-Agent"]
         return httpx.Response(200, content=body)
 
     return httpx.Client(transport=httpx.MockTransport(handler))

@@ -39,9 +39,15 @@ class Provision(BaseModel):
     )
     amendments: tuple[str, ...] = ()
     revoked: bool = False
+    vetoed: bool = Field(default=False, description='"(VETADO)": no normative content')
     ordinal: int = Field(ge=0, description="Position in document order")
     valid_from: dt.date | None = None
     valid_to: dt.date | None = None
+
+    @property
+    def is_normative(self) -> bool:
+        """In force and with content: the only provisions that may be indexed or cited."""
+        return not (self.revoked or self.vetoed)
 
     @field_validator("id")
     @classmethod
@@ -92,4 +98,4 @@ class Document(BaseModel):
         return {p.id: p for p in self.provisions}
 
     def in_force(self) -> tuple[Provision, ...]:
-        return tuple(p for p in self.provisions if not p.revoked)
+        return tuple(p for p in self.provisions if p.is_normative)

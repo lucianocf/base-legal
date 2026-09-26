@@ -46,7 +46,7 @@ class Retriever:
         """``question`` must already be redacted by :mod:`base_legal.privacy`."""
         references = [str(r) for r in find_references(question)]
         found = self.backend.provisions(references)
-        explicit = [ref for ref in references if ref in found and not found[ref].revoked]
+        explicit = [ref for ref in references if ref in found and found[ref].is_normative]
         missing = tuple(ref for ref in references if ref not in found)
 
         lexical = self.backend.lexical(question, self.candidate_pool)

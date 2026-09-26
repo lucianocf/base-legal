@@ -45,6 +45,7 @@ class CitationIssue(StrEnum):
     MALFORMED_ID = "malformed_id"
     UNKNOWN_ID = "unknown_id"
     REVOKED = "revoked"
+    VETOED = "vetoed"
     QUOTE_TOO_SHORT = "quote_too_short"
     QUOTE_NOT_FOUND = "quote_not_found"
 
@@ -79,6 +80,8 @@ def check_citation(citation: Citation, corpus: Mapping[str, Provision]) -> Citat
         return CitationIssue.UNKNOWN_ID
     if provision.revoked:
         return CitationIssue.REVOKED
+    if provision.vetoed:
+        return CitationIssue.VETOED
     quote = normalize_for_match(citation.quote).strip(" .;:,\"'")
     if len(quote) < MIN_QUOTE_CHARS:
         return CitationIssue.QUOTE_TOO_SHORT

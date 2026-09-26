@@ -31,6 +31,17 @@ CORPUS = {
         "quando necessário para atender aos interesses legítimos do controlador ou de terceiro;",
     ),
     "lgpd:art7:par1": _provision("lgpd:art7:par1", "", revoked=True),
+    "lgpd:art28": Provision(
+        id="lgpd:art28",
+        document_id="lgpd",
+        parent_id=None,
+        kind=ProvisionKind.ARTICLE,
+        label="Art. 28",
+        text="",
+        path=("Art. 28",),
+        vetoed=True,
+        ordinal=1,
+    ),
     "lgpd:art1": _provision(
         "lgpd:art1", "Esta Lei dispõe sobre o tratamento de dados — “pessoais”."
     ),
@@ -48,6 +59,7 @@ def test_valid_citation() -> None:
         (Citation("lgpd:art7:inc9", "qualquer coisa aqui"), CitationIssue.MALFORMED_ID),
         (Citation("lgpd:art7:incXII", "autoriza a venda de dados"), CitationIssue.UNKNOWN_ID),
         (Citation("lgpd:art7:par1", "texto revogado qualquer"), CitationIssue.REVOKED),
+        (Citation("lgpd:art28", "texto vetado qualquer"), CitationIssue.VETOED),
         (Citation("lgpd:art7:incIX", "legítimos"), CitationIssue.QUOTE_TOO_SHORT),
         (
             Citation("lgpd:art7:incIX", "interesses legítimos do titular"),

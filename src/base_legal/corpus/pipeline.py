@@ -18,7 +18,9 @@ from base_legal.corpus.manifest import Manifest, ManifestEntry, sha256_hex
 from base_legal.corpus.models import Document
 from base_legal.corpus.parser import StructureParser
 
-USER_AGENT = "base-legal/0.1 (+https://github.com/lucianocf/base-legal)"
+# Planalto rejects user agents that do not start with "Mozilla/"; the
+# "compatible" form still identifies the project honestly, as crawlers do.
+USER_AGENT = "Mozilla/5.0 (compatible; base-legal/0.1; +https://github.com/lucianocf/base-legal)"
 
 
 class IntegrityError(RuntimeError):

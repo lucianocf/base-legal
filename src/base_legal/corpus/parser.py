@@ -32,7 +32,7 @@ _ROMAN = r"(?=[IVXLCDM])M{0,3}(?:CM|CD|D?C{0,3})(?:XC|XL|L?X{0,3})(?:IX|IV|V?I{0
 _ORD = r"\s*(?:º|°|o(?=\W|$))?"
 
 ART_RE = re.compile(
-    rf"^Art\.\s*(?P<num>\d+){_ORD}(?:\s*-\s*(?P<suf>[A-Z])\b)?\s*\.?\s*(?P<rest>.*)$"
+    rf"^Art\.\s*(?P<num>\d+(?:\s+\d+)*(?=\s*(?:º|°|o\b|\.|-|\s[A-ZÀ-Ú(]))){_ORD}(?:\s*-\s*(?P<suf>[A-Z])\b)?\s*\.?\s*(?P<rest>.*)$"
 )
 PAR_RE = re.compile(rf"^§\s*(?P<num>\d+){_ORD}\s*\.?\s*(?P<rest>.*)$")
 UNICO_RE = re.compile(r"^Par[áa]grafo\s+[úu]nico\s*[.:\-–—]?\s*(?P<rest>.*)$", re.IGNORECASE)
@@ -44,12 +44,16 @@ HEADING_RE = re.compile(
     rf"(?P<num>{_ROMAN}(?:-[A-Z])?|[ÚU]NIC[OA])\b\s*[-–—.]?\s*(?P<title>.*)$",
     re.IGNORECASE,
 )
-END_RE = re.compile(r"^(Bras[íi]lia,\s|Este texto n[ãa]o substitui)", re.IGNORECASE)
+END_RE = re.compile(r"^(Bras[íi]lia\s*,\s|Este texto n[ãa]o substitui)", re.IGNORECASE)
 NOTE_RE = re.compile(
     r"\((?:Reda[çc][ãa]o dada|Inclu[íi]d[oa]|Acrescid[oa]|Revogad[oa]|Renumerad[oa]|"
-    r"Vide|Vig[êe]ncia|Promulga[çc][ãa]o|Regulamento)[^()]*(?:\([^()]*\)[^()]*)*\)",
+    r"Vide|Vig[êe]ncia|Promulga[çc][ãa]o|Regulamento|Convertid[oa]|Produ[çc][ãa]o de efeitos)"
+    r"[^()]*(?:\([^()]*\)[^()]*)*\)",
     re.IGNORECASE,
 )
+# Planalto links "Vigência" right after an amendment note, outside parentheses.
+TRAILING_VIGENCIA_RE = re.compile(r"(?:^|\s)Vig[êe]ncia\s*$", re.IGNORECASE)
+VETOED_TEXT_RE = re.compile(r"^\(?\s*VETAD[OA]S?\s*\)?\s*[.;,]?\s*(?:e|ou)?$", re.IGNORECASE)
 REVOKED_TEXT_RE = re.compile(r"^\(?\s*revogad[oa]s?\s*\)?\s*[.;]?$", re.IGNORECASE)
 OPEN_QUOTE_RE = re.compile(r"^[“\"‘]")
 CLOSE_QUOTE_RE = re.compile(r"(?:[”\"’]\s*(?:\(NR\))?|\(NR\))\s*[.;,]?\s*$")
@@ -144,8 +148,11 @@ class StructureParser:
                 continue
 
             if state.pending_heading is not None:
+                if NOTE_RE.fullmatch(line):
+                    continue  # amendment note between a heading and its title
                 level = state.pending_heading
-                state.headings[level] = f"{state.headings[level]} — {line}"
+                title = line.strip("’‘'\" ")
+                state.headings[level] = f"{state.headings[level]} — {title}"
                 state.pending_heading = None
             elif state.last is not None:
                 self._append(state, line)
@@ -170,8 +177,10 @@ class StructureParser:
 
     def _structural(self, state: _State, line: str, ordinal: int) -> _Node | None:
         if m := ART_RE.match(line):
-            key = article_key(m["num"], m["suf"])
-            number = int(m["num"])
+            # Planalto sometimes splits the number across spans ("Art. 5 7.").
+            digits = re.sub(r"\s+", "", m["num"])
+            key = article_key(digits, m["suf"])
+            number = int(digits)
             label = f"Art. {number}{'º' if number < 10 else ''}"
             label += f"-{m['suf']}" if m["suf"] else ""
             headings = tuple(state.headings[k] for k in sorted(state.headings))
@@ -269,7 +278,11 @@ class StructureParser:
         text = normalize_text(" ".join(p for p in node.parts if p))
         amendments = tuple(normalize_text(n) for n in NOTE_RE.findall(text))
         text = normalize_text(NOTE_RE.sub(" ", text))
+        if amendments:
+            text = TRAILING_VIGENCIA_RE.sub("", text).strip()
         text = re.sub(r"\s+([.;:,])", r"\1", text)
+        text = re.sub(r"(?<=[.;])\s*[.;]+$", "", text).strip()
+        vetoed = bool(VETOED_TEXT_RE.match(text))
         revoked = bool(REVOKED_TEXT_RE.match(text)) or (
             not text.strip(" .;") and any(_fold(a).startswith("(REVOGAD") for a in amendments)
         )
@@ -279,9 +292,10 @@ class StructureParser:
             parent_id=node.parent_id,
             kind=node.kind,
             label=node.label,
-            text="" if revoked else text,
+            text="" if revoked or vetoed else text,
             path=node.path,
             amendments=amendments,
             revoked=revoked,
+            vetoed=vetoed and not revoked,
             ordinal=node.ordinal,
         )

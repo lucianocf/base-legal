@@ -125,3 +125,78 @@ def test_ordinal_variants() -> None:
 def test_continuation_lines_are_joined() -> None:
     parsed = StructureParser("x").parse(["Art. 1º Começo do texto", "e continuação."])
     assert parsed[0].text == "Começo do texto e continuação."
+
+
+def test_css_line_through_is_treated_as_struck_text() -> None:
+    # Real layout from the Planalto compiled LGPD (art. 4, II, b): the old wording
+    # is struck with inline CSS, an intermediate one with <strike>.
+    html = """
+    <p>Art. 4º Esta Lei não se aplica ao tratamento de dados pessoais:</p>
+    <p>II - realizado para fins exclusivamente:</p>
+    <p><span style="color: black; text-decoration:line-through">
+      b) acadêmicos, aplicando-se a esta hipótese os arts. 7º e 11 desta Lei;</span></p>
+    <p><strike><span>b) acadêmicos; (Redação dada pela Medida Provisória nº 869, de 2018)</span>
+    </strike></p>
+    <p><span>b) acadêmicos, aplicando-se a esta hipótese os arts. 7º e 11 desta Lei;</span></p>
+    """
+    provisions = {p.id: p for p in StructureParser("lgpd").parse(html_to_lines(html))}
+    assert provisions["lgpd:art4:incII:alib"].text == (
+        "acadêmicos, aplicando-se a esta hipótese os arts. 7º e 11 desta Lei;"
+    )
+
+
+def test_source_newlines_do_not_split_lines_but_br_does() -> None:
+    html = "<p>Art. 5<span>7</span>. (VETADO).</p><p>Art. 58.\n Primeira linha<br>§ 1º Segunda.</p>"
+    assert html_to_lines(html) == ["Art. 57. (VETADO).", "Art. 58. Primeira linha", "§ 1º Segunda."]
+
+
+def test_article_number_split_across_spans() -> None:
+    # Real case: art. 57 of the Planalto compiled LGPD is "Art. 5<span>\n7.</span>".
+    parsed = StructureParser("lgpd").parse(["Art. 5 7. (VETADO).", "Art. 7º O tratamento 2 vezes."])
+    assert [p.id for p in parsed] == ["lgpd:art57", "lgpd:art7"]
+    assert parsed[1].text == "O tratamento 2 vezes."
+
+
+def test_real_planalto_note_quirks() -> None:
+    # Real lines from the Planalto compiled LGPD.
+    parsed = {
+        p.id: p
+        for p in StructureParser("lgpd").parse(
+            [
+                "Art. 7º O tratamento de dados pessoais somente poderá ser realizado:",
+                "§ 2º (Revogado). (Redação dada pela Lei nº 13.853, de 2019) Vigência",
+                "§ 3º (VETADO). (Incluído pela Lei nº 13.853, de 2019) Vigência",
+                "§ 4º Texto em vigor. (Redação dada pela Lei nº 13.853, de 2019) Vigência",
+                "Art. 65. Esta Lei entra em vigor:",
+                "I-A – dia 1º de agosto de 2021, quanto aos arts. 52, 53 e 54; "
+                "(Incluído pela Lei nº 14.010, de 2020) (Convertida na Lei nº 14.058, de 2020)",
+            ]
+        )
+    }
+    assert parsed["lgpd:art7:par2"].revoked
+    assert parsed["lgpd:art7:par3"].vetoed
+    assert parsed["lgpd:art7:par3"].text == ""
+    assert not parsed["lgpd:art7:par3"].is_normative
+    assert parsed["lgpd:art7:par4"].text == "Texto em vigor."
+    inc = parsed["lgpd:art65:incI-A"]
+    assert inc.text == "dia 1º de agosto de 2021, quanto aos arts. 52, 53 e 54;"
+    assert "(Convertida na Lei nº 14.058, de 2020)" in inc.amendments
+
+
+def test_heading_with_amendment_note_and_signature_block() -> None:
+    # Real layout from the Planalto compiled LGPD (chapter IX and the closing lines).
+    parsed = StructureParser("lgpd").parse(
+        [
+            "Art. 54. Texto do artigo.",
+            "CAPÍTULO IX",
+            "(Redação dada pela Lei nº 15.352, de 2026)",
+            "DA AGÊNCIA NACIONAL DE PROTEÇÃO DE DADOS’",
+            "Art. 55-A. Texto do novo artigo.",
+            "Brasília , 14 de agosto de 2018; 197º da Independência e 130º da República.",
+            "MICHEL TEMER",
+        ]
+    )
+    art54, art55a = parsed
+    assert art54.text == "Texto do artigo."
+    assert art55a.path == ("CAPÍTULO IX — DA AGÊNCIA NACIONAL DE PROTEÇÃO DE DADOS", "Art. 55-A")
+    assert art55a.text == "Texto do novo artigo."
