@@ -11,17 +11,24 @@ Base Legal is software you run yourself. **Whoever deploys it is the
 submitted to that deployment. The project maintainers operate no service and
 receive no data.
 
-In a typical deployment, the third-party APIs act as **operadores**
-(processors) on behalf of the deployer:
+In a typical deployment, **only one third party receives user data**, and it
+acts as an **operador** (processor) on behalf of the deployer:
 
-| Processor | Purpose | Data sent | Notes |
-|---|---|---|---|
-| Anthropic (Claude API) | Answer generation | The **redacted** question + retrieved public provisions | Commercial API terms; `TODO(verify)` current retention period and training policy at each release |
-| Voyage AI | Embeddings | Provision text (public) at ingestion; the **redacted** question at query time | **Trains on customer content by default.** Opting out is **mandatory** for Base Legal deployments (see §4) |
+| Third party | Purpose | Data sent | Role | Notes |
+|---|---|---|---|---|
+| Anthropic (Claude API) | Answer generation | The **redacted** question + retrieved public provisions | **Processor** | Commercial API terms; `TODO(verify)` current retention period and training policy at each release |
+| Voyage AI | Embedding the **law** (`voyage-4-large`) | **Only public legal text**, once per corpus snapshot, by maintainers (or by a deployer choosing `api` ingest mode) | **Not a processor of personal data** | Voyage's training-by-default does not matter here: the content is public legislation. Opt-out is optional |
 
-Both involve an international data transfer (LGPD arts. 33 to 36;
-Res. CD/ANPD nº 19/2024). Choosing the mechanism is the deployer's
-responsibility, and the README says so.
+**User questions are embedded locally** with the open-weight `voyage-4-nano`
+(ADR 0003). Voyage 4 models share one embedding space, so the local query
+vector can be matched against vectors the API computed for the law. Voyage
+never sees a question.
+
+Sending questions to Anthropic is an international data transfer (LGPD
+arts. 33 to 36; Res. CD/ANPD nº 19/2024). Choosing the mechanism is the
+deployer's responsibility, and the README says so. **The MCP path involves no
+transfer by Base Legal at all:** retrieval is local, and the MCP host's own
+model (chosen by the user) receives the question.
 
 ## 2. Data inventory
 
@@ -29,7 +36,8 @@ responsibility, and the README says so.
 |---|---|---|---|---|---|
 | Corpus (laws, resolutions) | Official publications | No | `corpus/`, PostgreSQL | Until the next snapshot | N/A (public acts) |
 | User question, original | User | **Possibly** (incidental) | Process memory only | Duration of the request | Deployer's choice (usually art. 7, V or IX) |
-| User question, redacted | `privacy` module | Reduced | Sent to Voyage and Anthropic; not stored locally | Per processor terms | Same as above |
+| User question, redacted | `privacy` module | Reduced | Sent to Anthropic only; not stored locally | Per processor terms | Same as above |
+| Question embedding | Local `voyage-4-nano` | Derived from the question (treated as personal data) | Process memory only; never sent or stored | Duration of the request | Same as above |
 | Answer | Claude | Possibly (echoes the question) | Returned to the user; not stored | Duration of the request | Same as above |
 | Operational logs | Application | **No content**: request ID, timings, token counts, redaction counts, error codes | stdout → Docker log driver | 7 days by default (log rotation) | Legitimate interest in security (art. 7, IX; art. 46) |
 | Debug question log | Opt-in (`BASE_LEGAL_LOG_QUESTIONS=true`) | Redacted question | Local log | Same rotation; off by default | Deployer must justify |
@@ -44,8 +52,8 @@ and conversation history.
 | Principle | Implementation |
 |---|---|
 | Purpose (I) and adequacy (II) | The question is used only to answer that request |
-| **Necessity (III)**: minimization | PII redaction before any processor; no persistence of questions or answers; content-free logs |
-| Transparency (VI) | This document, the README and the UI notice ("do not include personal data; questions are sent to Anthropic and Voyage after redaction") |
+| **Necessity (III)**: minimization | Questions embedded locally (one processor fewer); PII redaction before Anthropic; no persistence of questions or answers; content-free logs |
+| Transparency (VI) | This document, the README and the UI notice ("do not include personal data; questions are embedded locally and sent to Anthropic after redaction") |
 | **Security (VII)** and prevention (VIII) | See [THREAT_MODEL.md](THREAT_MODEL.md): secrets management, supply chain controls, strict CSP, localhost binding by default |
 | Accountability (X) | Tests that prove the controls: a log-capture test asserting no question text is logged, and redaction unit tests |
 
@@ -59,15 +67,17 @@ and conversation history.
   NER-based detection is on the roadmap if a Portuguese model of good enough
   quality fits the footprint.
 
-## 4. Mandatory processor settings
+## 4. Processor settings
 
-1. **Voyage AI:** opt out of training in the dashboard (Organization → Terms of
-   Service → *Opted Out*). Per Voyage's FAQ, this requires a payment method and
-   an org Admin, may **void free-token credits**, and applies only to data sent
-   *after* the opt-out. **Opt out before the first ingestion.** Cost impact for
-   this corpus: `TODO(verify)` with current pricing (expected to be cents).
-2. **Anthropic:** set a monthly spend limit in the Console; review the current
+1. **Anthropic:** set a monthly spend limit in the Console; review the current
    data retention terms (`TODO(verify)`).
+2. **Voyage AI (maintainers only):** no user data is sent, so the training
+   opt-out is **optional**. It is still reasonable hygiene if the account is
+   ever used for other content. Per Voyage's FAQ, opting out requires a
+   payment method and may void free-token credits.
+3. **Local query model:** `voyage-4-nano` weights (Apache 2.0) are pinned by
+   revision and SHA-256 and baked into the image, so the runtime makes no
+   model downloads.
 
 ## 5. Why there is no RIPD (DPIA) yet
 

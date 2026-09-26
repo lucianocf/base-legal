@@ -39,8 +39,11 @@ knowledge base.
   URL, retrieval date, SHA-256 and legal basis for redistribution.
 - **Structural parsing** into canonical provision IDs (`lgpd:art7:incIX`) with the
   hierarchy path (Chapter > Section > Article) kept on every chunk.
-- **Hybrid retrieval:** PostgreSQL full-text (`portuguese`) + pgvector (Voyage
-  embeddings), fused with Reciprocal Rank Fusion.
+- **Hybrid retrieval:** PostgreSQL full-text (`portuguese`) + pgvector, fused
+  with Reciprocal Rank Fusion. **Asymmetric Voyage 4 embeddings** (ADR 0003):
+  the law is embedded once with `voyage-4-large` via the API; questions are
+  embedded **locally** with the open-weight `voyage-4-nano`, so questions never
+  reach Voyage. Precomputed document vectors ship in the repo if Voyage's terms allow.
 - **Grounded generation** with Claude (Haiku 4.5 default, Sonnet 5 configurable),
   citations mapped to provision IDs, **strict refusal** when unsupported.
 - **Citation validator:** every cited ID must exist and every quoted span must
@@ -72,7 +75,7 @@ knowledge base.
 |---|---|---|
 | Foundation | Scaffold (`uv`, ruff, mypy, pytest, pre-commit), CI skeleton, Docker Compose with Postgres + pgvector | Release workflow, Pages (MkDocs), README EN/PT-BR, GIF |
 | Corpus | Fetch + parse LGPD and resolutions → canonical provisions; parser unit tests on tricky cases | — |
-| Retrieval | Schema + migrations, ingestion, embeddings, FTS + vector + RRF; `base-legal ingest` / `search` | Tune on the golden set |
+| Retrieval | Schema + migrations, ingestion, embeddings, FTS + vector + RRF; `base-legal ingest` / `search`; **embedding validation gate** (~2 h, ADR 0003) | Tune on the golden set |
 | Generation | — | Claude call with citations, validator, strict refusal, PII redaction |
 | Interfaces | CLI | FastAPI, MCP server, minimal UI |
 | Evals | Golden-set draft reviewed by the author | Retrieval + citation + red-team evals in CI, badge |
@@ -88,7 +91,9 @@ red-team set size. **Never cut** the validator, the evals or the parser tests.
   the tension between transparency and data protection. This is a niche few
   projects cover and it matches the author's public-sector expertise.
 - Resolved cross-references: "nos termos do art. 11" becomes a link to that provision.
-- Reranking (e.g. Voyage rerank) **only if** the golden set shows a gain.
+- Reranking with a **local** cross-encoder (e.g. Qwen3-Reranker-0.6B or
+  bge-reranker-v2-m3) **only if** the golden set shows a gain. Never a hosted
+  reranker, which would send questions to a third party.
 - A normative change watcher: a scheduled job diffs official sources and opens a PR.
 - A static corpus explorer on GitHub Pages (browse provisions, anchor links,
   client-side search, no LLM).
@@ -164,7 +169,9 @@ are confirmed; 1/2021, 2/2022 and 4/2023 come from memory.
 |---|---|
 | **Planalto compiled HTML is irregular.** Revoked text is struck through (`<strike>`), amendments are annotated inline ("Redação dada pela Lei nº …"), and articles like "55-J" and "Parágrafo único" need care | Parser built test-first on a fixture set of the nastiest articles; normalized output committed and reviewed as a diff |
 | Resolutions published in different layouts (DOU vs gov.br) | One parser per source layout behind one interface; manual checks on small resolutions |
-| Voyage trains on customer data by default | Opt-out is mandatory and documented (ADR 0003, PRIVACY.md) |
+| Voyage trains on customer data by default | Only public law text is sent to Voyage; questions are embedded locally (ADR 0003) |
+| `voyage-4-nano` has few independent benchmarks | Validation gate on the golden set; plan B is Qwen3-Embedding-0.6B (ADR 0003) |
+| Voyage terms may forbid redistributing vectors | `TODO(verify)`; fallback: users run `api` ingest once (free tier) or `local` mode |
 | Hallucinated citations | Validator + strict refusal; tested in CI |
 | Scope creep (20 h budget) | Cut order in §4; everything else is roadmap |
 | Accidental employer reference | Pre-publish grep checklist + manual review (§9) |
@@ -177,7 +184,10 @@ are confirmed; 1/2021, 2/2022 and 4/2023 come from memory.
       baseline, 100 % of emitted citations validated (by construction),
       correct refusal on out-of-scope questions, a defined red-team pass rate.
 - [ ] Fresh clone → `docker compose up` → `base-legal ingest` → `base-legal ask`
-      works in under 10 minutes, following the README only.
+      works in under 10 minutes, following the README only, with only an
+      Anthropic key (no Voyage key, if vector redistribution is allowed).
+- [ ] Embedding validation gate run, with results published in the docs.
+- [ ] A test proves the query path makes no network call to Voyage.
 - [ ] MCP server tested in Claude Desktop and Claude Code.
 - [ ] Docs live on GitHub Pages. SECURITY.md, LEGAL_NOTICE.md and the "not
       legal advice" disclaimer in place.

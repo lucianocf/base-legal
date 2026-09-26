@@ -20,6 +20,7 @@ flowchart LR
         MCP[MCP server adapter]
         PRIV[privacy<br/>PII redaction]
         RET[retrieval<br/>FTS + vector + RRF]
+        NANO[query embedder<br/>voyage-4-nano, local]
         GEN[generation<br/>Claude + citations]
         GRD[grounding<br/>validator + refusal]
         ING[corpus + chunking<br/>ingestion]
@@ -27,30 +28,35 @@ flowchart LR
 
     subgraph Storage
         PG[(PostgreSQL<br/>pgvector + FTS)]
-        CORPUS[/corpus/*.json<br/>manifest.yaml/]
+        CORPUS[/corpus/*.json · embeddings/<br/>manifest.yaml/]
     end
 
-    subgraph Third_parties[Third parties - processors]
-        VOY[Voyage AI<br/>embeddings]
-        ANT[Anthropic API<br/>Claude]
+    subgraph Third_parties[Third parties]
+        VOY[Voyage API<br/>voyage-4-large<br/>maintainer-time only]
+        ANT[Anthropic API<br/>Claude · processor]
     end
 
     CLI --> PRIV
     UI --> API --> PRIV
     MCPH --> MCP --> PRIV
     PRIV --> RET --> PG
-    RET -- redacted query --> VOY
+    RET --> NANO
     PRIV --> GEN -- redacted question +<br/>retrieved provisions --> ANT
     GEN --> GRD --> PG
     ING --> CORPUS
     ING --> PG
-    ING -- provision text --> VOY
+    ING -. public law text only .-> VOY
 ```
 
 Key properties:
-- **Nothing leaves the machine unredacted.** The `privacy` module runs before any
-  third-party call, and the only third parties are Voyage (embeddings) and
-  Anthropic (generation).
+- **Questions are embedded locally.** Voyage 4 models share one embedding
+  space: the law is embedded once with `voyage-4-large` via the API, and
+  questions are embedded in-process with the open-weight `voyage-4-nano`
+  (ADR 0003). Voyage never receives user questions.
+- **Anthropic is the only processor of user data**, and it only receives
+  the question after the `privacy` module has redacted it.
+- **The MCP path sends nothing to any third party.** The MCP server only runs
+  retrieval (local embedding + Postgres); the host's own model writes the answer.
 - **The MCP server never calls Claude.** It exposes retrieval and verification
   tools only; the host's own model writes the answer. It needs no Anthropic key
   and has no tool with side effects (OWASP LLM06).
@@ -66,7 +72,7 @@ sequenceDiagram
     participant F as corpus.fetch
     participant P as corpus.parse
     participant C as chunking
-    participant V as Voyage API
+    participant V as Voyage API<br/>(voyage-4-large)
     participant DB as PostgreSQL
 
     Dev->>F: base-legal corpus fetch
@@ -75,15 +81,23 @@ sequenceDiagram
     Dev->>P: base-legal corpus build
     P->>P: HTML/text → provision tree<br/>(drop revoked text, keep amendment notes as metadata)
     P-->>Dev: corpus/<doc>.json (committed)
-    Dev->>C: base-legal ingest
+    Dev->>C: base-legal corpus embed (maintainers, once per snapshot)
     C->>C: one chunk per provision,<br/>prefix hierarchy path
-    C->>V: embed(chunks, input_type=document)
+    C->>V: embed(chunks, input_type=document)<br/>public law text only
     V-->>C: vectors
-    C->>DB: upsert documents, provisions, chunks<br/>(idempotent by source_sha256)
+    C-->>Dev: corpus/embeddings/<doc>.voyage-4-large.1024.npy<br/>+ SHA-256 in manifest.yaml
+    Note over Dev,DB: End user: base-legal ingest (no Voyage key needed*)
+    C->>DB: upsert documents, provisions, chunks + vectors<br/>(idempotent by source_sha256)
 ```
 
-- `fetch` and `build` are separate on purpose. The normalized JSON is committed,
-  so CI and evals never depend on government websites being up.
+- `fetch`, `build` and `embed` are separate on purpose. The normalized JSON
+  (and, pending terms, the vectors) are committed, so CI and evals never
+  depend on government websites or paid APIs.
+- `ingest` picks a mode (ADR 0003): **precomputed** vectors when their hashes
+  match the corpus snapshot; **api** to re-embed with `voyage-4-large`;
+  **local** to embed documents with `voyage-4-nano` too (fully offline).
+- \* If Voyage's terms turn out not to allow redistributing the vectors, users
+  run `api` mode once (it fits the free allowance) or `local` mode.
 - Ingestion is idempotent: re-running with an unchanged `source_sha256` does nothing.
 
 ## 3. Query flow
@@ -95,7 +109,7 @@ sequenceDiagram
     participant A as Adapter (CLI/API/UI)
     participant PR as privacy
     participant R as retrieval
-    participant V as Voyage
+    participant N as voyage-4-nano<br/>(local, in-process)
     participant DB as PostgreSQL
     participant G as generation
     participant CL as Claude
@@ -106,7 +120,7 @@ sequenceDiagram
     A->>PR: redact(question)
     PR-->>A: redacted question + counts (no values kept)
     A->>R: search(redacted, k)
-    R->>V: embed(query, input_type=query)
+    R->>N: embed(query, input_type=query)<br/>nothing leaves the machine
     R->>DB: FTS rank + vector kNN
     R->>R: Reciprocal Rank Fusion
     R-->>A: top-k provisions
@@ -213,6 +227,7 @@ erDiagram
 |---|---|---|
 | `corpus` | Fetch official sources, verify hashes, parse to a provision tree, write normalized JSON | One parser per source layout; test fixtures of the hardest articles |
 | `chunking` | One chunk per provision, with the hierarchy path prefixed | Deterministic "contextual retrieval" without an LLM |
+| `embeddings` | `Embedder` protocol; `voyage-4-large` (API, documents), `voyage-4-nano` (local, queries); shared-space guard | Weights pinned by revision + SHA-256, baked into the image (ADR 0003) |
 | `store` | Schema, migrations, upserts, queries (psycopg 3) | No ORM magic in the query path |
 | `retrieval` | FTS rank + vector kNN, RRF fusion (k = 60), score threshold | Postgres FTS is not true BM25 (ParadeDB/pg_search is an option) |
 | `privacy` | PII detection and redaction (CPF/CNPJ with check digits, e-mail, phone), log policy | Placeholders like `[CPF_1]`; original values never stored |
@@ -220,8 +235,8 @@ erDiagram
 | `grounding` | Validate citations, enforce strict refusal | Pure functions, heavily unit-tested |
 | `api` | FastAPI app, input limits, security headers, serves the UI | OpenAPI documented |
 | `mcp_server` | Tools `search_provisions`, `get_provision`, `verify_citation` | Read-only; stdio transport |
-| `cli` | `corpus fetch/build`, `ingest`, `search`, `ask`, `eval` | Typer |
-| `evals` | Golden set and red-team runners, metrics, report + badge JSON | Deterministic in CI (cached query embeddings) |
+| `cli` | `corpus fetch/build/embed`, `ingest`, `search`, `ask`, `eval` | Typer |
+| `evals` | Golden set and red-team runners, metrics, report + badge JSON | Deterministic in CI (local query embedder) |
 
 ## 7. Evaluation
 
@@ -234,9 +249,10 @@ erDiagram
 | red-team pass rate | Injection and PII cases handled as specified | CI (deterministic parts) + local |
 | faithfulness | LLM-judged support of the answer by its citations | Local / on demand only (cost) |
 
-CI never calls paid APIs from fork PRs. Query embeddings for the golden set are
-cached in `evals/cache/`, keyed by model and question hash, and refreshed by a
-maintainer command.
+CI never calls paid APIs and needs no secrets, so it works on fork PRs.
+Document vectors come from the committed `corpus/embeddings/`; golden-set
+questions are embedded on the runner with `voyage-4-nano` (weights cached
+between runs by revision hash).
 
 ## 8. Proposed repository layout
 
@@ -245,6 +261,7 @@ base-legal/
 ├── src/base_legal/
 │   ├── corpus/          # fetch, parse, normalize
 │   ├── chunking/
+│   ├── embeddings/      # Embedder protocol, Voyage API + local nano
 │   ├── store/           # schema, migrations, queries
 │   ├── retrieval/
 │   ├── privacy/
@@ -255,10 +272,10 @@ base-legal/
 │   ├── cli/
 │   └── evals/
 ├── corpus/              # normalized official acts + manifest.yaml
+│   └── embeddings/      # precomputed voyage-4-large vectors (pending ToS check)
 ├── evals/
 │   ├── golden.yaml
-│   ├── redteam.yaml
-│   └── cache/           # query embeddings for deterministic CI
+│   └── redteam.yaml
 ├── tests/
 │   ├── unit/
 │   └── integration/     # Postgres via Docker service in CI
@@ -278,7 +295,9 @@ base-legal/
 ## 9. Configuration
 
 All configuration comes from environment variables (pydantic-settings) with
-safe defaults: `ANTHROPIC_API_KEY`, `VOYAGE_API_KEY`, `BASE_LEGAL_MODEL`,
+safe defaults: `ANTHROPIC_API_KEY`, `VOYAGE_API_KEY` (maintainers / `api`
+ingest mode only), `BASE_LEGAL_MODEL`, `BASE_LEGAL_INGEST_MODE=auto`,
+`BASE_LEGAL_QUERY_EMBEDDER=voyage-4-nano`,
 `BASE_LEGAL_STRICT=true`, `BASE_LEGAL_LOG_QUESTIONS=false`,
 `BASE_LEGAL_MAX_QUESTION_CHARS`, `DATABASE_URL`. Secrets are never read from
 files committed to the repo.

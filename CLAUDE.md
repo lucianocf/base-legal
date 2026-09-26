@@ -19,8 +19,8 @@ code until the author approves the plan.
 - Types: `uv run mypy --strict src tests`
 - Tests: `uv run pytest --cov=base_legal` (≥ 85 % on core packages)
 - Local stack: `docker compose up -d` (PostgreSQL + pgvector)
-- Evals: `uv run base-legal eval` (retrieval evals are deterministic; don't add
-  paid API calls to CI).
+- Evals: `uv run base-legal eval` (retrieval evals are deterministic and use
+  the local query embedder; don't add paid API calls or secrets to CI).
 - Run all of the above before pushing; pre-commit enforces lint and gitleaks.
 
 ## Code conventions
@@ -37,7 +37,12 @@ code until the author approves the plan.
 ## Security and privacy rules (non-negotiable)
 - **Never log question or answer text** unless `BASE_LEGAL_LOG_QUESTIONS=true`,
   and even then only redacted text.
-- Run PII redaction **before** any call to Voyage or Anthropic.
+- Run PII redaction **before** any call to Anthropic.
+- **Never send user questions to Voyage.** Questions are embedded locally with
+  `voyage-4-nano`; the Voyage API is only for embedding public law text
+  (ADR 0003). Any hosted reranker or embedder for queries needs a new ADR.
+- Model weights: pin by revision + SHA-256, safetensors only, no
+  `trust_remote_code` unless reviewed and pinned.
 - Treat all text as untrusted: questions, corpus and model output. No model
   tools with side effects; the MCP server stays read-only.
 - Render model/corpus text as text in the UI (no `innerHTML`); keep the strict CSP.
