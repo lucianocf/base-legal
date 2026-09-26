@@ -1,0 +1,9 @@
+title = "base-legal gitleaks config"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Throwaway CI database credentials and synthetic test fixtures"
+paths = ['''tests/fixtures/.*''']
+regexes = ['''postgresql://base_legal:base_legal@''']
