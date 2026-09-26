@@ -54,7 +54,7 @@ ID format: see [ARCHITECTURE.md §4](ARCHITECTURE.md#4-canonical-provision-ids).
 | 38 | Quando termina o tratamento e os dados devem ser eliminados? | `lgpd:art15`, `lgpd:art16` | |
 | 39 | Dados anonimizados são considerados dados pessoais? | `lgpd:art12` | |
 | 40 | Quais circunstâncias agravam uma sanção na dosimetria? | `res-anpd-4-2023:…` ⚠ | |
-| 41 | Desde quando as sanções da LGPD podem ser aplicadas? | `lgpd:art65:incIA` | Inciso "I-A"; tests the ID rule |
+| 41 | Desde quando as sanções da LGPD podem ser aplicadas? | `lgpd:art65:incI-A` | Inciso "I-A"; tests the ID rule |
 | 42 | O que diz o art. 7º, inciso IX, da LGPD? | `lgpd:art7:incIX` | Explicit reference → direct lookup |
 
 ## B. Must-refuse questions

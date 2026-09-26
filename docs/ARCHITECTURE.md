@@ -172,9 +172,14 @@ Format: `{doc}:{art}[:{par}][:{inc}][:{ali}][:{item}]`
 | Res. 15/2024, art. 6 | `res-anpd-15-2024:art6` |
 | Annex of Res. 19/2024, clause | `res-anpd-19-2024:anx1:…` (defined when parsing) |
 
+| LGPD art. 65, inciso I-A | `lgpd:art65:incI-A` |
+
 Rules: roman numerals for incisos (as in the source), lowercase letters for
-alíneas, and article suffixes kept in uppercase (`55J`). IDs are **stable
-across ingestions** and are part of the public API.
+alíneas. Article suffixes are appended in uppercase without the hyphen (`55J`,
+unambiguous after digits). Inciso suffixes **keep the hyphen** (`I-A`),
+because otherwise `I-C` would read as the roman numeral `IC`. IDs are
+**stable across ingestions** and are part of the public API
+(`src/base_legal/corpus/ids.py`).
 
 ## 5. Data model
 
