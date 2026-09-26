@@ -215,7 +215,7 @@ erDiagram
         text provision_id PK,FK
         text content "path + text (what gets embedded)"
         vector embedding "dim per ADR 0003"
-        tsvector fts "portuguese + unaccent"
+        tsvector fts "portuguese, accent-folded"
         text embedding_model
     }
 ```

@@ -11,8 +11,11 @@ paraphrases. The corpus is small (hundreds of provisions).
 
 ## Decision
 - A single **PostgreSQL** instance with **pgvector** (HNSW index) and
-  built-in **full-text search** (`portuguese` configuration + `unaccent`,
-  GIN index).
+  built-in **full-text search** (`portuguese` configuration, GIN index) over
+  text accent-folded **in Python** for both documents and queries, so no
+  `unaccent` extension is needed and behavior is identical on any Postgres.
+  Queries are OR-ed `to_tsquery` terms built from sanitized alphanumeric
+  tokens, which rules out tsquery operator injection.
 - Run both searches and fuse the rankings with **Reciprocal Rank Fusion**
   (k = 60). Explicit references in the question ("art. 7, IX") are detected
   by regex and resolved as direct ID lookups ahead of the fused results.
