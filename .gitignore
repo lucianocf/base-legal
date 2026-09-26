@@ -24,3 +24,6 @@ corpus/raw/
 .idea/
 .vscode/
 .DS_Store
+
+# Local no-Docker PostgreSQL for tests (pgserver)
+.pgserver/

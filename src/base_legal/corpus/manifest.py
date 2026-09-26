@@ -20,6 +20,20 @@ DEFAULT_REDISTRIBUTION_BASIS = (
 )
 
 
+class EmbeddingArtifact(BaseModel):
+    """Precomputed document vectors for one document (``corpus/embeddings/``)."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    model: str
+    dimension: int
+    file: str
+    sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    corpus_sha256: str = Field(
+        pattern=r"^[0-9a-f]{64}$", description="source_sha256 the vectors were computed from"
+    )
+
+
 class ManifestEntry(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -31,6 +45,7 @@ class ManifestEntry(BaseModel):
     redistribution_basis: str = DEFAULT_REDISTRIBUTION_BASIS
     retrieved_at: dt.date | None = None
     source_sha256: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
+    embeddings: list[EmbeddingArtifact] = Field(default_factory=list)
 
 
 class Manifest(BaseModel):
