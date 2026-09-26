@@ -32,7 +32,8 @@ dependencies = [
 # Document embeddings via the Voyage API (maintainers / `api` ingest mode).
 voyage = ["voyageai>=0.3"]
 # Local query embeddings with open weights (voyage-4-nano). Heavy: pulls torch.
-local = ["sentence-transformers>=3.0"]
+# voyage-4-nano remote code targets transformers 4.x (fails on 5.x).
+local = ["sentence-transformers>=5.0,<6", "transformers>=4.51,<5", "torch>=2.6"]
 
 [project.scripts]
 base-legal = "base_legal.cli.app:main"
@@ -92,3 +93,12 @@ branch = true
 [tool.coverage.report]
 show_missing = true
 skip_covered = true
+
+# CPU-only PyTorch for the local query embedder (avoids multi-GB CUDA wheels).
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu" }]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true

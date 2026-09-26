@@ -72,7 +72,7 @@ def test_voyage_refuses_to_embed_questions() -> None:
 def test_local_embedder_uses_query_and_document_prompts_and_truncates() -> None:
     backend = _FakeSentenceTransformer()
     embedder = LocalSentenceTransformerEmbedder(
-        repo="voyageai/voyage-4-nano", model="voyage-4-nano", revision="abc", backend=backend
+        path=Path("unused"), model="voyage-4-nano", backend=backend
     )
     query = embedder.embed_query("pergunta")
     docs = embedder.embed_documents(["a", "b"])

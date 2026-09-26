@@ -11,6 +11,7 @@ from __future__ import annotations
 import hashlib
 import re
 from collections.abc import Sequence
+from pathlib import Path
 from typing import Any
 
 import numpy as np
@@ -68,20 +69,20 @@ class LocalSentenceTransformerEmbedder:
 
     def __init__(
         self,
-        repo: str,
+        path: Path,
         model: str,
-        revision: str | None,
         *,
         trust_remote_code: bool = False,
         backend: Any | None = None,
     ) -> None:
+        """Load from a local, hash-verified directory (see ``model_store``); never from the Hub."""
         if backend is None:
             from sentence_transformers import SentenceTransformer  # optional: `--extra local`
 
             backend = SentenceTransformer(
-                repo,
-                revision=revision,
+                str(path),
                 trust_remote_code=trust_remote_code,
+                local_files_only=True,
                 truncate_dim=EMBEDDING_DIM,
                 device="cpu",
             )

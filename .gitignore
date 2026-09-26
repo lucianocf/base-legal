@@ -27,3 +27,6 @@ corpus/raw/
 
 # Local no-Docker PostgreSQL for tests (pgserver)
 .pgserver/
+
+# Local model weights (fetched and hash-verified by `base-legal model fetch`)
+models/

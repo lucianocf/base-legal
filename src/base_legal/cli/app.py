@@ -19,6 +19,7 @@ from base_legal.embeddings.factory import (
     make_local_document_embedder,
     make_query_embedder,
 )
+from base_legal.embeddings.model_store import fetch_model, load_lock
 from base_legal.embeddings.precomputed import artifact_filename, save_vectors
 from base_legal.ingest import ingest_documents
 from base_legal.privacy.redact import redact
@@ -28,6 +29,8 @@ from base_legal.store.db import Store
 app = typer.Typer(no_args_is_help=True, add_completion=False, help=__doc__)
 corpus_app = typer.Typer(no_args_is_help=True, help="Maintain the normalized corpus.")
 app.add_typer(corpus_app, name="corpus")
+model_app = typer.Typer(no_args_is_help=True, help="Manage pinned local model weights.")
+app.add_typer(model_app, name="model")
 
 DocOption = Annotated[
     list[str] | None, typer.Option("--doc", help="Limit to these document ids (repeatable).")
@@ -106,6 +109,17 @@ def corpus_embed(doc: DocOption = None) -> None:
         entry.embeddings = [a for a in entry.embeddings if a.model != artifact.model] + [artifact]
         typer.echo(f"{document.id}: {len(chunks)} vectors -> {name}")
     manifest.dump(_manifest_path(settings))
+
+
+@model_app.command("fetch")
+def model_fetch() -> None:
+    """Download the local query model at its pinned revision, verifying every SHA-256."""
+    settings = _settings()
+    lock = load_lock(settings.query_embedder)
+    directory = settings.models_dir / settings.query_embedder
+    with httpx.Client(timeout=httpx.Timeout(60, read=600)) as client:
+        fetched = fetch_model(lock, directory, client)
+    typer.echo(f"{lock.repo}@{lock.revision[:12]}: {len(fetched)} file(s) fetched, all verified")
 
 
 @app.command()

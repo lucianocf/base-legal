@@ -32,9 +32,8 @@ class Settings(BaseSettings):
     ingest_mode: IngestMode = IngestMode.AUTO
     document_embedder: str = "voyage-4-large"
     query_embedder: str = "voyage-4-nano"
-    # Hugging Face repo and pinned revision of the local query model (ADR 0003).
-    query_model_repo: str = "voyageai/voyage-4-nano"
-    query_model_revision: str | None = None
+    # Local model weights, pinned by revision + SHA-256 (src/base_legal/embeddings/*.lock.json).
+    models_dir: Path = Path("models")
 
     top_k: int = 8
     candidate_pool: int = 50

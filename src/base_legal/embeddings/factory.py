@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from base_legal.config import Settings
 from base_legal.embeddings.base import Embedder
+from base_legal.embeddings.model_store import load_lock, verify_model
 from base_legal.embeddings.providers import (
     HashingEmbedder,
     LocalSentenceTransformerEmbedder,
@@ -17,10 +18,13 @@ def make_query_embedder(settings: Settings) -> Embedder:
     """Local only: user questions never go to an embedding API (ADR 0003)."""
     if settings.query_embedder == TEST_EMBEDDER:
         return HashingEmbedder()
+    lock = load_lock(settings.query_embedder)
+    directory = settings.models_dir / settings.query_embedder
+    verify_model(lock, directory)  # raises before any model code is imported
     return LocalSentenceTransformerEmbedder(
-        repo=settings.query_model_repo,
+        path=directory,
         model=settings.query_embedder,
-        revision=settings.query_model_revision,
+        trust_remote_code=lock.trust_remote_code,
     )
 
 
