@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+build/
+dist/
+*.egg-info/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Secrets and local config
+.env
+.env.*
+!.env.example
+
+# Raw downloads (normalized corpus is committed; raw sources are not)
+corpus/raw/
+
+# Editors / OS
+.idea/
+.vscode/
+.DS_Store

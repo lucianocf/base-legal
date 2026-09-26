@@ -1,0 +1,94 @@
+[project]
+name = "base-legal"
+version = "0.1.0.dev0"
+description = "Grounded, verifiable Q&A over Brazilian data protection law (LGPD + ANPD), with machine-checked citations."
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+requires-python = ">=3.12"
+authors = [{ name = "Base Legal contributors" }]
+keywords = ["lgpd", "rag", "llm", "privacy", "legal-tech", "mcp"]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Legal Industry",
+    "Natural Language :: Portuguese (Brazilian)",
+    "Programming Language :: Python :: 3.12",
+    "Typing :: Typed",
+]
+dependencies = [
+    "beautifulsoup4>=4.12",
+    "httpx>=0.27",
+    "numpy>=2.0",
+    "pgvector>=0.3",
+    "psycopg[binary]>=3.2",
+    "pydantic>=2.8",
+    "pydantic-settings>=2.4",
+    "pyyaml>=6.0",
+    "typer>=0.12",
+]
+
+[project.optional-dependencies]
+# Document embeddings via the Voyage API (maintainers / `api` ingest mode).
+voyage = ["voyageai>=0.3"]
+# Local query embeddings with open weights (voyage-4-nano). Heavy: pulls torch.
+local = ["sentence-transformers>=3.0"]
+
+[project.scripts]
+base-legal = "base_legal.cli.app:main"
+
+[dependency-groups]
+dev = [
+    "mypy>=1.11",
+    "pytest>=8.3",
+    "pytest-cov>=5.0",
+    "ruff>=0.6",
+    "types-pyyaml>=6.0",
+]
+
+[build-system]
+requires = ["hatchling>=1.26"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/base_legal"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "B", "UP", "S", "SIM", "RUF", "PT", "N", "C4", "PTH", "TID"]
+ignore = []
+# Legal texts use typographic dashes, quotes and ordinal signs on purpose.
+allowed-confusables = ["–", "—", "‘", "’", "“", "”", "º", "°"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_unreachable = true
+mypy_path = "src"
+packages = ["base_legal"]
+
+[[tool.mypy.overrides]]
+module = ["pgvector.*", "voyageai.*", "sentence_transformers.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = ["--strict-markers", "--strict-config", "-ra"]
+markers = [
+    "integration: needs a PostgreSQL with pgvector (DATABASE_URL)",
+]
+
+[tool.coverage.run]
+source = ["base_legal"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
