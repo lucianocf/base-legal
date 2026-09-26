@@ -5,8 +5,13 @@ CD/ANPD resolutions). Read `docs/PLAN.md` and `docs/ARCHITECTURE.md` before
 changing anything structural. Decisions live in `docs/adr/`.
 
 ## Current phase
-Planning docs are drafted; **implementation has not started**. Don't scaffold
-code until the author approves the plan.
+Weekend 1 core is implemented (parser, IDs, PII redaction, grounding
+validator, hybrid retrieval, CLI, CI). Pending: the real corpus (LGPD from
+Planalto, CD/ANPD resolutions from the DOU), pinning `voyage-4-nano`, and the
+embedding validation gate (ADR 0003). The parser has only been tested on a
+synthetic fixture: validate it against the official text before relying on it.
+For local integration tests without Docker, `.pgserver/` (git-ignored) can run
+PostgreSQL + pgvector via the `pgserver` package.
 
 ## Language
 - Code, identifiers, comments, commits, ADRs and technical docs: **English**.
