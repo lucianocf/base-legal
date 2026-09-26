@@ -79,6 +79,12 @@ packages = ["base_legal"]
 module = ["pgvector.*", "voyageai.*", "sentence_transformers.*"]
 ignore_missing_imports = true
 
+# Optional extras: type-check the same whether or not they are installed
+# (voyageai ships a py.typed without re-exporting ``Client``).
+[[tool.mypy.overrides]]
+module = ["voyageai", "voyageai.*"]
+follow_imports = "skip"
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = ["--strict-markers", "--strict-config", "-ra"]
