@@ -1,13 +1,12 @@
-# Provenance of every document in the corpus. Updated by `base-legal corpus fetch`.
-# retrieved_at / source_sha256 stay null until the first fetch.
-# TODO(verify): add the CD/ANPD resolutions (1/2021, 2/2022, 4/2023, 15/2024,
-# 18/2024, 19/2024) with their official DOU URLs.
 documents:
 - id: lgpd
-  title: Lei nº 13.709, de 14 de agosto de 2018 — Lei Geral de Proteção de Dados Pessoais (LGPD)
+  title: Lei nº 13.709, de 14 de agosto de 2018 — Lei Geral de Proteção de Dados Pessoais
+    (LGPD)
   short_name: LGPD
   kind: law
   source_url: https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm
-  redistribution_basis: 'Lei nº 9.610/1998, art. 8º, IV: official acts are not protected by copyright'
-  retrieved_at: null
-  source_sha256: null
+  redistribution_basis: 'Lei nº 9.610/1998, art. 8º, IV: official acts are not protected
+    by copyright'
+  retrieved_at: '2026-09-26'
+  source_sha256: 8f3be9837a803c43cc5201cfc3c85852003611ea5d7b735a92345e01516485d9
+  embeddings: []
