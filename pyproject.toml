@@ -40,7 +40,7 @@ voyage = ["voyageai>=0.3"]
 # for the transformers 4.x advisories (e.g. CVE-2026-4372, CVE-2026-9856).
 local = ["transformers>=5.10,<6", "torch>=2.6"]
 # Benchmark-only models (embedding gate, ADR 0003); never a runtime dependency.
-bench = ["sentence-transformers>=5.0,<6"]
+bench = ["sentence-transformers>=5.0,<7"]
 
 [project.scripts]
 base-legal = "base_legal.cli.app:main"
