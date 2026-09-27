@@ -388,3 +388,18 @@ def test_auto_ingest_falls_back_to_local_without_the_voyage_sdk(
     assert result.exit_code == 0, result.output
     assert "embedding locally" in result.output
     assert "test-hashing (embedded), ingested" in result.output
+
+
+@pytest.mark.parametrize(
+    "args",
+    [["search", "direitos do titular"], ["ask", "O que é dado pessoal?"], ["eval", "retrieval"]],
+)
+def test_commands_on_an_empty_index_say_so(
+    args: list[str], store: Store, database_url: str, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # Regression: `search` on a fresh database printed nothing and exited 0.
+    monkeypatch.setenv("DATABASE_URL", database_url)
+    monkeypatch.setenv("BASE_LEGAL_QUERY_EMBEDDER", "test-hashing")
+    result = CliRunner().invoke(app, args)
+    assert result.exit_code == 1
+    assert "run `base-legal ingest` first" in result.output

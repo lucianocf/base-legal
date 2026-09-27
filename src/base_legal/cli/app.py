@@ -207,6 +207,12 @@ def ingest(
         typer.echo(f"{r.document_id}: {r.chunks} chunks, {r.embedding_model} ({source}), {state}")
 
 
+def _require_index(store: Store) -> None:
+    if store.count_chunks() == 0:
+        typer.echo("The index is empty: run `base-legal ingest` first.", err=True)
+        raise typer.Exit(1)
+
+
 @app.command()
 def search(
     question: Annotated[str, typer.Argument(help="Question in Portuguese.")],
@@ -220,6 +226,7 @@ def search(
     embedder = make_query_embedder(settings)
     store = open_store(settings)
     try:
+        _require_index(store)
         meta = store.get_meta()
         if meta:
             check_compatible(meta["embedding_family"], int(meta["embedding_dim"]), embedder)
@@ -266,6 +273,7 @@ def ask(question: Annotated[str, typer.Argument(help="Question in Portuguese.")]
     settings = _settings()
     store = open_store(settings)
     try:
+        _require_index(store)
         answer = make_answerer(settings, store).answer(question)
     except GenerationUnavailableError as error:
         typer.echo(f"Claude API unavailable: {error}", err=True)
@@ -335,6 +343,7 @@ def eval_retrieval(
     embedder = None if mode is SearchMode.LEXICAL else make_query_embedder(settings)
     store = open_store(settings)
     try:
+        _require_index(store)
         meta = store.get_meta()
         if embedder is not None and meta:
             check_compatible(meta["embedding_family"], int(meta["embedding_dim"]), embedder)
