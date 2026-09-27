@@ -19,6 +19,12 @@ Work order: [`overnight-brief.md`](overnight-brief.md). Branch:
 | `base-legal model fetch` | ✅ 13 files, all SHA-256 verified (672 MB) |
 | Baseline suite | ✅ ruff, mypy `--strict`, 118 tests, 91 % coverage, `uv lock --check` |
 
+Observations:
+- Planalto returns different bytes between fetches for identical content
+  (the LGPD page hash changed overnight; the parsed provisions are identical).
+  `corpus fetch` will therefore report spurious "changed". Follow-up: compare
+  the parsed output, not only the raw hash, before re-snapshotting.
+
 Setup fixes:
 - `mypy --strict` failed only when the `voyage` extra was installed
   (`voyageai` does not re-export `Client`); fixed with a mypy override so the
@@ -31,7 +37,7 @@ Setup fixes:
 
 | Milestone | Status | Notes |
 |---|---|---|
-| M1 Law vectors (voyage-4-large) | pending | |
+| M1 Law vectors (voyage-4-large) | ✅ done (vectors **not** committed) | 435 LGPD vectors generated. Voyage ToS (2026-05-27) is silent on outputs → not redistributed ([ADR 0009](../adr/0009-no-redistribution-of-voyage-vectors-yet.md)); vectors stay local with a git-ignored sidecar. Free tier (3 RPM / 10K TPM) forced token-budgeted batching + backoff. |
 | M2 CD/ANPD resolutions | pending | |
 | M3 Golden set + retrieval eval | pending | |
 | M4 Embedding gate + tuning | pending | |
@@ -49,7 +55,9 @@ _Filled in from M3 onwards._
 
 ## Decisions
 
-_ADRs added during the night are listed here._
+- [ADR 0009](../adr/0009-no-redistribution-of-voyage-vectors-yet.md): do not
+  redistribute `voyage-4-large` vectors until Voyage confirms in writing.
+  CI and published evals use `local` mode.
 
 ## Open `TODO(verify)` items
 
