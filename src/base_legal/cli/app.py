@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import dataclasses
 import logging
 from pathlib import Path
 from typing import Annotated
@@ -204,9 +205,9 @@ def search(
         meta = store.get_meta()
         if meta:
             check_compatible(meta["embedding_family"], int(meta["embedding_dim"]), embedder)
-        result = Retriever(store, embedder, candidate_pool=settings.candidate_pool).search(
-            redacted.text, k=k
-        )
+        result = Retriever(
+            store, embedder, candidate_pool=settings.candidate_pool, tuning=settings.tuning()
+        ).search(redacted.text, k=k)
     finally:
         store.close()
     for ref in result.missing_references:
@@ -243,7 +244,13 @@ def eval_retrieval(
         unknown = golden.unknown_ids(store.provisions(expected))
         if unknown:
             raise typer.BadParameter(f"golden set cites provisions not in the index: {unknown}")
-        retriever = Retriever(store, embedder, candidate_pool=settings.candidate_pool, mode=mode)
+        retriever = Retriever(
+            store,
+            embedder,
+            candidate_pool=settings.candidate_pool,
+            mode=mode,
+            tuning=settings.tuning(),
+        )
         report = evaluate(
             retriever,
             golden,
@@ -254,6 +261,7 @@ def eval_retrieval(
                 "mode": mode.value,
                 "query_embedder": embedder.model if embedder else "none",
                 "document_embedder": store.document_embedding_models() or "none",
+                **{k: str(v) for k, v in dataclasses.asdict(settings.tuning()).items()},
             },
         )
     finally:
