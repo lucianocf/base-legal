@@ -3,7 +3,7 @@
 **Cada afirmação cita um inciso — e uma máquina confere.**
 
 Perguntas e respostas verificáveis sobre a legislação brasileira de proteção
-de dados (LGPD + resoluções do Conselho Diretor da ANPD). As respostas citam o
+de dados (LGPD, Lei de Acesso à Informação e resoluções do Conselho Diretor da ANPD). As respostas citam o
 artigo, o parágrafo e o inciso exatos; cada citação é conferida, literalmente,
 contra o texto oficial antes de chegar a você, e quando nada no corpus sustenta
 uma resposta, o Base Legal diz isso. Privacidade desde a concepção, modelo de
@@ -132,7 +132,8 @@ Relatórios completos: [docs/evals/](docs/evals/).
 
 ## Corpus e aviso legal
 
-LGPD (Lei nº 13.709/2018, texto compilado) e Resoluções CD/ANPD nº 1/2021,
+LGPD (Lei nº 13.709/2018, texto compilado), LAI (Lei nº 12.527/2011, texto
+compilado) e Resoluções CD/ANPD nº 1/2021,
 2/2022, 4/2023, 15/2024, 18/2024 e 19/2024 (Anexo I), obtidas de
 planalto.gov.br, gov.br/anpd e do Diário Oficial da União. Atos oficiais não
 são protegidos por direitos autorais (Lei nº 9.610/1998, art. 8º, IV); a

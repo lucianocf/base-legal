@@ -1,12 +1,12 @@
 # CLAUDE.md — Project conventions for Base Legal
 
-Base Legal is a citation-first RAG over Brazilian data protection law (LGPD +
-CD/ANPD resolutions). Read `docs/PLAN.md` and `docs/ARCHITECTURE.md` before
+Base Legal is a citation-first RAG over Brazilian data protection law (LGPD,
+the LAI and CD/ANPD resolutions). Read `docs/PLAN.md` and `docs/ARCHITECTURE.md` before
 changing anything structural. Decisions live in `docs/adr/`.
 
 ## Current phase
 v0.1.0 is implemented (see `docs/PLAN.md` §9 for what remains before
-publishing): corpus (LGPD + six CD/ANPD resolutions, parsed from the Planalto,
+publishing): corpus (LGPD, LAI and six CD/ANPD resolutions, parsed from the Planalto,
 DOU and gov.br layouts), hybrid retrieval tuned on the golden dev split,
 grounded generation with Claude Citations, API + web UI, read-only MCP server,
 evals in CI, Docker image. Pending with the author: golden-set validation by a

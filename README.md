@@ -2,8 +2,8 @@
 
 **Every claim cites an inciso — and a machine checks it.**
 
-Grounded, verifiable Q&A over Brazilian data protection law (LGPD + CD/ANPD
-resolutions). Answers cite the exact article, paragraph and inciso; each
+Grounded, verifiable Q&A over Brazilian data protection law (LGPD, the Access
+to Information Act and CD/ANPD resolutions). Answers cite the exact article, paragraph and inciso; each
 citation is checked verbatim against the official text before it reaches
 you, and when nothing in the corpus supports an answer, Base Legal says so.
 Privacy by design, threat-modeled, eval-gated. MCP server included.
@@ -128,7 +128,8 @@ Full reports: [docs/evals/](docs/evals/).
 
 ## Corpus and legal notice
 
-LGPD (Lei nº 13.709/2018, compiled text) and Resoluções CD/ANPD nº 1/2021,
+LGPD (Lei nº 13.709/2018, compiled text), LAI (Lei nº 12.527/2011, compiled
+text) and Resoluções CD/ANPD nº 1/2021,
 2/2022, 4/2023, 15/2024, 18/2024 and 19/2024 (Annex I), from planalto.gov.br,
 gov.br/anpd and the Diário Oficial da União. Official acts are not protected
 by copyright (Lei nº 9.610/1998, art. 8º, IV); provenance and hashes are in

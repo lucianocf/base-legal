@@ -29,8 +29,9 @@ READ_ONLY = ToolAnnotations(
     read_only_hint=True, destructive_hint=False, idempotent_hint=True, open_world_hint=False
 )
 INSTRUCTIONS = """\
-Base Legal: Brazilian data protection law (LGPD and CD/ANPD resolutions), with
-canonical provision IDs such as lgpd:art7:incIX or res-anpd-15-2024:anx1:art6.
+Base Legal: Brazilian data protection law (LGPD, the Access to Information Act
+(LAI) and CD/ANPD resolutions), with canonical provision IDs such as
+lgpd:art7:incIX, lai:art31 or res-anpd-15-2024:anx1:art6.
 Use search_provisions to find the provisions relevant to a question (in
 Portuguese), get_provision to read one by ID, and verify_citation to check
 that a quote appears verbatim in a provision before relying on it. Provisions

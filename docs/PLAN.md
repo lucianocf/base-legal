@@ -34,7 +34,7 @@ knowledge base.
 ## 3. MVP scope (v0.1.0)
 
 ### In scope
-- **Corpus:** LGPD (compiled text from Planalto) + CD/ANPD resolutions (see §7),
+- **Corpus:** LGPD and LAI (compiled texts from Planalto) + CD/ANPD resolutions (see §7),
   normalized and versioned in the repo, with a `manifest.yaml` recording source
   URL, retrieval date, SHA-256 and legal basis for redistribution.
 - **Structural parsing** into canonical provision IDs (`lgpd:art7:incIX`) with the
@@ -153,6 +153,7 @@ red-team set size. **Never cut** the validator, the evals or the parser tests.
 | Document | Canonical prefix | Source (layout) |
 |---|---|---|
 | LGPD — Lei nº 13.709/2018 (compiled) | `lgpd` | planalto.gov.br (`planalto`) |
+| LAI — Lei nº 12.527/2011 (compiled; added in Phase 2) | `lai` | planalto.gov.br (`planalto`) |
 | Res. CD/ANPD nº 1, de 28/10/2021 — inspection and sanctioning procedure | `res-anpd-1-2021` | gov.br/anpd compiled page (`govbr`); corrected by Res. 4/2023 |
 | Res. CD/ANPD nº 2, de 27/01/2022 — small processing agents | `res-anpd-2-2022` | gov.br/anpd compiled page (`govbr`); amended by Res. 15/2024 |
 | Res. CD/ANPD nº 4, de 24/02/2023 — sanction dosimetry | `res-anpd-4-2023` | DOU (`dou`) |
