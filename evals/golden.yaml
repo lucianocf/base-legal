@@ -9,7 +9,9 @@
 # only used to confirm a change. Stratified and stable: the 30 % of
 # answerable items with the lowest sha256(id), and the lowest-hash refusal
 # of each reason, are holdout. g43 and g44, the known failures that
-# motivated tuning, are always dev.
+# motivated tuning, are always dev. Items added later (g46–g59 and r09, on
+# the LAI, 2026-09-27) are split by the same rule within their own batch, so
+# earlier items never change split.
 #
 # License: CC BY 4.0 (ADR 0007).
 version: 1
@@ -256,6 +258,80 @@ answerable:
     split: holdout
     status: unverified
     notes: "Draft R5. Generation must not predict an amount; cite the sanctions and the dosimetry regulation, with the disclaimer."
+  - id: g46
+    question: "O que é informação pessoal segundo a Lei de Acesso à Informação?"
+    expected: [lai:art4:incIV]
+    split: dev
+    status: unverified
+  - id: g47
+    question: "Em quanto tempo o órgão público precisa responder a um pedido de acesso à informação?"
+    expected: [lai:art11:par1]
+    split: dev
+    status: unverified
+    notes: "20 days, extendable by 10 (art. 11, § 2º)."
+  - id: g48
+    question: "Por quanto tempo as informações pessoais sobre intimidade e vida privada ficam com acesso restrito?"
+    expected: [lai:art31:par1:incI]
+    split: holdout
+    status: unverified
+  - id: g49
+    question: "Em quais casos a LAI dispensa o consentimento para divulgar informações pessoais?"
+    expected: [lai:art31:par3]
+    split: dev
+    status: unverified
+  - id: g50
+    question: "Preciso explicar por que quero uma informação pública ao fazer o pedido?"
+    expected: [lai:art10:par3]
+    split: dev
+    status: unverified
+  - id: g51
+    question: "O órgão público pode cobrar pelo fornecimento de informação?"
+    expected: [lai:art12]
+    split: dev
+    status: unverified
+    notes: "Free service; only reproduction costs may be charged (§ 1º)."
+  - id: g52
+    question: "Quais são os prazos máximos de sigilo das informações classificadas?"
+    expected: [lai:art24:par1]
+    split: dev
+    status: unverified
+  - id: g53
+    question: "A quais órgãos públicos se aplicam as regras da LGPD sobre tratamento de dados pelo poder público?"
+    expected: [lgpd:art23]
+    split: holdout
+    status: unverified
+    notes: "LAI × LGPD: the LGPD borrows the LAI's list of public bodies (art. 1º, parágrafo único)."
+  - id: g54
+    question: "Posso recorrer se meu pedido de acesso à informação for negado?"
+    expected: [lai:art15]
+    split: dev
+    status: unverified
+  - id: g55
+    question: "Quais informações os órgãos públicos devem divulgar na internet mesmo sem pedido?"
+    expected: [lai:art8:par1]
+    split: dev
+    status: unverified
+  - id: g56
+    question: "A Lei de Acesso à Informação vale para ONGs que recebem recursos públicos?"
+    expected: [lai:art2]
+    split: dev
+    status: unverified
+  - id: g57
+    question: "A proteção da vida privada pode ser usada para impedir a apuração de irregularidades?"
+    expected: [lai:art31:par4]
+    split: holdout
+    status: unverified
+    notes: "LAI × LGPD tension: privacy does not shield wrongdoing."
+  - id: g58
+    question: "Quem responde pelo uso indevido de informação pessoal obtida por pedido de acesso?"
+    expected: [lai:art31:par2]
+    split: holdout
+    status: unverified
+  - id: g59
+    question: "Quais informações podem ser classificadas como sigilosas por segurança do Estado?"
+    expected: [lai:art23]
+    split: dev
+    status: unverified
 refuse:
   - id: r01
     question: "Qual o valor máximo de multa previsto no GDPR?"
@@ -300,3 +376,9 @@ refuse:
     reason: out_of_corpus
     split: dev
     status: unverified
+  - id: r09
+    question: "O que diz o art. 60 da LAI?"
+    reason: nonexistent_provision
+    split: holdout
+    status: unverified
+    notes: "The LAI ends at art. 47."
