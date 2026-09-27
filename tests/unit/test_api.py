@@ -1,5 +1,6 @@
 import logging
 import re
+from collections.abc import Mapping
 from importlib import resources
 
 import pytest
@@ -9,6 +10,7 @@ from pydantic import SecretStr
 from base_legal.api.app import CSP, RateLimiter, create_app
 from base_legal.config import Settings
 from base_legal.corpus.models import Provision, ProvisionKind
+from base_legal.corpus.xrefs import CrossReference, find_candidates, resolve
 from base_legal.generation.answer import (
     DISCLAIMER,
     Answer,
@@ -29,6 +31,19 @@ ART7_IX = Provision(
     text="quando necessário para atender aos interesses legítimos do controlador;",
     path=("Art. 7º", "IX"),
     ordinal=1,
+)
+
+
+ART10 = Provision(
+    id="lgpd:art10",
+    document_id="lgpd",
+    parent_id=None,
+    kind=ProvisionKind.ARTICLE,
+    label="Art. 10",
+    text="O legítimo interesse, na hipótese do inciso IX do caput do art. 7º desta Lei, "
+    "somente poderá fundamentar tratamento para finalidades legítimas.",
+    path=("Art. 10",),
+    ordinal=2,
 )
 
 
@@ -58,7 +73,11 @@ class _Backend:
         )
 
     def provision(self, provision_id: str) -> Provision | None:
-        return ART7_IX if provision_id == ART7_IX.id else None
+        return {p.id: p for p in (ART7_IX, ART10)}.get(provision_id)
+
+    def references(self, texts: Mapping[str, str]) -> dict[str, tuple[CrossReference, ...]]:
+        existing = {ART7_IX.id, ART10.id}
+        return {pid: resolve(pid, find_candidates(pid, t), existing) for pid, t in texts.items()}
 
     def health(self) -> dict[str, str]:
         return {"embedding_family": "voyage-4"}
@@ -153,6 +172,16 @@ def test_provisions(client: TestClient) -> None:
     assert missing.status_code == 404
     assert missing.json()["disclaimer"] == DISCLAIMER
     assert client.get("/provisions/not-an-id").status_code == 422
+
+
+def test_provisions_carry_their_cross_references(client: TestClient) -> None:
+    provision = client.get("/provisions/lgpd:art10").json()["provision"]
+    [reference] = provision["references"]
+    assert reference["target"] == "lgpd:art7:incIX"
+    phrase = provision["text"][reference["start"] : reference["end"]]
+    assert phrase == "inciso IX do caput do art. 7º desta Lei"
+    hits = client.post("/search", json={"question": "legítimo interesse"}).json()["hits"]
+    assert hits[0]["provision"]["references"] == []
 
 
 def test_generation_unavailable_is_503(client: TestClient, backend: _Backend) -> None:

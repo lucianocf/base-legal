@@ -255,6 +255,24 @@ class Store:
         ).fetchall()
         return {str(r["id"]): _row_to_provision(r) for r in rows}
 
+    def normative_ids(self, ids: Sequence[str]) -> set[str]:
+        """The subset of ``ids`` that exist and are in force (neither revoked nor vetoed)."""
+        if not ids:
+            return set()
+        rows = self.conn.execute(
+            "SELECT id FROM provisions WHERE id = ANY(%s) AND NOT revoked AND NOT vetoed",
+            (list(ids),),
+        ).fetchall()
+        return {str(r["id"]) for r in rows}
+
+    def annex_titles(self) -> list[tuple[str, str, str]]:
+        """``(document_id, annex, title)`` of every annex, e.g. its regulation's name."""
+        rows = self.conn.execute(
+            "SELECT DISTINCT document_id, substring(id FROM ':anx([0-9]+):') AS annex,"
+            " path[1] AS title FROM provisions WHERE id ~ ':anx[0-9]+:' ORDER BY 1, 2"
+        ).fetchall()
+        return [(str(r["document_id"]), str(r["annex"]), str(r["title"])) for r in rows]
+
     def document_embedding_models(self) -> str:
         """Comma-separated embedding models the indexed documents were embedded with."""
         rows = self.conn.execute(

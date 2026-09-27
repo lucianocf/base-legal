@@ -19,3 +19,5 @@ sup { color: var(--accent); margin-left: 2px; }
 blockquote { margin: 4px 0 0; padding-left: 10px; border-left: 3px solid var(--muted); }
 .refusal { font-weight: 600; color: var(--warn); }
 footer { margin-top: 32px; font-size: 0.85rem; color: var(--muted); }
+a.xref { color: var(--accent); text-decoration: underline dotted; }
+.cited { margin: 6px 0 0 16px; padding: 8px 10px; border-left: 3px solid var(--accent); font-size: 0.95rem; }

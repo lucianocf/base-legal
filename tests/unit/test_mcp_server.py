@@ -1,5 +1,6 @@
 import json
 import sys
+from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
 
@@ -9,6 +10,7 @@ from mcp import Client
 
 from base_legal.config import Settings
 from base_legal.corpus.models import Provision, ProvisionKind
+from base_legal.corpus.xrefs import CrossReference, find_candidates, resolve
 from base_legal.mcp_server.server import build_server
 from base_legal.retrieval.search import Hit, SearchResult
 
@@ -36,6 +38,18 @@ REVOKED = Provision(
 )
 
 
+ART52 = Provision(
+    id="lgpd:art52:par1:incVIII",
+    document_id="lgpd",
+    parent_id=None,
+    kind=ProvisionKind.INCISO,
+    label="VIII",
+    path=("Art. 52", "§ 1º", "VIII"),
+    ordinal=2,
+    text="a pronta adoção de medidas corretivas, observado o art. 48 desta Lei;",
+)
+
+
 class _Backend:
     def __init__(self) -> None:
         self.questions: list[str] = []
@@ -48,7 +62,11 @@ class _Backend:
         )
 
     def provision(self, provision_id: str) -> Provision | None:
-        return {p.id: p for p in (ART48, REVOKED)}.get(provision_id)
+        return {p.id: p for p in (ART48, ART52, REVOKED)}.get(provision_id)
+
+    def references(self, texts: Mapping[str, str]) -> dict[str, tuple[CrossReference, ...]]:
+        existing = {ART48.id}
+        return {pid: resolve(pid, find_candidates(pid, t), existing) for pid, t in texts.items()}
 
 
 def _call(backend: _Backend, tool: str, args: dict[str, Any]) -> Any:
@@ -131,6 +149,14 @@ def test_get_provision() -> None:
         is False
     )
     assert _call(backend, "get_provision", {"provision_id": "Art. 48"}).is_error
+
+
+def test_get_provision_lists_its_cross_references() -> None:
+    args = {"provision_id": "lgpd:art52:par1:incVIII"}
+    provision = _structured(_call(_Backend(), "get_provision", args))["provision"]
+    [reference] = provision["references"]
+    assert reference["target"] == "lgpd:art48"
+    assert provision["text"][reference["start"] : reference["end"]] == "art. 48 desta Lei"
 
 
 @pytest.mark.parametrize(

@@ -19,7 +19,7 @@ import logging
 import threading
 import time
 from collections import defaultdict, deque
-from collections.abc import Awaitable, Callable
+from collections.abc import Awaitable, Callable, Mapping, Sequence
 from importlib import resources
 from typing import Protocol
 
@@ -31,6 +31,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from base_legal.config import Settings
 from base_legal.corpus.ids import is_valid_id
 from base_legal.corpus.models import Provision
+from base_legal.corpus.xrefs import CrossReference
 from base_legal.generation.answer import DISCLAIMER, Answer, ProvisionView
 from base_legal.privacy.redact import redact
 from base_legal.retrieval.search import SearchResult
@@ -64,6 +65,8 @@ class Backend(Protocol):
     def answer(self, question: str) -> Answer: ...
 
     def provision(self, provision_id: str) -> Provision | None: ...
+
+    def references(self, texts: Mapping[str, str]) -> Mapping[str, Sequence[CrossReference]]: ...
 
     def health(self) -> dict[str, str]: ...
 
@@ -219,16 +222,21 @@ def create_app(
 
     guarded = [Depends(authorized), Depends(rate_limited)]
 
+    def linked(views: Sequence[ProvisionView]) -> list[ProvisionView]:
+        found = backend.references({v.id: v.text for v in views})
+        return [v.linked(found.get(v.id, ())) for v in views]
+
     @app.post("/ask", dependencies=guarded)
     def ask(body: QuestionBody) -> Answer:
         """Answer with verified citations, or refuse with the nearest provisions."""
         check_length(body.question)
         try:
-            return backend.answer(body.question)
+            answer = backend.answer(body.question)
         except GenerationUnavailableError as error:
             raise HTTPException(
                 status_code=503, detail=f"generation unavailable: {error}"
             ) from None
+        return answer.model_copy(update={"provisions": tuple(linked(answer.provisions))})
 
     @app.post("/search", dependencies=guarded)
     def search(body: SearchBody) -> SearchResponse:
@@ -237,12 +245,11 @@ def create_app(
         redacted = redact(body.question)
         result = backend.search(redacted.text, body.k or config.top_k)
         refusal = result.refusal(config.refusal_threshold)
+        views = linked([ProvisionView.of(h.provision) for h in result.hits])
         return SearchResponse(
             hits=[
-                SearchResponseHit(
-                    provision=ProvisionView.of(h.provision), score=h.score, explicit=h.explicit
-                )
-                for h in result.hits
+                SearchResponseHit(provision=view, score=h.score, explicit=h.explicit)
+                for view, h in zip(views, result.hits, strict=True)
             ],
             missing_references=list(result.missing_references),
             refusal=refusal.value if refusal else None,
@@ -258,7 +265,7 @@ def create_app(
         if found is None:
             raise HTTPException(status_code=404, detail="provision not in the corpus")
         return ProvisionResponse(
-            provision=ProvisionView.of(found),
+            provision=linked([ProvisionView.of(found)])[0],
             document_id=found.document_id,
             amendments=list(found.amendments),
         )

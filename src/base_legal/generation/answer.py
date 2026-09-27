@@ -26,6 +26,7 @@ from typing import Any, Protocol
 from pydantic import BaseModel, ConfigDict
 
 from base_legal.corpus.models import Provision
+from base_legal.corpus.xrefs import CrossReference
 from base_legal.generation.prompt import NO_SUPPORT, build_messages, system_blocks
 from base_legal.grounding.validator import AnswerBlock, Citation, judge
 from base_legal.privacy.redact import redact
@@ -63,6 +64,16 @@ REFUSAL_MESSAGES = {
 }
 
 
+class ReferenceView(BaseModel):
+    """``text[start:end]`` of a provision cites the provision ``target``."""
+
+    model_config = ConfigDict(frozen=True)
+
+    start: int
+    end: int
+    target: str
+
+
 class ProvisionView(BaseModel):
     """A provision as shown to the user (always the official text, never generated)."""
 
@@ -71,10 +82,16 @@ class ProvisionView(BaseModel):
     id: str
     path: str
     text: str
+    references: tuple[ReferenceView, ...] = ()
 
     @classmethod
     def of(cls, provision: Provision) -> ProvisionView:
         return cls(id=provision.id, path=" > ".join(provision.path), text=provision.text)
+
+    def linked(self, references: Sequence[CrossReference]) -> ProvisionView:
+        """This view with its cross-references to other provisions of the corpus."""
+        views = tuple(ReferenceView(start=r.start, end=r.end, target=r.target) for r in references)
+        return self.model_copy(update={"references": views})
 
 
 class CitedQuote(BaseModel):
