@@ -13,7 +13,7 @@ Config: dense_weight=1.0, document_embedder=voyage-4-nano, fts_normalization=4, 
 | MRR | 0.393 |
 | Refusal accuracy (must-refuse) | 66.7 % |
 | False refusals (answerable) | 0.0 % |
-| Latency p50 / p95 | 3245 / 3780 ms |
+| Latency p50 / p95 | 133 / 171 ms |
 
 ## Answerable questions without an expected provision in the top 5
 

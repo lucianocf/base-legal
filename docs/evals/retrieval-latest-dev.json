@@ -21,8 +21,8 @@
     "mrr": 0.4739,
     "refusal_accuracy": 0.6,
     "false_refusal_rate": 0.0,
-    "latency_p50_ms": 3168.15,
-    "latency_p95_ms": 3719.8
+    "latency_p50_ms": 137.11,
+    "latency_p95_ms": 192.18
   },
   "answerable": [
     {
@@ -44,8 +44,8 @@
       ],
       "first_rank": 3,
       "refused": null,
-      "best_similarity": 0.590395976257808,
-      "latency_ms": 3556.61
+      "best_similarity": 0.5903960114481452,
+      "latency_ms": 139.74
     },
     {
       "id": "g04",
@@ -67,8 +67,8 @@
       ],
       "first_rank": null,
       "refused": null,
-      "best_similarity": 0.4806424390886769,
-      "latency_ms": 3438.57
+      "best_similarity": 0.4806424665833998,
+      "latency_ms": 134.53
     },
     {
       "id": "g05",
@@ -90,8 +90,8 @@
       ],
       "first_rank": 4,
       "refused": null,
-      "best_similarity": 0.5416539907455483,
-      "latency_ms": 3506.71
+      "best_similarity": 0.5416539311409035,
+      "latency_ms": 135.48
     },
     {
       "id": "g06",
@@ -112,8 +112,8 @@
       ],
       "first_rank": 1,
       "refused": null,
-      "best_similarity": 0.6457451774402019,
-      "latency_ms": 3168.15
+      "best_similarity": 0.6457451966849098,
+      "latency_ms": 176.87
     },
     {
       "id": "g07",
@@ -135,8 +135,8 @@
       ],
       "first_rank": 1,
       "refused": null,
-      "best_similarity": 0.49810221802579147,
-      "latency_ms": 3367.83
+      "best_similarity": 0.4981022477149999,
+      "latency_ms": 161.16
     },
     {
       "id": "g08",
@@ -158,8 +158,8 @@
       ],
       "first_rank": 1,
       "refused": null,
-      "best_similarity": 0.595931803937663,
-      "latency_ms": 3489.39
+      "best_similarity": 0.5959317443330147,
+      "latency_ms": 128.47
     },
     {
       "id": "g09",
@@ -181,8 +181,8 @@
       ],
       "first_rank": 5,
       "refused": null,
-      "best_similarity": 0.5975094677502245,
-      "latency_ms": 3719.8
+      "best_similarity": 0.5975094793742596,
+      "latency_ms": 154.26
     },
     {
       "id": "g10",
@@ -203,8 +203,8 @@
       ],
       "first_rank": 2,
       "refused": null,
-      "best_similarity": 0.6586743396915719,
-      "latency_ms": 3396.31
+      "best_similarity": 0.6586743586070288,
+      "latency_ms": 192.18
     },
     {
       "id": "g12",
@@ -226,8 +226,8 @@
       ],
       "first_rank": 1,
       "refused": null,
-      "best_similarity": 0.6534434763524856,
-      "latency_ms": 3189.08
+      "best_similarity": 0.6534434970088651,
+      "latency_ms": 134.71
     },
     {
       "id": "g13",
@@ -248,8 +248,8 @@
       ],
       "first_rank": 1,
       "refused": null,
-      "best_similarity": 0.683597724652156,
-      "latency_ms": 3508.81
+      "best_similarity": 0.6835977450249566,
+      "latency_ms": 142.62
     },
     {
       "id": "g15",
@@ -270,8 +270,8 @@
       ],
       "first_rank": 5,
       "refused": null,
-      "best_similarity": 0.6700699919337061,
-      "latency_ms": 3396.51
+      "best_similarity": 0.6700698733329821,
+      "latency_ms": 134.65
     },
     {
       "id": "g16",
@@ -292,8 +292,8 @@
       ],
       "first_rank": 4,
       "refused": null,
-      "best_similarity": 0.6943854457872624,
-      "latency_ms": 3119.26
+      "best_similarity": 0.6943866221423933,
+      "latency_ms": 135.58
     },
     {
       "id": "g17",
@@ -315,7 +315,7 @@
       "first_rank": 3,
       "refused": null,
       "best_similarity": 0.6136838563492223,
-      "latency_ms": 2804.03
+      "latency_ms": 124.39
     },
     {
       "id": "g18",
@@ -336,8 +336,8 @@
       ],
       "first_rank": 1,
       "refused": null,
-      "best_similarity": 0.5009492933184339,
-      "latency_ms": 2446.53
+      "best_similarity": 0.5009493230641731,
+      "latency_ms": 122.25
     },
     {
       "id": "g19",
@@ -358,8 +358,8 @@
       ],
       "first_rank": 3,
       "refused": null,
-      "best_similarity": 0.6968762043862149,
-      "latency_ms": 2550.46
+      "best_similarity": 0.6968762459232772,
+      "latency_ms": 124.31
     },
     {
       "id": "g20",
@@ -380,8 +380,8 @@
       ],
       "first_rank": 3,
       "refused": null,
-      "best_similarity": 0.6006532907485962,
-      "latency_ms": 2708.98
+      "best_similarity": 0.6006532549468734,
+      "latency_ms": 176.42
     },
     {
       "id": "g22",
@@ -402,8 +402,8 @@
       ],
       "first_rank": 3,
       "refused": null,
-      "best_similarity": 0.5147669468750642,
-      "latency_ms": 2503.8
+      "best_similarity": 0.51476693329417,
+      "latency_ms": 155.52
     },
     {
       "id": "g23",
@@ -424,8 +424,8 @@
       ],
       "first_rank": null,
       "refused": null,
-      "best_similarity": 0.5013277530670166,
-      "latency_ms": 3098.37
+      "best_similarity": 0.5013277977309307,
+      "latency_ms": 144.93
     },
     {
       "id": "g24",
@@ -446,8 +446,8 @@
       ],
       "first_rank": null,
       "refused": null,
-      "best_similarity": 0.6581792046810191,
-      "latency_ms": 2977.73
+      "best_similarity": 0.6581791843069098,
+      "latency_ms": 130.52
     },
     {
       "id": "g25",
@@ -468,8 +468,8 @@
       ],
       "first_rank": 2,
       "refused": null,
-      "best_similarity": 0.7219505906105042,
-      "latency_ms": 2986.65
+      "best_similarity": 0.7219505525216628,
+      "latency_ms": 136.39
     },
     {
       "id": "g27",
@@ -490,8 +490,8 @@
       ],
       "first_rank": null,
       "refused": null,
-      "best_similarity": 0.6544618216477843,
-      "latency_ms": 2962.75
+      "best_similarity": 0.6544618606567383,
+      "latency_ms": 123.67
     },
     {
       "id": "g29",
@@ -512,8 +512,8 @@
       ],
       "first_rank": 4,
       "refused": null,
-      "best_similarity": 0.6835250824347003,
-      "latency_ms": 3126.87
+      "best_similarity": 0.6835251043125937,
+      "latency_ms": 160.88
     },
     {
       "id": "g30",
@@ -535,7 +535,7 @@
       "first_rank": 1,
       "refused": null,
       "best_similarity": 0.6796114635699128,
-      "latency_ms": 3371.57
+      "latency_ms": 180.98
     },
     {
       "id": "g31",
@@ -556,8 +556,8 @@
       ],
       "first_rank": 8,
       "refused": null,
-      "best_similarity": 0.6849677938261327,
-      "latency_ms": 2949.32
+      "best_similarity": 0.6849678346533886,
+      "latency_ms": 150.27
     },
     {
       "id": "g32",
@@ -578,8 +578,8 @@
       ],
       "first_rank": 1,
       "refused": null,
-      "best_similarity": 0.580916710413995,
-      "latency_ms": 3198.51
+      "best_similarity": 0.5809167796646592,
+      "latency_ms": 133.19
     },
     {
       "id": "g35",
@@ -600,8 +600,8 @@
       ],
       "first_rank": 8,
       "refused": null,
-      "best_similarity": 0.573581874370575,
-      "latency_ms": 2960.63
+      "best_similarity": 0.5735819085587219,
+      "latency_ms": 135.61
     },
     {
       "id": "g37",
@@ -622,8 +622,8 @@
       ],
       "first_rank": 1,
       "refused": null,
-      "best_similarity": 0.5215880119327324,
-      "latency_ms": 2626.03
+      "best_similarity": 0.5215880274772681,
+      "latency_ms": 188.25
     },
     {
       "id": "g41",
@@ -644,8 +644,8 @@
       ],
       "first_rank": null,
       "refused": null,
-      "best_similarity": 0.6051944133523467,
-      "latency_ms": 2610.82
+      "best_similarity": 0.6051944674609445,
+      "latency_ms": 139.6
     },
     {
       "id": "g42",
@@ -666,8 +666,8 @@
       ],
       "first_rank": 1,
       "refused": null,
-      "best_similarity": 0.6460672827918968,
-      "latency_ms": 3475.71
+      "best_similarity": 0.6460673405548141,
+      "latency_ms": 142.49
     },
     {
       "id": "g43",
@@ -688,8 +688,8 @@
       ],
       "first_rank": 2,
       "refused": null,
-      "best_similarity": 0.5578120281920439,
-      "latency_ms": 2868.86
+      "best_similarity": 0.5578120780643224,
+      "latency_ms": 145.31
     },
     {
       "id": "g44",
@@ -710,8 +710,8 @@
       ],
       "first_rank": 8,
       "refused": null,
-      "best_similarity": 0.5785625576972961,
-      "latency_ms": 3195.02
+      "best_similarity": 0.5785625325776667,
+      "latency_ms": 131.57
     }
   ],
   "refuse": [
@@ -724,8 +724,8 @@
         "lgpd:art55J",
         "lgpd:art4"
       ],
-      "best_similarity": 0.5888352745077188,
-      "latency_ms": 3232.0
+      "best_similarity": 0.588840400507475,
+      "latency_ms": 130.05
     },
     {
       "id": "r05",
@@ -736,8 +736,8 @@
         "res-anpd-4-2023:anx1:art8",
         "res-anpd-4-2023:anx1:art8:par3:incI"
       ],
-      "best_similarity": 0.4226958155632019,
-      "latency_ms": 3003.95
+      "best_similarity": 0.4226957903685702,
+      "latency_ms": 121.43
     },
     {
       "id": "r06",
@@ -748,8 +748,8 @@
         "lgpd:art7",
         "res-anpd-1-2021:anx1:art55"
       ],
-      "best_similarity": 0.20414559816446354,
-      "latency_ms": 3319.61
+      "best_similarity": 0.20414559543132926,
+      "latency_ms": 264.47
     },
     {
       "id": "r07",
@@ -760,8 +760,8 @@
         "res-anpd-15-2024:art3",
         "res-anpd-4-2023:art3:incII"
       ],
-      "best_similarity": 0.5268441688697045,
-      "latency_ms": 6621.44
+      "best_similarity": 0.5268442316744198,
+      "latency_ms": 146.54
     },
     {
       "id": "r08",
@@ -772,8 +772,8 @@
         "lgpd:art9",
         "lgpd:art2:incVI"
       ],
-      "best_similarity": 0.4635806127094493,
-      "latency_ms": 3254.47
+      "best_similarity": 0.4635805945521434,
+      "latency_ms": 137.11
     }
   ]
 }
