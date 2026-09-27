@@ -83,7 +83,7 @@ def test_embed_with_record_updates_the_manifest_and_keeps_comments(corpus_dir: P
 def _serve(monkeypatch: pytest.MonkeyPatch, body: bytes) -> None:
     real_client = httpx.Client
     transport = httpx.MockTransport(lambda _: httpx.Response(200, content=body))
-    monkeypatch.setattr(cli.httpx, "Client", lambda **_: real_client(transport=transport))
+    monkeypatch.setattr(httpx, "Client", lambda **_: real_client(transport=transport))
 
 
 def test_check_ignores_byte_changes_that_leave_the_law_unchanged(
