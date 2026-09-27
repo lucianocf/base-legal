@@ -40,6 +40,7 @@ class AnswerableResult(BaseModel):
     ranked: tuple[str, ...]
     first_rank: int | None
     refused: str | None
+    best_similarity: float | None
     latency_ms: float
 
 
@@ -114,6 +115,7 @@ def evaluate(
                 ranked=ranked,
                 first_rank=first_rank(item.expected, ranked),
                 refused=refused.value if refused else None,
+                best_similarity=result.best_similarity,
                 latency_ms=round(elapsed, 2),
             )
         )

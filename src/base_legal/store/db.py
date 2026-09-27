@@ -210,15 +210,17 @@ class Store:
 
     # -- search --------------------------------------------------------------
 
-    def lexical(self, question: str, limit: int) -> list[Ranked]:
+    def lexical(self, question: str, limit: int, normalization: int = 0) -> list[Ranked]:
+        """Full-text candidates. ``normalization`` is ``ts_rank_cd``'s bit mask
+        (e.g. 1 divides by 1 + log(length), 2 by length); 0 favours long chunks."""
         query = or_query(question)
         if query is None:
             return []
         rows = self.conn.execute(
-            "SELECT provision_id, ts_rank_cd(fts, q) AS score"
+            "SELECT provision_id, ts_rank_cd(fts, q, %s) AS score"
             " FROM chunks, to_tsquery('portuguese', %s) AS q"
             " WHERE fts @@ q ORDER BY score DESC, provision_id LIMIT %s",
-            (query, limit),
+            (normalization, query, limit),
         ).fetchall()
         return [Ranked(str(r["provision_id"]), float(r["score"])) for r in rows]  # type: ignore[arg-type]
 
@@ -229,6 +231,21 @@ class Store:
             (query_vector, query_vector, limit),
         ).fetchall()
         return [Ranked(str(r["provision_id"]), float(r["score"])) for r in rows]  # type: ignore[arg-type]
+
+    def parents(self, ids: Sequence[str]) -> dict[str, str | None]:
+        """``parent_id`` of each provision and of all its ancestors."""
+        if not ids:
+            return {}
+        rows = self.conn.execute(
+            "WITH RECURSIVE up AS ("
+            " SELECT id, parent_id FROM provisions WHERE id = ANY(%s)"
+            " UNION SELECT p.id, p.parent_id FROM provisions p JOIN up ON p.id = up.parent_id)"
+            " SELECT id, parent_id FROM up",
+            (list(ids),),
+        ).fetchall()
+        return {
+            str(r["id"]): (None if r["parent_id"] is None else str(r["parent_id"])) for r in rows
+        }
 
     def provisions(self, ids: Sequence[str]) -> dict[str, Provision]:
         if not ids:

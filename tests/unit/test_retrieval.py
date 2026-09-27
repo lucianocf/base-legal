@@ -4,7 +4,7 @@ from base_legal.corpus.ids import ProvisionRef
 from base_legal.corpus.models import Provision, ProvisionKind
 from base_legal.embeddings.base import Vectors
 from base_legal.embeddings.providers import HashingEmbedder
-from base_legal.retrieval.fusion import reciprocal_rank_fusion
+from base_legal.retrieval.fusion import propagate_to_ancestors, reciprocal_rank_fusion
 from base_legal.retrieval.refs import candidate_ids, find_references
 from base_legal.retrieval.search import Retriever, SearchMode
 from base_legal.store.db import Ranked
@@ -69,7 +69,7 @@ class _Backend:
     def __init__(self) -> None:
         self.calls: list[str] = []
 
-    def lexical(self, question: str, limit: int) -> list[Ranked]:
+    def lexical(self, question: str, limit: int, normalization: int = 0) -> list[Ranked]:
         self.calls.append("lexical")
         return [Ranked("lgpd:art1", 1.0)]
 
@@ -92,6 +92,9 @@ class _Backend:
             for i in ids
             if i in {"lgpd:art1", "lgpd:art2"}
         }
+
+    def parents(self, ids: list[str]) -> dict[str, str | None]:
+        return dict.fromkeys(ids)
 
 
 @pytest.mark.parametrize(
@@ -116,3 +119,36 @@ def test_search_modes(
 def test_dense_modes_need_an_embedder() -> None:
     with pytest.raises(ValueError, match="needs a query embedder"):
         Retriever(_Backend(), None, mode=SearchMode.HYBRID)
+
+
+def test_weighted_rrf() -> None:
+    fused = dict(reciprocal_rank_fusion([["a", "b"], ["b", "a"]], k=1, weights=[2.0, 1.0]))
+    assert fused["a"] == pytest.approx(2 / 2 + 1 / 3)
+    assert fused["b"] == pytest.approx(2 / 3 + 1 / 2)
+    with pytest.raises(ValueError, match="one weight per ranking"):
+        reciprocal_rank_fusion([["a"]], weights=[1.0, 2.0])
+
+
+def test_propagate_to_ancestors_lifts_the_article_of_many_matching_incisos() -> None:
+    parent_of = {
+        "art7:incI": "art7",
+        "art7:incII": "art7",
+        "art7:incIII": "art7",
+        "art7": None,
+        "art11:incII:alig": "art11:incII",
+        "art11:incII": "art11",
+        "art11": None,
+    }
+    ranked = [
+        ("art7:incI", 1.0),
+        ("art7:incII", 0.9),
+        ("art11:incII:alig", 0.85),
+        ("art7:incIII", 0.8),
+    ]
+    out = propagate_to_ancestors(ranked, parent_of, 0.5)
+    scores = dict(out)
+    assert out[0][0] == "art7"  # absent before, now first: 0.5 * (1.0 + 0.9 + 0.8)
+    assert scores["art7"] == pytest.approx(1.35)
+    assert scores["art11:incII"] == pytest.approx(0.425)
+    assert scores["art11"] == pytest.approx(0.2125)  # two levels up: weight ** 2
+    assert propagate_to_ancestors(ranked, parent_of, 0.0) == ranked

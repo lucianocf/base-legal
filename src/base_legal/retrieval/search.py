@@ -8,17 +8,29 @@ from typing import Protocol
 
 from base_legal.corpus.models import Provision
 from base_legal.embeddings.base import Embedder, Vectors
-from base_legal.retrieval.fusion import reciprocal_rank_fusion
+from base_legal.retrieval.fusion import propagate_to_ancestors, reciprocal_rank_fusion
 from base_legal.retrieval.refs import candidate_ids, find_references
 from base_legal.store.db import Ranked
 
 
 class SearchBackend(Protocol):
-    def lexical(self, question: str, limit: int) -> list[Ranked]: ...
+    def lexical(self, question: str, limit: int, normalization: int = 0) -> list[Ranked]: ...
 
     def dense(self, query_vector: Vectors, limit: int) -> list[Ranked]: ...
 
     def provisions(self, ids: list[str]) -> dict[str, Provision]: ...
+
+    def parents(self, ids: list[str]) -> dict[str, str | None]: ...
+
+
+@dataclass(frozen=True, slots=True)
+class Tuning:
+    """Retrieval knobs (tuned on the golden dev split, confirmed on holdout)."""
+
+    fts_normalization: int = 0
+    lexical_weight: float = 1.0
+    dense_weight: float = 1.0
+    parent_weight: float = 0.0
 
 
 @dataclass(frozen=True, slots=True)
@@ -72,6 +84,7 @@ class Retriever:
         *,
         candidate_pool: int = 50,
         mode: SearchMode = SearchMode.HYBRID,
+        tuning: Tuning | None = None,
     ) -> None:
         if embedder is None and mode is not SearchMode.LEXICAL:
             raise ValueError(f"{mode.value} search needs a query embedder")
@@ -79,6 +92,7 @@ class Retriever:
         self.embedder = embedder
         self.candidate_pool = candidate_pool
         self.mode = mode
+        self.tuning = tuning or Tuning()
 
     def search(self, question: str, k: int = 8) -> SearchResult:
         """``question`` must already be redacted by :mod:`base_legal.privacy`."""
@@ -95,17 +109,26 @@ class Retriever:
 
         lexical: list[Ranked] = []
         dense: list[Ranked] = []
+        tuning = self.tuning
         if self.mode is not SearchMode.DENSE:
-            lexical = self.backend.lexical(question, self.candidate_pool)
+            lexical = self.backend.lexical(
+                question, self.candidate_pool, normalization=tuning.fts_normalization
+            )
         if self.mode is not SearchMode.LEXICAL and self.embedder is not None:
             dense = self.backend.dense(self.embedder.embed_query(question), self.candidate_pool)
-        fused = reciprocal_rank_fusion(
-            [
-                ranking
-                for ranking in ([r.provision_id for r in lexical], [r.provision_id for r in dense])
-                if ranking
-            ]
-        )
+        rankings = [
+            (ranking, weight)
+            for ranking, weight in (
+                ([r.provision_id for r in lexical], tuning.lexical_weight),
+                ([r.provision_id for r in dense], tuning.dense_weight),
+            )
+            if ranking
+        ]
+        fused = reciprocal_rank_fusion([r for r, _ in rankings], weights=[w for _, w in rankings])
+        if tuning.parent_weight:
+            fused = propagate_to_ancestors(
+                fused, self.backend.parents([pid for pid, _ in fused]), tuning.parent_weight
+            )
 
         ranked: list[tuple[str, float, bool]] = [(ref, 1.0, True) for ref in explicit]
         seen = set(explicit)

@@ -15,7 +15,7 @@ from base_legal.embeddings.precomputed import (
 )
 from base_legal.embeddings.providers import HashingEmbedder
 from base_legal.ingest import ingest_documents
-from base_legal.retrieval.search import Retriever
+from base_legal.retrieval.search import Retriever, Tuning
 from base_legal.store.db import IndexMismatchError, Store
 
 pytestmark = pytest.mark.integration
@@ -213,3 +213,37 @@ def test_auto_mode_uses_locally_generated_sidecar_vectors(
     )
     assert report.precomputed
     assert report.embedding_model == "voyage-4-large"
+
+
+def test_parents_walks_up_to_the_article(
+    store: Store, document: Document, manifest: Manifest, tmp_path: Path
+) -> None:
+    _ingest(store, document, manifest, tmp_path)
+    parents = store.parents(["lgpd:art11:incII:alig"])
+    assert parents == {
+        "lgpd:art11:incII:alig": "lgpd:art11:incII",
+        "lgpd:art11:incII": "lgpd:art11",
+        "lgpd:art11": None,
+    }
+    assert store.parents([]) == {}
+
+
+def test_lexical_length_normalization_changes_scores_not_matches(
+    store: Store, document: Document, manifest: Manifest, tmp_path: Path
+) -> None:
+    _ingest(store, document, manifest, tmp_path)
+    raw = store.lexical("dados pessoais tratamento", 50)
+    normalized = store.lexical("dados pessoais tratamento", 50, normalization=2)
+    assert {r.provision_id for r in raw} == {r.provision_id for r in normalized}
+    assert [r.score for r in raw] != [r.score for r in normalized]
+
+
+def test_retriever_with_parent_propagation(
+    store: Store, document: Document, manifest: Manifest, tmp_path: Path
+) -> None:
+    _ingest(store, document, manifest, tmp_path)
+    tuned = Retriever(
+        store, HashingEmbedder(), tuning=Tuning(parent_weight=0.5, fts_normalization=1)
+    )
+    result = tuned.search("hipóteses de tratamento de dados pessoais", k=10)
+    assert len({h.provision.id for h in result.hits}) == len(result.hits)
