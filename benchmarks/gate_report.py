@@ -46,6 +46,10 @@ def main() -> None:
         delta = 100 * (b3["recall_at_5"] - b1["recall_at_5"])
         verdict = "adopt B3 (new ADR needed)" if delta > 3 else "keep B1"
         print(f"\nADR 0003 rule: B3 minus B1 hybrid recall@5 = {delta:+.1f} points → {verdict}")
+    hybrid = {n: rows[(n, "hybrid", "all")] for n in ORDER if (n, "hybrid", "all") in rows}
+    if hybrid:
+        best = max(hybrid, key=lambda n: (hybrid[n]["recall_at_5"], hybrid[n]["mrr"]))
+        print(f"Best hybrid recall@5 (all): {best} ({100 * hybrid[best]['recall_at_5']:.1f} %)")
 
 
 if __name__ == "__main__":

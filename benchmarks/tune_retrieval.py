@@ -1,6 +1,8 @@
 """Grid-search retrieval knobs on the golden **dev** split (never on holdout).
 
     DATABASE_URL=... uv run python benchmarks/tune_retrieval.py [--schema gate_b1]
+    DATABASE_URL=... uv run python benchmarks/tune_retrieval.py --schema gate_b3 \
+        --query-model qwen3-embedding-0.6b    # a benchmark-only model (embedding gate)
 
 Query embeddings are computed once per question (local model) and cached, so
 each combination only costs database queries. The best combination by dev
@@ -15,11 +17,14 @@ import itertools
 from collections.abc import Sequence
 from pathlib import Path
 
+import httpx
 import psycopg
 
 from base_legal.config import Settings
 from base_legal.embeddings.base import Embedder, Vectors
 from base_legal.embeddings.factory import make_query_embedder
+from base_legal.embeddings.model_store import fetch_model, load_lock_file
+from base_legal.embeddings.providers import LocalSentenceTransformerEmbedder
 from base_legal.evals.golden import GoldenSet, Split
 from base_legal.evals.retrieval import evaluate
 from base_legal.retrieval.search import Retriever, Tuning
@@ -54,16 +59,31 @@ class CachedEmbedder:
         return self.cache[text]
 
 
+def _query_embedder(settings: Settings, name: str | None) -> Embedder:
+    if name is None:
+        return make_query_embedder(settings)
+    lock = load_lock_file(ROOT / "benchmarks" / "models" / f"{name}.lock.json")
+    directory = settings.models_dir / name
+    with httpx.Client(timeout=httpx.Timeout(60, read=600)) as client:
+        fetch_model(lock, directory, client)  # verifies every SHA-256
+    return LocalSentenceTransformerEmbedder(path=directory, model=name)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--schema", default="public")
+    parser.add_argument(
+        "--query-model",
+        default=None,
+        help="benchmark model in benchmarks/models (default: the shipped query embedder)",
+    )
     args = parser.parse_args()
     settings = Settings()
     url = psycopg.conninfo.make_conninfo(
         settings.database_url, options=f"-c search_path={args.schema},public"
     )
     golden = GoldenSet.load(ROOT / "evals" / "golden.yaml")
-    embedder = CachedEmbedder(make_query_embedder(settings))
+    embedder = CachedEmbedder(_query_embedder(settings, args.query_model))
     store = Store.connect(url)
     results = []
     try:
