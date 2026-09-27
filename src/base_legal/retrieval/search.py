@@ -8,8 +8,14 @@ from typing import Protocol
 
 from base_legal.corpus.models import Provision
 from base_legal.embeddings.base import Embedder, Vectors
-from base_legal.retrieval.fusion import propagate_to_ancestors, reciprocal_rank_fusion
+from base_legal.retrieval.fusion import (
+    DEFAULT_K,
+    blend,
+    propagate_to_ancestors,
+    reciprocal_rank_fusion,
+)
 from base_legal.retrieval.refs import candidate_ids, find_references
+from base_legal.retrieval.rerank import Reranker
 from base_legal.store.db import Ranked
 
 
@@ -21,6 +27,8 @@ class SearchBackend(Protocol):
     def provisions(self, ids: list[str]) -> dict[str, Provision]: ...
 
     def parents(self, ids: list[str]) -> dict[str, str | None]: ...
+
+    def chunk_contents(self, ids: list[str]) -> dict[str, str]: ...
 
 
 @dataclass(frozen=True, slots=True)
@@ -85,6 +93,8 @@ class Retriever:
         candidate_pool: int = 50,
         mode: SearchMode = SearchMode.HYBRID,
         tuning: Tuning | None = None,
+        reranker: Reranker | None = None,
+        rerank_depth: int = 10,
     ) -> None:
         if embedder is None and mode is not SearchMode.LEXICAL:
             raise ValueError(f"{mode.value} search needs a query embedder")
@@ -93,6 +103,8 @@ class Retriever:
         self.candidate_pool = candidate_pool
         self.mode = mode
         self.tuning = tuning or Tuning()
+        self.reranker = reranker
+        self.rerank_depth = rerank_depth
 
     def search(self, question: str, k: int = 8) -> SearchResult:
         """``question`` must already be redacted by :mod:`base_legal.privacy`."""
@@ -136,6 +148,8 @@ class Retriever:
             if provision_id not in seen:
                 ranked.append((provision_id, score, False))
                 seen.add(provision_id)
+        if self.reranker is not None and self.rerank_depth > 0:
+            ranked = self._rerank(question, ranked)
         ranked = ranked[:k]
 
         provisions = self.backend.provisions([pid for pid, _, _ in ranked])
@@ -146,3 +160,31 @@ class Retriever:
         )
         best = max((r.score for r in dense), default=None)
         return SearchResult(hits=hits, best_similarity=best, missing_references=tuple(missing))
+
+    def _rerank(
+        self, question: str, ranked: list[tuple[str, float, bool]]
+    ) -> list[tuple[str, float, bool]]:
+        """Blend the top ``rerank_depth`` with a local cross-encoder's order (ADR 0015).
+
+        Explicit references stay first. Scores become the blended RRF score for
+        the reranked head and a single-ranking RRF score for the tail, so they
+        still decrease down the list.
+        """
+        if self.reranker is None:
+            return ranked
+        head, tail = ranked[: self.rerank_depth], ranked[self.rerank_depth :]
+        pinned = [item for item in head if item[2]]
+        rest = [pid for pid, _, explicit in head if not explicit]
+        contents = self.backend.chunk_contents(rest)
+        scorable = [pid for pid in rest if pid in contents]
+        scores = self.reranker.score(question, [contents[pid] for pid in scorable])
+        order = {pid: n for n, pid in enumerate(scorable)}
+        by_score = sorted(scorable, key=lambda pid: (-scores[order[pid]], order[pid]))
+        blended = [(pid, score, False) for pid, score in blend(rest, by_score)]
+        missing = [(pid, 0.0, False) for pid in rest if pid not in contents]
+        start = len(pinned) + len(blended) + len(missing)
+        rescored_tail = [
+            (pid, 1.0 / (DEFAULT_K + n), explicit)
+            for n, (pid, _, explicit) in enumerate(tail, start=start + 1)
+        ]
+        return pinned + blended + missing + rescored_tail

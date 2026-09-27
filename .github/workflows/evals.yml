@@ -53,7 +53,7 @@ jobs:
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: models
-          key: models-${{ hashFiles('src/base_legal/embeddings/voyage-4-nano.lock.json') }}
+          key: models-${{ hashFiles('src/base_legal/embeddings/*.lock.json') }}
       - name: Fetch or verify the model (every file's SHA-256, even from cache)
         run: uv run base-legal model fetch
 
@@ -64,7 +64,7 @@ jobs:
         run: >-
           uv run base-legal eval retrieval --split all --label ci
           --badge reports/badges/recall-at-5.json
-          --min-recall-at-5 0.65 --min-refusal-accuracy 0.6
+          --min-recall-at-5 0.70 --min-refusal-accuracy 0.6
       - name: Red-team eval (deterministic checks, gate 100 %)
         run: >-
           uv run base-legal eval redteam --seed ${{ github.run_id }}

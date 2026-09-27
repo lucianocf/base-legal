@@ -11,9 +11,9 @@ from base_legal.corpus.history import ProvisionHistory
 from base_legal.corpus.models import Provision
 from base_legal.corpus.xrefs import CrossReference, find_candidates, regulation_index, resolve
 from base_legal.embeddings.base import Embedder, check_compatible
-from base_legal.embeddings.factory import make_query_embedder
+from base_legal.embeddings.factory import make_query_embedder, make_reranker
 from base_legal.generation.answer import Answer, Answerer
-from base_legal.retrieval.search import Retriever, SearchResult
+from base_legal.retrieval.search import Retriever, SearchMode, SearchResult
 from base_legal.store.db import Store
 
 
@@ -29,13 +29,25 @@ def open_store(settings: Settings) -> Store:
     return store
 
 
-def make_retriever(settings: Settings, store: Store, embedder: Embedder | None = None) -> Retriever:
-    embedder = embedder or make_query_embedder(settings)
-    meta = store.get_meta()
-    if meta:  # shared-space guard (ADR 0003): refuse to mix embedding spaces
-        check_compatible(meta["embedding_family"], int(meta["embedding_dim"]), embedder)
+def make_retriever(
+    settings: Settings,
+    store: Store,
+    embedder: Embedder | None = None,
+    mode: SearchMode = SearchMode.HYBRID,
+) -> Retriever:
+    if mode is not SearchMode.LEXICAL:
+        embedder = embedder or make_query_embedder(settings)
+        meta = store.get_meta()
+        if meta:  # shared-space guard (ADR 0003): refuse to mix embedding spaces
+            check_compatible(meta["embedding_family"], int(meta["embedding_dim"]), embedder)
     return Retriever(
-        store, embedder, candidate_pool=settings.candidate_pool, tuning=settings.tuning()
+        store,
+        embedder if mode is not SearchMode.LEXICAL else None,
+        candidate_pool=settings.candidate_pool,
+        mode=mode,
+        tuning=settings.tuning(),
+        reranker=make_reranker(settings),
+        rerank_depth=settings.rerank_depth,
     )
 
 

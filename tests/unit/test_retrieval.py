@@ -1,12 +1,14 @@
+from collections.abc import Sequence
+
 import pytest
 
 from base_legal.corpus.ids import ProvisionRef
 from base_legal.corpus.models import Provision, ProvisionKind
 from base_legal.embeddings.base import Vectors
 from base_legal.embeddings.providers import HashingEmbedder
-from base_legal.retrieval.fusion import propagate_to_ancestors, reciprocal_rank_fusion
+from base_legal.retrieval.fusion import blend, propagate_to_ancestors, reciprocal_rank_fusion
 from base_legal.retrieval.refs import candidate_ids, find_references
-from base_legal.retrieval.search import Retriever, SearchMode
+from base_legal.retrieval.search import Retriever, SearchMode, Tuning
 from base_legal.store.db import Ranked
 
 
@@ -100,6 +102,9 @@ class _Backend:
     def parents(self, ids: list[str]) -> dict[str, str | None]:
         return dict.fromkeys(ids)
 
+    def chunk_contents(self, ids: list[str]) -> dict[str, str]:
+        return {i: f"conteúdo de {i}" for i in ids}
+
 
 @pytest.mark.parametrize(
     ("mode", "calls", "ids", "best"),
@@ -156,3 +161,78 @@ def test_propagate_to_ancestors_lifts_the_article_of_many_matching_incisos() -> 
     assert scores["art11:incII"] == pytest.approx(0.425)
     assert scores["art11"] == pytest.approx(0.2125)  # two levels up: weight ** 2
     assert propagate_to_ancestors(ranked, parent_of, 0.0) == ranked
+
+
+def test_blend_fuses_two_orders_and_keeps_the_first_on_ties() -> None:
+    # a and c tie (1/61 + 1/63) above b (2/62); the tie keeps the first-stage order
+    assert [pid for pid, _ in blend(["a", "b", "c"], ["c", "b", "a"])] == ["a", "c", "b"]
+    assert [pid for pid, _ in blend(["a", "b", "c"], ["c", "a", "b"])] == ["a", "c", "b"]
+    [(only, score)] = blend(["a", "b"], ["b"])  # items the reranker did not score are left out
+    assert only == "b"
+    assert score == pytest.approx(1 / 62 + 1 / 61)
+
+
+class _Reverse:
+    """A fake cross-encoder that prefers the provision ranked last."""
+
+    def __init__(self) -> None:
+        self.seen: list[list[str]] = []
+
+    def score(self, question: str, documents: Sequence[str]) -> list[float]:
+        self.seen.append(list(documents))
+        return [float(n) for n in range(len(documents))]
+
+
+class _Many(_Backend):
+    def lexical(self, question: str, limit: int, normalization: int = 0) -> list[Ranked]:
+        return [Ranked(f"lgpd:art{n}", 1.0 / n) for n in range(1, 6)]
+
+    def dense(self, query_vector: Vectors, limit: int) -> list[Ranked]:
+        return [Ranked(f"lgpd:art{n}", 1.0 / n) for n in range(1, 6)]
+
+    def provisions(self, ids: list[str]) -> dict[str, Provision]:
+        return {
+            i: Provision(
+                id=i,
+                document_id="lgpd",
+                parent_id=None,
+                kind=ProvisionKind.ARTICLE,
+                label="Art.",
+                text="t",
+                path=("Art.",),
+                ordinal=0,
+            )
+            for i in ids
+        }
+
+
+def test_reranker_reorders_the_head_and_keeps_explicit_references_first() -> None:
+    reranker = _Reverse()
+    retriever = Retriever(
+        _Many(),
+        HashingEmbedder(),
+        tuning=Tuning(parent_weight=0),
+        reranker=reranker,
+        rerank_depth=3,
+    )
+    plain = [
+        h.provision.id
+        for h in Retriever(_Many(), HashingEmbedder(), tuning=Tuning(parent_weight=0))
+        .search("q", k=5)
+        .hits
+    ]
+    assert plain == ["lgpd:art1", "lgpd:art2", "lgpd:art3", "lgpd:art4", "lgpd:art5"]
+    result = retriever.search("q", k=5)
+    ids = [h.provision.id for h in result.hits]
+    # head (art1-3) blended with the reversed order: art2 wins the tie-free blend
+    assert set(ids[:3]) == {"lgpd:art1", "lgpd:art2", "lgpd:art3"}
+    assert ids[3:] == ["lgpd:art4", "lgpd:art5"]
+    assert reranker.seen == [
+        ["conteúdo de lgpd:art1", "conteúdo de lgpd:art2", "conteúdo de lgpd:art3"]
+    ]
+    scores = [h.score for h in result.hits]
+    assert scores == sorted(scores, reverse=True)
+
+    explicit = retriever.search("O que diz o art. 5º?", k=5)
+    assert explicit.hits[0].provision.id == "lgpd:art5"
+    assert explicit.hits[0].explicit

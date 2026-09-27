@@ -302,6 +302,15 @@ class Store:
             versions=tuple(Version.model_validate(row) for row in rows),
         )
 
+    def chunk_contents(self, ids: Sequence[str]) -> dict[str, str]:
+        """The indexed text of each provision's chunk (what the embedder saw)."""
+        if not ids:
+            return {}
+        rows = self.conn.execute(
+            "SELECT provision_id, content FROM chunks WHERE provision_id = ANY(%s)", (list(ids),)
+        ).fetchall()
+        return {str(r["provision_id"]): str(r["content"]) for r in rows}
+
     def normative_ids(self, ids: Sequence[str]) -> set[str]:
         """The subset of ``ids`` that exist and are in force (neither revoked nor vetoed)."""
         if not ids:

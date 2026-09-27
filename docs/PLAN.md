@@ -189,7 +189,7 @@ Status on 2026-09-27 (see `docs/progress/2026-09-27-overnight.md`):
       core packages), gitleaks, pip-audit, CodeQL. *Green on the draft PR is the
       target; `main` turns green when the author merges.*
 - [x] Evals in CI with a badge: recall@5 and MRR gated at the recorded
-      baseline (`--min-recall-at-5 0.65`), 100 % of emitted citations validated
+      baseline (`--min-recall-at-5 0.70` since ADR 0015), 100 % of emitted citations validated
       by construction, refusal accuracy gated (`≥ 0.6`), red-team pass rate
       gated at 100 %. *The badge renders once Pages is enabled.*
 - [ ] Fresh clone → `docker compose up` → `base-legal ingest` → `base-legal ask`

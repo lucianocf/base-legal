@@ -10,6 +10,7 @@ from base_legal.embeddings.providers import (
     LocalSentenceTransformerEmbedder,
     VoyageApiEmbedder,
 )
+from base_legal.retrieval.rerank import Reranker
 
 TEST_EMBEDDER = "test-hashing"
 NANO = "voyage-4-nano"
@@ -31,6 +32,18 @@ def make_query_embedder(settings: Settings) -> Embedder:
         model=settings.query_embedder,
         trust_remote_code=lock.trust_remote_code,
     )
+
+
+def make_reranker(settings: Settings) -> Reranker | None:
+    """The local cross-encoder (ADR 0015), from its pinned, verified weights."""
+    if settings.reranker is None:
+        return None
+    lock = load_lock(settings.reranker)
+    directory = settings.models_dir / settings.reranker
+    verify_model(lock, directory)  # raises before any model file is read
+    from base_legal.retrieval.rerank import CrossEncoderReranker  # optional: `--extra local`
+
+    return CrossEncoderReranker(directory)
 
 
 def make_api_document_embedder(settings: Settings) -> VoyageApiEmbedder:

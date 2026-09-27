@@ -1,0 +1,21 @@
+{
+ "pairs": [
+  [
+   "Qual o prazo para comunicar um incidente à ANPD?",
+   "A comunicação de incidente de segurança à ANPD deverá ser realizada pelo controlador no prazo de três dias úteis."
+  ],
+  [
+   "Qual o prazo para comunicar um incidente à ANPD?",
+   "Esta Lei dispõe sobre o tratamento de dados pessoais, inclusive nos meios digitais."
+  ],
+  [
+   "O que é dado pessoal sensível?",
+   "dado pessoal sensível: dado pessoal sobre origem racial ou étnica, convicção religiosa, opinião política."
+  ]
+ ],
+ "logits": [
+  10.755104064941406,
+  -6.362654685974121,
+  10.112226486206055
+ ]
+}

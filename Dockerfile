@@ -3,9 +3,9 @@
 # Base Legal application image (docs/THREAT_MODEL.md S7, S12):
 #   * multi-stage: build tools and caches never reach the runtime image;
 #   * base images pinned by digest;
-#   * the local query model (voyage-4-nano) is downloaded at BUILD time and
-#     every file is checked against the pinned revision + SHA-256
-#     (src/base_legal/embeddings/voyage-4-nano.lock.json); the runtime is
+#   * the local models (voyage-4-nano and the reranker) are downloaded at BUILD
+#     time and every file is checked against the pinned revision + SHA-256
+#     (src/base_legal/embeddings/*.lock.json); the runtime is
 #     offline for models and re-verifies the hashes on every load;
 #   * runs as an unprivileged user.
 #

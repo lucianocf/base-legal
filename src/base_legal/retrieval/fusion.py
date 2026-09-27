@@ -54,3 +54,18 @@ def propagate_to_ancestors(
             order.setdefault(parent, len(order))
             parent, depth = parent_of.get(parent), depth + 1
     return sorted(scores.items(), key=lambda kv: (-kv[1], order[kv[0]]))
+
+
+def blend(
+    original: Sequence[str], reranked: Sequence[str], k: int = DEFAULT_K
+) -> list[tuple[str, float]]:
+    """Fuse a first-stage order with a reranker's order (equal weights, RRF).
+
+    Neither signal alone was best on the golden dev split; the blend was
+    (ADR 0015). Ties keep the first-stage order.
+    """
+    first = {item: rank for rank, item in enumerate(original, start=1)}
+    second = {item: rank for rank, item in enumerate(reranked, start=1)}
+    items = [item for item in original if item in second]
+    scored = [(item, 1.0 / (k + first[item]) + 1.0 / (k + second[item])) for item in items]
+    return sorted(scored, key=lambda pair: (-pair[1], first[pair[0]]))

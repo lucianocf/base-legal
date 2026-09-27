@@ -33,11 +33,10 @@ from base_legal.corpus.pipeline import (
     write_history,
 )
 from base_legal.corpus.watch import DocumentDiff, diff_documents, render_report
-from base_legal.embeddings.base import Embedder, check_compatible
+from base_legal.embeddings.base import Embedder
 from base_legal.embeddings.factory import (
     make_api_document_embedder,
     make_local_document_embedder,
-    make_query_embedder,
 )
 from base_legal.embeddings.model_store import fetch_model, load_lock
 from base_legal.embeddings.precomputed import artifact_filename, save_vectors, write_sidecar
@@ -49,7 +48,7 @@ from base_legal.evals.retrieval import evaluate, to_markdown
 from base_legal.generation.answer import Answer, Status
 from base_legal.ingest import ingest_documents
 from base_legal.privacy.redact import redact
-from base_legal.retrieval.search import Retriever, SearchMode
+from base_legal.retrieval.search import SearchMode
 from base_legal.store.db import Store
 from base_legal.wiring import (
     GenerationUnavailableError,
@@ -269,13 +268,17 @@ def corpus_embed(
 
 @model_app.command("fetch")
 def model_fetch() -> None:
-    """Download the local query model at its pinned revision, verifying every SHA-256."""
+    """Download the local models (query embedder, reranker) at their pinned revisions,
+    verifying every SHA-256."""
     settings = _settings()
-    lock = load_lock(settings.query_embedder)
-    directory = settings.models_dir / settings.query_embedder
+    names = [settings.query_embedder, *([settings.reranker] if settings.reranker else [])]
     with httpx.Client(timeout=httpx.Timeout(60, read=600)) as client:
-        fetched = fetch_model(lock, directory, client)
-    typer.echo(f"{lock.repo}@{lock.revision[:12]}: {len(fetched)} file(s) fetched, all verified")
+        for name in names:
+            lock = load_lock(name)
+            fetched = fetch_model(lock, settings.models_dir / name, client)
+            typer.echo(
+                f"{lock.repo}@{lock.revision[:12]}: {len(fetched)} file(s) fetched, all verified"
+            )
 
 
 @app.command()
@@ -350,16 +353,10 @@ def search(
     redacted = redact(question)
     if redacted.total:
         typer.echo(f"[privacy] redacted {redacted.counts} before search", err=True)
-    embedder = make_query_embedder(settings)
     store = open_store(settings)
     try:
         _require_index(store)
-        meta = store.get_meta()
-        if meta:
-            check_compatible(meta["embedding_family"], int(meta["embedding_dim"]), embedder)
-        result = Retriever(
-            store, embedder, candidate_pool=settings.candidate_pool, tuning=settings.tuning()
-        ).search(redacted.text, k=k)
+        result = make_retriever(settings, store).search(redacted.text, k=k)
     finally:
         store.close()
     for ref in result.missing_references:
@@ -515,24 +512,15 @@ def eval_retrieval(
     settings = _settings()
     golden = GoldenSet.load(golden_path)
     threshold = settings.refusal_threshold if threshold is None else threshold
-    embedder = None if mode is SearchMode.LEXICAL else make_query_embedder(settings)
     store = open_store(settings)
     try:
         _require_index(store)
-        meta = store.get_meta()
-        if embedder is not None and meta:
-            check_compatible(meta["embedding_family"], int(meta["embedding_dim"]), embedder)
         expected = sorted({pid for item in golden.answerable for pid in item.expected})
         unknown = golden.unknown_ids(store.provisions(expected))
         if unknown:
             raise typer.BadParameter(f"golden set cites provisions not in the index: {unknown}")
-        retriever = Retriever(
-            store,
-            embedder,
-            candidate_pool=settings.candidate_pool,
-            mode=mode,
-            tuning=settings.tuning(),
-        )
+        retriever = make_retriever(settings, store, mode=mode)
+        embedder = retriever.embedder
         report = evaluate(
             retriever,
             golden,
@@ -543,6 +531,9 @@ def eval_retrieval(
                 "mode": mode.value,
                 "query_embedder": embedder.model if embedder else "none",
                 "document_embedder": store.document_embedding_models() or "none",
+                "reranker": f"{settings.reranker} (depth {settings.rerank_depth})"
+                if settings.reranker and retriever.reranker is not None
+                else "none",
                 **{k: str(v) for k, v in dataclasses.asdict(settings.tuning()).items()},
             },
         )
