@@ -111,7 +111,11 @@ for documents and questions), as run in CI:
 
 Before tuning, holdout recall@5 was 42.9 %. The red-team set (prompt
 injection, PII, fake citations, XSS, oversized input) passes all 13
-deterministic checks. Full reports: [docs/evals/](docs/evals/).
+deterministic checks. The embedding validation gate compared five
+configurations, and embedding the law with the same local model came first,
+ahead of `voyage-4-large` documents
+([results](docs/evals/embedding-gate.md), [ADR 0013](docs/adr/0013-voyage-4-nano-for-documents-by-default.md)).
+Full reports: [docs/evals/](docs/evals/).
 
 ## Security and privacy
 

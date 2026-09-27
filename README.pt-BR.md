@@ -115,7 +115,11 @@ modo `local` (voyage-4-nano para documentos e perguntas), como no CI:
 
 Antes do ajuste, o recall@5 no holdout era 42,9 %. O conjunto de red team
 (injeção de prompt, dados pessoais, citações falsas, XSS, entrada gigante)
-passa nas 13 verificações determinísticas. Relatórios completos: [docs/evals/](docs/evals/).
+passa nas 13 verificações determinísticas. O teste de validação de embeddings
+comparou cinco configurações, e vetorizar a lei com o mesmo modelo local ficou
+em primeiro lugar, à frente dos vetores de documentos do `voyage-4-large`
+([resultados](docs/evals/embedding-gate.md), [ADR 0013](docs/adr/0013-voyage-4-nano-for-documents-by-default.md)).
+Relatórios completos: [docs/evals/](docs/evals/).
 
 ## Segurança e privacidade
 
