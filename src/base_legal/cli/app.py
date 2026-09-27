@@ -20,7 +20,7 @@ from base_legal.embeddings.factory import (
     make_query_embedder,
 )
 from base_legal.embeddings.model_store import fetch_model, load_lock
-from base_legal.embeddings.precomputed import artifact_filename, save_vectors
+from base_legal.embeddings.precomputed import artifact_filename, save_vectors, write_sidecar
 from base_legal.ingest import ingest_documents
 from base_legal.privacy.redact import redact
 from base_legal.retrieval.search import Retriever
@@ -85,7 +85,16 @@ def corpus_build(doc: DocOption = None) -> None:
 
 
 @corpus_app.command("embed")
-def corpus_embed(doc: DocOption = None) -> None:
+def corpus_embed(
+    doc: DocOption = None,
+    record: Annotated[
+        bool,
+        typer.Option(
+            help="Record the vectors in manifest.yaml (only once they may be redistributed, "
+            "ADR 0009). Otherwise a git-ignored sidecar next to the vectors records the hash."
+        ),
+    ] = False,
+) -> None:
     """Maintainers: embed the PUBLIC law text via the Voyage API and store the vectors."""
     settings = _settings()
     manifest = Manifest.load(_manifest_path(settings))
@@ -106,9 +115,14 @@ def corpus_embed(doc: DocOption = None) -> None:
             model=embedder.model,
             corpus_sha256=document.source_sha256,
         )
-        entry.embeddings = [a for a in entry.embeddings if a.model != artifact.model] + [artifact]
+        if record:
+            entry.embeddings = [a for a in entry.embeddings if a.model != artifact.model]
+            entry.embeddings.append(artifact)
+        else:
+            write_sidecar(embeddings_dir, artifact)
         typer.echo(f"{document.id}: {len(chunks)} vectors -> {name}")
-    manifest.dump(_manifest_path(settings))
+    if record:
+        manifest.dump(_manifest_path(settings))
 
 
 @model_app.command("fetch")

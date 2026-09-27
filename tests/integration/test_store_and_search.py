@@ -11,6 +11,7 @@ from base_legal.embeddings.precomputed import (
     PrecomputedMismatchError,
     artifact_filename,
     save_vectors,
+    write_sidecar,
 )
 from base_legal.embeddings.providers import HashingEmbedder
 from base_legal.ingest import ingest_documents
@@ -185,3 +186,30 @@ def test_tests_run_in_an_isolated_schema(store: Store) -> None:
     row = store.conn.execute("SELECT current_schema() AS s").fetchone()
     assert row is not None
     assert str(row["s"]).startswith("test_")
+
+
+def test_auto_mode_uses_locally_generated_sidecar_vectors(
+    store: Store, document: Document, manifest: Manifest, tmp_path: Path
+) -> None:
+    chunks = chunk_document(document, "LGPD")
+    vectors = HashingEmbedder(family="voyage-4").embed_documents([c.content for c in chunks])
+    artifact = save_vectors(
+        tmp_path / artifact_filename("lgpd", "voyage-4-large", 1024),
+        [c.provision_id for c in chunks],
+        vectors,
+        model="voyage-4-large",
+        corpus_sha256=document.source_sha256,
+    )
+    write_sidecar(tmp_path, artifact)
+    assert manifest.documents[0].embeddings == []
+    (report,) = ingest_documents(
+        store,
+        [document],
+        manifest,
+        embeddings_dir=tmp_path,
+        mode=IngestMode.AUTO,
+        precomputed_model="voyage-4-large",
+        document_embedder=None,
+    )
+    assert report.precomputed
+    assert report.embedding_model == "voyage-4-large"

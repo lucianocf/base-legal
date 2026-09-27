@@ -23,6 +23,14 @@ class DocumentKind(StrEnum):
     RESOLUTION = "resolution"
 
 
+class SourceLayout(StrEnum):
+    """HTML layout of an official source; selects where the act's text lives."""
+
+    PLANALTO = "planalto"  # planalto.gov.br compiled texts: the whole <body>
+    DOU = "dou"  # in.gov.br (Diário Oficial da União): <div class="texto-dou">
+    GOVBR = "govbr"  # gov.br portal pages: <div id="page-document">
+
+
 class Provision(BaseModel):
     """One node of a legal text: an article (its caput), paragraph, inciso, alínea or item."""
 

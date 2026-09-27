@@ -11,7 +11,11 @@ from base_legal.config import IngestMode
 from base_legal.corpus.manifest import Manifest
 from base_legal.corpus.models import Document
 from base_legal.embeddings.base import Embedder, Vectors, model_family
-from base_legal.embeddings.precomputed import PrecomputedMismatchError, load_vectors
+from base_legal.embeddings.precomputed import (
+    PrecomputedMismatchError,
+    load_vectors,
+    local_artifact,
+)
 from base_legal.store.db import Store
 
 log = logging.getLogger(__name__)
@@ -29,15 +33,18 @@ class IngestReport:
 def _load_precomputed(
     document: Document, manifest: Manifest, embeddings_dir: Path, model: str, chunks: list[Chunk]
 ) -> Vectors | None:
-    for artifact in manifest.get(document.id).embeddings:
-        if artifact.model == model:
-            return load_vectors(
-                embeddings_dir,
-                artifact,
-                corpus_sha256=document.source_sha256,
-                expected_ids=[c.provision_id for c in chunks],
-            )
-    return None
+    recorded = [a for a in manifest.get(document.id).embeddings if a.model == model]
+    artifact = recorded[0] if recorded else local_artifact(embeddings_dir, document.id, model)
+    if artifact is None:
+        return None
+    if not recorded:
+        log.info("%s: using locally generated %s vectors (not in the manifest)", document.id, model)
+    return load_vectors(
+        embeddings_dir,
+        artifact,
+        corpus_sha256=document.source_sha256,
+        expected_ids=[c.provision_id for c in chunks],
+    )
 
 
 def ingest_documents(

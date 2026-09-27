@@ -12,11 +12,19 @@ from base_legal.embeddings.base import (
     l2_normalize,
     model_family,
 )
-from base_legal.embeddings.precomputed import PrecomputedMismatchError, load_vectors, save_vectors
+from base_legal.embeddings.precomputed import (
+    PrecomputedMismatchError,
+    artifact_filename,
+    load_vectors,
+    local_artifact,
+    save_vectors,
+    write_sidecar,
+)
 from base_legal.embeddings.providers import (
     HashingEmbedder,
     LocalSentenceTransformerEmbedder,
     VoyageApiEmbedder,
+    token_batches,
 )
 
 
@@ -61,6 +69,59 @@ def test_voyage_embeds_documents_in_batches() -> None:
     assert {c["input_type"] for c in client.calls} == {"document"}
     assert {c["output_dimension"] for c in client.calls} == {EMBEDDING_DIM}
     assert embedder.embed_documents([]).shape == (0, EMBEDDING_DIM)
+
+
+def test_token_batches_respect_the_token_budget() -> None:
+    texts = ["x" * 2999, "y" * 2999, "z" * 2999, "w"]  # ~1000 tokens each
+    batches = list(token_batches(texts, max_items=64, max_tokens=2000))
+    assert [len(b) for b in batches] == [2, 2]
+    assert [t for b in batches for t in b] == texts
+    # A single text above the budget still goes out alone rather than being dropped.
+    assert list(token_batches(["x" * 9000], max_tokens=10)) == [["x" * 9000]]
+
+
+class RateLimitError(Exception):
+    """Same class name as ``voyageai.error.RateLimitError``."""
+
+
+class _FlakyVoyage(_FakeVoyage):
+    def __init__(self, failures: int) -> None:
+        super().__init__()
+        self.failures = failures
+
+    def embed(self, texts: list[str], **kwargs: Any) -> _Result:
+        if self.failures:
+            self.failures -= 1
+            raise RateLimitError("3 RPM")
+        return super().embed(texts, **kwargs)
+
+
+def test_voyage_retries_on_rate_limit_with_backoff() -> None:
+    waits: list[float] = []
+    client = _FlakyVoyage(failures=2)
+    embedder = VoyageApiEmbedder(
+        api_key="unused", client=client, retry_seconds=10, sleep=waits.append
+    )
+    assert embedder.embed_documents(["a", "b"]).shape == (2, EMBEDDING_DIM)
+    assert waits == [10, 20]
+
+
+def test_voyage_gives_up_after_max_retries_and_never_retries_other_errors() -> None:
+    embedder = VoyageApiEmbedder(
+        api_key="unused", client=_FlakyVoyage(failures=5), max_retries=2, sleep=lambda _: None
+    )
+    with pytest.raises(RateLimitError):
+        embedder.embed_documents(["a"])
+
+    class _Broken(_FakeVoyage):
+        def embed(self, texts: list[str], **kwargs: Any) -> _Result:
+            raise ValueError("bad request")
+
+    waits: list[float] = []
+    broken = VoyageApiEmbedder(api_key="unused", client=_Broken(), sleep=waits.append)
+    with pytest.raises(ValueError, match="bad request"):
+        broken.embed_documents(["a"])
+    assert waits == []
 
 
 def test_voyage_refuses_to_embed_questions() -> None:
@@ -117,3 +178,19 @@ def test_precomputed_round_trip_and_checks(tmp_path: Path) -> None:
         load_vectors(tmp_path, artifact, corpus_sha256="b" * 64, expected_ids=["p1"])
     with pytest.raises(ValueError, match="length"):
         save_vectors(tmp_path / "y.npz", ["p1"], vectors, model="m", corpus_sha256="b" * 64)
+
+
+def test_unrecorded_vectors_are_found_through_their_sidecar(tmp_path: Path) -> None:
+    vectors = HashingEmbedder().embed_documents(["a", "b"])
+    artifact = save_vectors(
+        tmp_path / artifact_filename("lgpd", "voyage-4-large", EMBEDDING_DIM),
+        ["p1", "p2"],
+        vectors,
+        model="voyage-4-large",
+        corpus_sha256="b" * 64,
+    )
+    assert local_artifact(tmp_path, "lgpd", "voyage-4-large") is None
+    write_sidecar(tmp_path, artifact)
+    assert local_artifact(tmp_path, "lgpd", "voyage-4-large") == artifact
+    assert local_artifact(tmp_path, "lgpd", "voyage-4-nano") is None
+    assert local_artifact(tmp_path, "res-anpd-1-2021", "voyage-4-large") is None
