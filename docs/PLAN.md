@@ -1,6 +1,6 @@
 # Base Legal — Project Plan
 
-> Status: **draft for approval** · Last updated: 2026-09-26
+> Status: **v0.1.0 implemented, publication pending** · Last updated: 2026-09-27
 
 ## 1. Vision
 
@@ -182,19 +182,30 @@ than articles) is not parsed yet: follow-up.
 
 ## 9. "Ready to publish" criteria (v0.1.0)
 
+Status on 2026-09-27 (see `docs/progress/2026-09-27-overnight.md`):
+
 - [ ] CI green on `main`: ruff, mypy `--strict`, pytest (≥ 85 % coverage on the
-      core packages), gitleaks, pip-audit, CodeQL.
-- [ ] Evals in CI with a README badge: recall@5 and MRR at or above the recorded
-      baseline, 100 % of emitted citations validated (by construction),
-      correct refusal on out-of-scope questions, a defined red-team pass rate.
+      core packages), gitleaks, pip-audit, CodeQL. *Green on the draft PR is the
+      target; `main` turns green when the author merges.*
+- [x] Evals in CI with a badge: recall@5 and MRR gated at the recorded
+      baseline (`--min-recall-at-5 0.65`), 100 % of emitted citations validated
+      by construction, refusal accuracy gated (`≥ 0.6`), red-team pass rate
+      gated at 100 %. *The badge renders once Pages is enabled.*
 - [ ] Fresh clone → `docker compose up` → `base-legal ingest` → `base-legal ask`
-      works in under 10 minutes, following the README only, with only an
-      Anthropic key (no Voyage key, if vector redistribution is allowed).
-- [ ] Embedding validation gate run, with results published in the docs.
-- [ ] A test proves the query path makes no network call to Voyage.
-- [ ] MCP server tested in Claude Desktop and Claude Code.
-- [ ] Docs live on GitHub Pages. SECURITY.md, LEGAL_NOTICE.md and the "not
-      legal advice" disclaimer in place.
+      in under 10 minutes with only an Anthropic key. *Validated up to `ask`
+      (no Anthropic key in the build environment); local-mode ingest takes
+      several minutes on CPU, see the report.*
+- [x] Embedding validation gate run, with results published in the docs
+      (`docs/evals/embedding-gate.md`).
+- [x] A test proves the query path makes no network call to Voyage
+      (`tests/integration/test_no_network.py`).
+- [ ] MCP server tested in Claude Desktop and Claude Code. *Tested with the MCP
+      SDK client over stdio; needs a run inside both hosts.*
+- [ ] Docs live on GitHub Pages. *Workflow ready (`pages.yml`); Pages must be
+      enabled with "GitHub Actions" as the source.* SECURITY.md,
+      LEGAL_NOTICE.md and the "not legal advice" disclaimer are in place.
 - [ ] Employer separation checklist passed: grep for prohibited terms, manual
       review, no internal data or names; commits use the GitHub noreply e-mail.
-- [ ] v0.1.0 tag, release notes, repo description and topics set.
+      *Needs the author's term list and review.*
+- [ ] v0.1.0 tag, release notes, repo description and topics set. *Author.*
+- [ ] Golden and red-team sets validated by a DPO (all items are `unverified`).

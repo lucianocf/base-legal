@@ -1,12 +1,19 @@
-# Local development database. The application runs on the host for now
-# (`uv run base-legal ...`); an app image comes with the API in weekend 2.
+# Base Legal: PostgreSQL (pgvector) + the application (API, web UI, CLI, MCP).
+#
+#   docker compose up -d --build
+#   docker compose exec app base-legal ingest            # once (local mode, no key)
+#   docker compose exec app base-legal ask "O que é dado pessoal sensível?"
+#   open http://127.0.0.1:8000
+#
+# Both services publish their ports on 127.0.0.1 only. Secrets come from the
+# environment (e.g. a git-ignored .env next to this file), never from the repo.
 services:
   db:
     # pgvector/pgvector:pg17, pinned by digest (same as CI)
     image: pgvector/pgvector@sha256:cf134a767f474095eeba57e0117be8e568e011a63f33fbf252f14c9b760f8e6f
     environment:
       POSTGRES_USER: base_legal
-      POSTGRES_PASSWORD: base_legal # local-only default; override in .env for anything shared
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-base_legal} # local-only default; set it in .env for anything shared
       POSTGRES_DB: base_legal
     ports:
       - "127.0.0.1:5432:5432" # bind to localhost only
@@ -17,6 +24,36 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+
+  app:
+    build: .
+    image: base-legal:local
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://base_legal:${POSTGRES_PASSWORD:-base_legal}@db:5432/base_legal
+      # Only needed for `ask` / POST /ask (generation). Retrieval, search, the
+      # UI's search mode and the MCP server work without it.
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      # Optional: re-embed the public law text with voyage-4-large (ADR 0003/0009).
+      VOYAGE_API_KEY: ${VOYAGE_API_KEY:-}
+      BASE_LEGAL_MODEL: ${BASE_LEGAL_MODEL:-claude-haiku-4-5}
+      BASE_LEGAL_API_KEY: ${BASE_LEGAL_API_KEY:-}
+    ports:
+      - "127.0.0.1:8000:8000" # the API and UI are reachable from this machine only
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    logging: # content-free logs, rotated by size (docs/PRIVACY.md)
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
 
 volumes:
   pgdata:

@@ -1,6 +1,6 @@
 # Architecture
 
-> Status: **draft for approval**. Decisions are recorded as ADRs in [`docs/adr/`](adr/).
+> Status: **v0.1.0** (implemented; updated 2026-09-27). Decisions are recorded as ADRs in [`docs/adr/`](adr/README.md).
 
 ## 1. Overview
 
@@ -263,33 +263,35 @@ Document vectors come from the committed `corpus/embeddings/`; golden-set
 questions are embedded on the runner with `voyage-4-nano` (weights cached
 between runs by revision hash).
 
-## 8. Proposed repository layout
+## 8. Repository layout
 
 ```
 base-legal/
 ├── src/base_legal/
-│   ├── corpus/          # fetch, parse, normalize
+│   ├── corpus/          # fetch, per-layout HTML (planalto, dou, govbr), parser, IDs
 │   ├── chunking/
-│   ├── embeddings/      # Embedder protocol, Voyage API + local nano
-│   ├── store/           # schema, migrations, queries
-│   ├── retrieval/
+│   ├── embeddings/      # Embedder protocol, Voyage API (law) + local nano (questions), model locks
+│   ├── store/           # schema, queries
+│   ├── retrieval/       # explicit refs, FTS + vector, weighted RRF, ancestor propagation
 │   ├── privacy/
-│   ├── generation/
+│   ├── generation/      # prompt assembly, Claude + Citations, strict refusal
 │   ├── grounding/
 │   ├── api/             # FastAPI + static UI
 │   ├── mcp_server/
 │   ├── cli/
-│   └── evals/
+│   ├── evals/           # golden set, retrieval metrics, red-team checks, badges
+│   └── wiring.py        # builds services from settings (CLI, API, MCP)
+├── benchmarks/          # embedding gate, tuning grid, benchmark-only model locks
 ├── corpus/              # normalized official acts + manifest.yaml
-│   └── embeddings/      # precomputed voyage-4-large vectors (pending ToS check)
+│   └── embeddings/      # local voyage-4-large vectors (git-ignored, ADR 0009)
 ├── evals/
 │   ├── golden.yaml
 │   └── redteam.yaml
 ├── tests/
 │   ├── unit/
 │   └── integration/     # Postgres via Docker service in CI
-├── docs/                # this documentation, ADRs, MkDocs source
-├── .github/workflows/   # ci, evals, codeql, scorecard, pages, release
+├── docs/                # this documentation, ADRs, eval reports (MkDocs source)
+├── .github/workflows/   # ci, evals, codeql, scorecard, pages
 ├── compose.yaml
 ├── Dockerfile
 ├── pyproject.toml
@@ -303,10 +305,25 @@ base-legal/
 
 ## 9. Configuration
 
-All configuration comes from environment variables (pydantic-settings) with
-safe defaults: `ANTHROPIC_API_KEY`, `VOYAGE_API_KEY` (maintainers / `api`
-ingest mode only), `BASE_LEGAL_MODEL`, `BASE_LEGAL_INGEST_MODE=auto`,
-`BASE_LEGAL_QUERY_EMBEDDER=voyage-4-nano`,
-`BASE_LEGAL_STRICT=true`, `BASE_LEGAL_LOG_QUESTIONS=false`,
-`BASE_LEGAL_MAX_QUESTION_CHARS`, `DATABASE_URL`. Secrets are never read from
-files committed to the repo.
+All configuration comes from environment variables (pydantic-settings,
+`src/base_legal/config.py`) with safe defaults. Secrets are never read from
+files committed to the repo, and empty values count as unset.
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `DATABASE_URL` | local PostgreSQL | Index |
+| `ANTHROPIC_API_KEY` | unset | Generation (`ask`, `POST /ask`) only |
+| `VOYAGE_API_KEY` | unset | Maintainers / `api` ingest mode; public law text only |
+| `BASE_LEGAL_MODEL` | `claude-haiku-4-5` | Generation model (`claude-sonnet-5` for quality) |
+| `BASE_LEGAL_MAX_ANSWER_TOKENS` | 1024 (≤ 4096) | `max_tokens` cap |
+| `BASE_LEGAL_INGEST_MODE` | `auto` | `precomputed`, `api` or `local` (ADR 0003) |
+| `BASE_LEGAL_QUERY_EMBEDDER` | `voyage-4-nano` | Local query model (pinned) |
+| `BASE_LEGAL_TOP_K` | 8 | Provisions sent to the model |
+| `BASE_LEGAL_REFUSAL_THRESHOLD` | 0.40 | Minimum best dense similarity to answer |
+| `BASE_LEGAL_FTS_NORMALIZATION`, `_LEXICAL_WEIGHT`, `_DENSE_WEIGHT`, `_PARENT_WEIGHT` | 4, 0.5, 1.0, 0.2 | Retrieval knobs ([tuning](evals/retrieval-tuning.md)) |
+| `BASE_LEGAL_MAX_QUESTION_CHARS` | 2000 | API/MCP input limit (hard cap 20,000) |
+| `BASE_LEGAL_RATE_LIMIT_PER_MINUTE` | 30 | Per-client limit on `/ask` and `/search` |
+| `BASE_LEGAL_API_KEY` | unset | When set, required as `X-API-Key` |
+
+Not implemented in v0.1.0: `BASE_LEGAL_STRICT` (strict refusal is always on)
+and `BASE_LEGAL_LOG_QUESTIONS` (question text is never logged).

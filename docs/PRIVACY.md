@@ -1,6 +1,6 @@
 # Privacy by Design
 
-> Status: **initial draft**. This project explains the LGPD, so it has to
+> Status: **v0.1.0**, reviewed against the implementation on 2026-09-27. This project explains the LGPD, so it has to
 > comply with it. This document is the privacy record of the software itself:
 > a ROPA-style inventory of what it processes, where data goes and for how long.
 
@@ -39,13 +39,21 @@ model (chosen by the user) receives the question.
 | User question, redacted | `privacy` module | Reduced | Sent to Anthropic only; not stored locally | Per processor terms | Same as above |
 | Question embedding | Local `voyage-4-nano` | Derived from the question (treated as personal data) | Process memory only; never sent or stored | Duration of the request | Same as above |
 | Answer | Claude | Possibly (echoes the question) | Returned to the user; not stored | Duration of the request | Same as above |
-| Operational logs | Application | **No content**: request ID, timings, token counts, redaction counts, error codes | stdout → Docker log driver | 7 days by default (log rotation) | Legitimate interest in security (art. 7, IX; art. 46) |
+| Operational logs | Application | **No content**: method, path, status and timing per request; token counts, redaction counts and refusal causes per answer; error class names | stdout/stderr → Docker log driver | Rotated by size in `compose.yaml` (3 files × 10 MB); deployers set their own retention | Legitimate interest in security (art. 7, IX; art. 46) |
 | Debug question log | Opt-in (`BASE_LEGAL_LOG_QUESTIONS=true`) | Redacted question | Local log | Same rotation; off by default | Deployer must justify |
 | Golden/red-team eval sets | Maintainers | **No** (synthetic questions only) | `evals/` | Versioned | N/A |
 
 **Not collected:** accounts, cookies, analytics, IP addresses in application
-logs (a reverse proxy, if the deployer adds one, is outside this inventory),
-and conversation history.
+logs (uvicorn's access log, which records client addresses, is disabled; a
+reverse proxy, if the deployer adds one, is outside this inventory), and
+conversation history. The in-memory rate limiter keeps client addresses for
+at most 60 seconds, in process memory only.
+
+**Interfaces.** The CLI, the HTTP API and the web UI send the redacted
+question to Anthropic only for `ask` / `POST /ask`; `search`, `POST /search`,
+`GET /provisions/{id}` and the MCP server involve no third party at all. The
+MCP server is read-only and never calls Claude: the MCP host's own model,
+chosen by the user, receives the question under the host's terms.
 
 ## 3. Controls (principles of LGPD art. 6)
 
@@ -53,9 +61,9 @@ and conversation history.
 |---|---|
 | Purpose (I) and adequacy (II) | The question is used only to answer that request |
 | **Necessity (III)**: minimization | Questions embedded locally (one processor fewer); PII redaction before Anthropic; no persistence of questions or answers; content-free logs |
-| Transparency (VI) | This document, the README and the UI notice ("do not include personal data; questions are embedded locally and sent to Anthropic after redaction") |
+| Transparency (VI) | This document, the README and the UI notice ("Não inclua dados pessoais na pergunta. CPF, CNPJ, e-mail e telefone são removidos antes de qualquer envio; a pergunta é convertida em vetor localmente e, para gerar a resposta, enviada (já sem esses dados) à Anthropic. Nada é armazenado.") |
 | **Security (VII)** and prevention (VIII) | See [THREAT_MODEL.md](THREAT_MODEL.md): secrets management, supply chain controls, strict CSP, localhost binding by default |
-| Accountability (X) | Tests that prove the controls: a log-capture test asserting no question text is logged, and redaction unit tests |
+| Accountability (X) | Tests that prove the controls: log-capture tests asserting no question text is logged (API and generation), redaction unit tests and red-team checks, and a test that the query path makes no remote network call (`tests/integration/test_no_network.py`) |
 
 ### PII redaction (MVP)
 - **Detected:** CPF and CNPJ (with check-digit validation to reduce false
@@ -99,4 +107,5 @@ point of contact. Processors' retention is governed by their terms (§1).
 ## 7. Review
 
 Reviewed at every release and whenever a new processor, data flow or
-interface is added. Last review: 2026-09-26 (initial draft).
+interface is added. Last review: 2026-09-27 (v0.1.0: API, web UI, MCP server
+and generation added; no new processor).

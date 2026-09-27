@@ -1,6 +1,6 @@
 # Threat Model
 
-> Status: **initial draft**. Method: data-flow diagram, then STRIDE per trust
+> Status: **v0.1.0** (reviewed 2026-09-27 against the implementation). Method: data-flow diagram, then STRIDE per trust
 > boundary, then a mapping to the OWASP Top 10 for LLM Applications (2025).
 > Every control links to a test or a CI check wherever possible.
 
@@ -67,6 +67,24 @@ flowchart LR
 | S12 | TB5 | **Tampering / EoP** | Malicious or swapped model weights; `trust_remote_code` runs arbitrary code | Pin the Hugging Face revision + file SHA-256; safetensors only; no `trust_remote_code` unless reviewed and pinned; weights baked into the image at build time | Build-time hash check |
 | S13 | TB5 | **Tampering** | Poisoned precomputed vectors in `corpus/embeddings/` | SHA-256 in `manifest.yaml`, checked on load; regenerated only by the maintainer command, reviewed in PR | Hash check test; CODEOWNERS |
 
+### Where each control is verified (v0.1.0)
+
+| # | Test or check |
+|---|---|
+| S1 | `tests/unit/test_pipeline.py` (build refuses a raw file whose hash differs from the manifest); `tests/unit/test_pipeline.py::test_committed_corpus_matches_the_manifest`; `.github/CODEOWNERS` on `corpus/` |
+| S2 | `evals/redteam.yaml` t01, t08 (`prompt_isolation`, `refusal`); `tests/unit/test_generation.py::test_prompt_isolation_keeps_corpus_text_out_of_the_instructions` |
+| S3 | `evals/redteam.yaml` t07 (poisoned provision is a document, not an instruction; a non-verbatim quote is rejected) |
+| S4 | `tests/unit/test_privacy.py`; log-capture tests `tests/unit/test_api.py::test_logs_never_contain_question_text` and `tests/unit/test_generation.py::test_logs_never_contain_question_or_answer_text`; `evals/redteam.yaml` t04–t06 |
+| S5 | `tests/integration/test_no_network.py` (search and ask with every non-loopback connection refused and a Voyage key set) |
+| S6 | `tests/unit/test_api.py` (422 on oversized questions and bad `k`, 429 rate limit); `max_tokens` from `BASE_LEGAL_MAX_ANSWER_TOKENS` (≤ 4096); `evals/redteam.yaml` t10 |
+| S7 | CI: `uv lock --check`, pip-audit, Dependabot, actions pinned by SHA, `permissions: contents: read`; actionlint and zizmor report no findings |
+| S8 | gitleaks in pre-commit and CI; `.env` git-ignored; empty secrets treated as unset (`tests/unit/test_embeddings.py::test_empty_secrets_are_unset`) |
+| S9 | `base-legal serve` binds 127.0.0.1; compose publishes on 127.0.0.1; optional `BASE_LEGAL_API_KEY` (`tests/unit/test_api.py::test_optional_api_key`) |
+| S10 | Content-free request log (method, path, status, timing; no body, no query string, no client IP; uvicorn's access log disabled) |
+| S11 | `tests/unit/test_api.py::test_ui_renders_text_only_and_has_no_inline_code` and `test_health_has_disclaimer_and_security_headers`; `evals/redteam.yaml` t09 |
+| S12 | `tests/unit/test_model_store.py`; `Dockerfile` fetches and verifies every file's SHA-256 at build time; the runtime is offline (`HF_HUB_OFFLINE=1`) and re-verifies on load; benchmark-only models pinned the same way (`benchmarks/models/`) |
+| S13 | `tests/unit/test_embeddings.py` and `tests/integration/test_store_and_search.py::test_precomputed_tampering_is_rejected`; vectors are not redistributed (ADR 0009) |
+
 ## 5. OWASP Top 10 for LLM Applications (2025)
 
 | ID | Risk | Relevance | Controls in Base Legal | Test |
@@ -94,7 +112,16 @@ flowchart LR
 - **Processor terms may change** (Anthropic; Voyage for the precomputed-vector redistribution). PRIVACY.md is reviewed
   at each release.
 - **Official source outdated.** The corpus is a dated snapshot. The retrieval
-  date is shown in answers; a watcher arrives in Phase 2.
+  date is recorded per act in `corpus/manifest.yaml`; a watcher arrives in Phase 2.
+- **Out-of-scope questions can pass retrieval.** A GDPR question scores 0.62
+  against LGPD art. 52, above the refusal threshold (0.40). The model's own
+  refusal (`SEM_BASE`) and the citation validator are the next lines of
+  defense; generation-level refusal is measured locally, not in CI.
+- **Rate limiting is per process and in memory.** Enough for a local tool;
+  a shared deployment needs a limit at the reverse proxy.
+- **Compiled texts on gov.br may lag the DOU.** For amended resolutions the
+  corpus uses the ANPD's compiled pages; new amendments must be checked
+  against the DOU at each corpus refresh.
 
 ## 7. Review cadence
 

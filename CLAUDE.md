@@ -5,13 +5,15 @@ CD/ANPD resolutions). Read `docs/PLAN.md` and `docs/ARCHITECTURE.md` before
 changing anything structural. Decisions live in `docs/adr/`.
 
 ## Current phase
-Weekend 1 core is implemented (parser, IDs, PII redaction, grounding
-validator, hybrid retrieval, CLI, CI). Pending: the real corpus (LGPD from
-Planalto, CD/ANPD resolutions from the DOU), pinning `voyage-4-nano`, and the
-embedding validation gate (ADR 0003). The parser has only been tested on a
-synthetic fixture: validate it against the official text before relying on it.
+v0.1.0 is implemented (see `docs/PLAN.md` §9 for what remains before
+publishing): corpus (LGPD + six CD/ANPD resolutions, parsed from the Planalto,
+DOU and gov.br layouts), hybrid retrieval tuned on the golden dev split,
+grounded generation with Claude Citations, API + web UI, read-only MCP server,
+evals in CI, Docker image. Pending with the author: golden-set validation by a
+DPO, GitHub settings (Pages, private vulnerability reporting, public repo),
+running `ask` and the MCP server with real hosts and keys.
 For local integration tests without Docker, `.pgserver/` (git-ignored) can run
-PostgreSQL + pgvector via the `pgserver` package.
+PostgreSQL + pgvector via the `pgserver` package; tests use a throwaway schema.
 
 ## Language
 - Code, identifiers, comments, commits, ADRs and technical docs: **English**.
@@ -24,8 +26,10 @@ PostgreSQL + pgvector via the `pgserver` package.
 - Types: `uv run mypy --strict src tests`
 - Tests: `uv run pytest --cov=base_legal` (≥ 85 % on core packages)
 - Local stack: `docker compose up -d` (PostgreSQL + pgvector)
-- Evals: `uv run base-legal eval` (retrieval evals are deterministic and use
-  the local query embedder; don't add paid API calls or secrets to CI).
+- Evals: `uv run base-legal eval retrieval --split dev|holdout` and
+  `uv run base-legal eval redteam` (deterministic, local query embedder; tune
+  on dev, confirm on holdout; don't add paid API calls or secrets to CI).
+- Docs site: `uv run --group docs mkdocs build --strict`.
 - Run all of the above before pushing; pre-commit enforces lint and gitleaks.
 
 ## Code conventions
