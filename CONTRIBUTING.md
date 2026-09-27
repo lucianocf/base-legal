@@ -87,3 +87,26 @@ law changed.
 `evals/golden.yaml` holds synthetic questions only, each `unverified` until a
 DPO reviews it. Keep the dev/holdout split stable: never move an item to dev
 because it fails, and never tune on holdout.
+
+## Releasing
+
+Releases are cut by the maintainer only.
+
+1. Set `version` in `pyproject.toml` (e.g. `0.1.0`), run `uv lock`, update the
+   READMEs and merge.
+2. Push a tag `vX.Y.Z` on that commit. The `Release` workflow checks that the
+   tag matches the package version, builds the distributions and the image,
+   and creates a **draft** GitHub release with the wheel, the sdist and a
+   CycloneDX SBOM (`base-legal.cdx.json`).
+3. Review the draft and publish it.
+
+Verify what a release ships:
+
+```bash
+gh attestation verify base_legal-X.Y.Z-py3-none-any.whl --repo lucianocf/base-legal
+gh attestation verify oci://ghcr.io/lucianocf/base-legal:X.Y.Z --repo lucianocf/base-legal
+cosign verify ghcr.io/lucianocf/base-legal:X.Y.Z \
+  --certificate-identity-regexp '^https://github.com/lucianocf/base-legal/\.github/workflows/release\.yml@refs/tags/v' \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com
+```
+

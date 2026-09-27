@@ -61,7 +61,7 @@ flowchart LR
 | S4 | TB1 | **Information disclosure** | A user pastes a CPF or someone's health data into the question | PII redaction before TB3; nothing persisted; logs exclude question text | Unit tests with valid and invalid CPFs; log-capture test |
 | S5 | TB3 | **Information disclosure** | A processor retains or trains on user data | Questions embedded locally (Voyage never receives them); only redacted text goes to Anthropic; documented in PRIVACY.md | Test asserting the query path makes no network call to Voyage |
 | S6 | TB1 | **Denial of service / financial** | A flood of long questions burns API credit | Max question length; max k; rate limit on the API; `max_tokens` cap; spend limits in the provider consoles | API tests for limits |
-| S7 | TB5 | **Tampering / EoP** | Malicious dependency or GitHub Action | Lockfile (`uv.lock`); pip-audit; Dependabot; actions pinned by SHA; minimal `permissions:` on workflows; OpenSSF Scorecard | CI jobs |
+| S7 | TB5 | **Tampering / EoP** | Malicious dependency or GitHub Action; a tampered release | Lockfile (`uv.lock`); pip-audit; Dependabot; actions pinned by SHA; minimal `permissions:` on workflows; OpenSSF Scorecard; releases ship a CycloneDX SBOM, SLSA build provenance (Sigstore-signed attestations) and a cosign keyless signature on the image | CI jobs; `release.yml` |
 | S8 | TB5 | **Information disclosure** | Secrets leak into the repo or CI logs | gitleaks (pre-commit + CI); no secrets on `pull_request` from forks; `.env` git-ignored | CI job |
 | S9 | TB1 | **Spoofing** | Someone misuses the self-hosted API | API binds to localhost by default; optional API-key auth; documented reverse-proxy setup | Config test |
 | S10 | TB1 | **Repudiation** | Hard to investigate abuse without logs | Structured logs with request ID, timings, token counts and redaction counts, but **no content** | Log-schema test |
@@ -95,7 +95,7 @@ flowchart LR
 |---|---|---|---|---|
 | LLM01:2025 | Prompt Injection | **High** | S2, S3; no tools; strict grounding; refusal as the safe default | `redteam.yaml` direct + indirect cases |
 | LLM02:2025 | Sensitive Information Disclosure | **High** | S4, S5; no storage of questions; nothing personal in the corpus | PII redaction tests; log-capture test |
-| LLM03:2025 | Supply Chain | Medium | S7, S12; official SDKs only; no RAG framework (ADR 0001); pinned model weights; SBOM + signing in Phase 2 | CI security jobs; build-time hash check |
+| LLM03:2025 | Supply Chain | Medium | S7, S12; official SDKs only; no RAG framework (ADR 0001); pinned model weights; SBOM, SLSA provenance and cosign signatures on releases | CI security jobs; build-time hash check; `gh attestation verify` / `cosign verify` |
 | LLM04:2025 | Data and Model Poisoning | Medium | S1, S3; corpus from official sources, hashed and reviewed | Hash + poisoned-fixture tests |
 | LLM05:2025 | Improper Output Handling | Medium | S11; output treated as untrusted text; citations validated before display | UI/CSP tests; validator tests |
 | LLM06:2025 | Excessive Agency | Low (by design) | No tools with side effects; MCP server is read-only | Assertion that the MCP tool list is read-only |
