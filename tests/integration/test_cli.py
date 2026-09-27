@@ -1,7 +1,10 @@
 import datetime as dt
 import shutil
 from pathlib import Path
+from typing import Any
 
+import anthropic
+import httpx2
 import pytest
 from typer.testing import CliRunner
 
@@ -135,3 +138,120 @@ def test_eval_retrieval_writes_reports(
     result = runner.invoke(app, args)
     assert result.exit_code != 0
     assert "lgpd:art7:incXII" in result.output
+
+
+class _EchoMessages:
+    """Answers by citing document 0 verbatim, as native Citations would."""
+
+    def __init__(self) -> None:
+        self.calls: list[dict[str, Any]] = []
+
+    def create(self, **kwargs: Any) -> anthropic.types.Message:
+        self.calls.append(kwargs)
+        first = kwargs["messages"][0]["content"][0]
+        cited = first["source"]["content"][0]["text"]
+        return anthropic.types.Message.model_validate(
+            {
+                "id": "msg_test",
+                "type": "message",
+                "role": "assistant",
+                "model": kwargs["model"],
+                "content": [
+                    {
+                        "type": "text",
+                        "text": "Segundo o dispositivo recuperado, " + cited,
+                        "citations": [
+                            {
+                                "type": "content_block_location",
+                                "cited_text": cited,
+                                "document_index": 0,
+                                "document_title": first["title"],
+                                "start_block_index": 0,
+                                "end_block_index": 1,
+                            }
+                        ],
+                    }
+                ],
+                "stop_reason": "end_turn",
+                "stop_sequence": None,
+                "usage": {"input_tokens": 10, "output_tokens": 5},
+            }
+        )
+
+
+class _FakeAnthropic:
+    last: "_FakeAnthropic | None" = None
+
+    def __init__(self) -> None:
+        self.messages = _EchoMessages()
+        _FakeAnthropic.last = self
+
+
+def test_ask_answers_with_verified_citations_or_refuses(
+    store: Store,
+    database_url: str,
+    fixtures_dir: Path,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    corpus_dir, raw_dir = tmp_path / "corpus", tmp_path / "corpus" / "raw"
+    raw_dir.mkdir(parents=True)
+    shutil.copy(fixtures_dir / "planalto_synthetic.html", raw_dir / "lgpd.html")
+    Manifest(
+        documents=[
+            ManifestEntry(
+                id="lgpd",
+                title="LGPD (synthetic fixture)",
+                short_name="LGPD",
+                kind=DocumentKind.LAW,
+                source_url="https://example.org/l13709.htm",  # type: ignore[arg-type]
+                retrieved_at=dt.date(2026, 9, 26),
+                source_sha256=sha256_hex((raw_dir / "lgpd.html").read_bytes()),
+            )
+        ]
+    ).dump(corpus_dir / "manifest.yaml")
+    for key, value in {
+        "DATABASE_URL": database_url,
+        "BASE_LEGAL_CORPUS_DIR": str(corpus_dir),
+        "BASE_LEGAL_RAW_DIR": str(raw_dir),
+        "BASE_LEGAL_QUERY_EMBEDDER": "test-hashing",
+        "BASE_LEGAL_MODEL": "claude-sonnet-5",
+    }.items():
+        monkeypatch.setenv(key, value)
+    monkeypatch.setattr(anthropic, "Anthropic", _FakeAnthropic)
+    runner = CliRunner()
+    assert runner.invoke(app, ["corpus", "build"]).exit_code == 0
+    assert runner.invoke(app, ["ingest", "--mode", "local"]).exit_code == 0
+
+    result = runner.invoke(app, ["ask", "Meu CPF é 529.982.247-25. O que diz o art. 7º, IX?"])
+    assert result.exit_code == 0, result.output
+    assert "Fontes (texto oficial):" in result.output
+    assert "[1] lgpd:art7:incIX" in result.output
+    assert "aconselhamento jurídico" in result.output
+    assert "529.982.247-25" not in result.output
+    assert _FakeAnthropic.last is not None
+    (call,) = _FakeAnthropic.last.messages.calls
+    assert call["model"] == "claude-sonnet-5"  # from BASE_LEGAL_MODEL
+    assert "529.982.247-25" not in repr(call)
+
+    result = runner.invoke(app, ["ask", "O que diz o art. 99?"])
+    assert result.exit_code == 0, result.output
+    assert "Sem base no corpus: O dispositivo citado não existe no corpus." in result.output
+    assert "lgpd:art99 não existe no corpus" in result.output
+
+
+def test_ask_reports_api_errors_without_content(
+    store: Store, database_url: str, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    class _Failing:
+        def __init__(self) -> None:
+            request = httpx2.Request("POST", "https://api.anthropic.com/v1/messages")
+            raise anthropic.APIConnectionError(request=request)
+
+    monkeypatch.setenv("DATABASE_URL", database_url)
+    monkeypatch.setenv("BASE_LEGAL_QUERY_EMBEDDER", "test-hashing")
+    monkeypatch.setattr(anthropic, "Anthropic", _Failing)
+    result = CliRunner().invoke(app, ["ask", "pergunta sigilosa"])
+    assert result.exit_code == 2
+    assert "APIConnectionError" in result.output
+    assert "pergunta sigilosa" not in result.output

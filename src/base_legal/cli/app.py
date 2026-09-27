@@ -24,6 +24,7 @@ from base_legal.embeddings.model_store import fetch_model, load_lock
 from base_legal.embeddings.precomputed import artifact_filename, save_vectors, write_sidecar
 from base_legal.evals.golden import GoldenSet, Split
 from base_legal.evals.retrieval import evaluate, to_markdown
+from base_legal.generation.answer import Answer, Answerer, Status
 from base_legal.ingest import ingest_documents
 from base_legal.privacy.redact import redact
 from base_legal.retrieval.search import Retriever, SearchMode
@@ -217,6 +218,74 @@ def search(
         marker = "=" if hit.explicit else " "
         typer.echo(f"{n:>2}{marker} {p.id:<28} {hit.score:.4f}  {' > '.join(p.path)}")
         typer.echo(f"     {p.text[:160]}")
+
+
+def make_answerer(settings: Settings, store: Store) -> Answerer:
+    """Wire retrieval and Claude from settings (shared by the CLI and the API)."""
+    import anthropic  # credentials from the environment (ANTHROPIC_API_KEY, ...)
+
+    embedder = make_query_embedder(settings)
+    meta = store.get_meta()
+    if meta:
+        check_compatible(meta["embedding_family"], int(meta["embedding_dim"]), embedder)
+    retriever = Retriever(
+        store, embedder, candidate_pool=settings.candidate_pool, tuning=settings.tuning()
+    )
+    return Answerer(
+        retriever,
+        store,
+        anthropic.Anthropic(),
+        model=settings.model,
+        max_tokens=settings.max_answer_tokens,
+        k=settings.top_k,
+        threshold=settings.refusal_threshold,
+    )
+
+
+def render_answer(answer: Answer) -> str:
+    lines: list[str] = []
+    if answer.status is Status.ANSWERED:
+        numbers = {p.id: n for n, p in enumerate(answer.provisions, start=1)}
+        text = "".join(
+            part.text
+            + "".join(
+                f" [{numbers[c.provision_id]}]" for c in part.citations if c.provision_id in numbers
+            )
+            for part in answer.parts
+        )
+        lines += [text.strip(), "", "Fontes (texto oficial):"]
+        lines += [f"[{numbers[p.id]}] {p.id} — {p.path}\n    {p.text}" for p in answer.provisions]
+    else:
+        lines.append(f"Sem base no corpus: {answer.message}")
+        lines += [f"  ! {ref} não existe no corpus" for ref in answer.missing_references]
+        if answer.provisions:
+            lines += ["", "Dispositivos mais próximos (texto oficial):"]
+            lines += [f"- {p.id} — {p.path}\n    {p.text}" for p in answer.provisions]
+    lines += ["", answer.disclaimer]
+    return "\n".join(lines)
+
+
+@app.command()
+def ask(question: Annotated[str, typer.Argument(help="Question in Portuguese.")]) -> None:
+    """Answer with Claude, citing verified provisions, or refuse (PII redacted first)."""
+    import anthropic
+
+    settings = _settings()
+    store = Store.connect(settings.database_url)
+    try:
+        answer = make_answerer(settings, store).answer(question)
+    except anthropic.APIError as error:
+        raise typer.Exit(_api_error(error)) from None
+    finally:
+        store.close()
+    if answer.redactions:
+        typer.echo(f"[privacy] redacted {answer.redactions} before any third-party call", err=True)
+    typer.echo(render_answer(answer))
+
+
+def _api_error(error: Exception) -> int:
+    typer.echo(f"Claude API error: {type(error).__name__}", err=True)
+    return 2
 
 
 @eval_app.command("retrieval")
