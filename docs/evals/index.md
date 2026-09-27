@@ -41,3 +41,17 @@ Latency in CI reports depends on the runner and is indicative only.
 
 Generation quality (faithfulness, answer refusals, cost per question) needs
 the Claude API and is run locally, on demand; it is never part of CI (ADR 0006).
+
+```bash
+export ANTHROPIC_API_KEY=...             # yours; never in CI
+BASE_LEGAL_MODEL=claude-haiku-4-5 uv run base-legal eval generation --split dev --yes
+BASE_LEGAL_MODEL=claude-sonnet-5  uv run base-legal eval generation --split dev --yes
+```
+
+Each run writes `reports/generation-<model>-<split>.{json,md}`: the share of
+answerable questions answered, citation recall (an expected provision counts
+as cited if the answer cites it, a part of it or the provision containing it),
+refusals of must-refuse questions, token usage including prompt-cache reads,
+and latency. Reports hold IDs and numbers only, never question or answer
+text. Cost per question follows from the token counts and the current
+Anthropic price list (`TODO(verify)` at each run: prices are not hardcoded).

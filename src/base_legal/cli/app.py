@@ -394,6 +394,54 @@ def mcp_server() -> None:
     run_mcp()
 
 
+@eval_app.command("generation")
+def eval_generation(
+    golden_path: Annotated[Path, typer.Option("--golden")] = Path("evals/golden.yaml"),
+    split: Annotated[Split, typer.Option()] = Split.DEV,
+    limit: Annotated[
+        int | None, typer.Option(min=1, help="Evaluate the first N items only.")
+    ] = None,
+    out_dir: Annotated[Path, typer.Option()] = Path("reports"),
+    label: Annotated[str | None, typer.Option(help="Default: the model ID.")] = None,
+    yes: Annotated[
+        bool, typer.Option("--yes", help="Confirm: this calls the Claude API and costs money.")
+    ] = False,
+) -> None:
+    """Answer the golden questions with Claude (paid, never in CI) -> JSON + Markdown."""
+    if not yes:
+        typer.echo("This calls the Claude API for every item; re-run with --yes.", err=True)
+        raise typer.Exit(2)
+    from base_legal.evals.generation import evaluate_generation
+    from base_legal.evals.generation import to_markdown as generation_markdown
+
+    settings = _settings()
+    golden = GoldenSet.load(golden_path)
+    store = open_store(settings)
+    try:
+        _require_index(store)
+        answerer = make_answerer(settings, store)
+        try:
+            report = evaluate_generation(
+                answerer,
+                golden,
+                split=split,
+                model=settings.model,
+                label=label or settings.model,
+                limit=limit,
+            )
+        except GenerationUnavailableError as error:
+            typer.echo(f"Claude API unavailable: {error}", err=True)
+            raise typer.Exit(2) from None
+    finally:
+        store.close()
+    out_dir.mkdir(parents=True, exist_ok=True)
+    stem = out_dir / f"generation-{report.label}-{split.value}"
+    stem.with_suffix(".json").write_text(report.model_dump_json(indent=2) + "\n", "utf-8")
+    markdown = generation_markdown(report)
+    stem.with_suffix(".md").write_text(markdown, "utf-8")
+    typer.echo(markdown)
+
+
 @eval_app.command("retrieval")
 def eval_retrieval(
     golden_path: Annotated[Path, typer.Option("--golden")] = Path("evals/golden.yaml"),
