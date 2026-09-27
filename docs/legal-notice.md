@@ -1,0 +1,1 @@
+--8<-- "LEGAL_NOTICE.md"

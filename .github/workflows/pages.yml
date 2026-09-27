@@ -1,0 +1,80 @@
+name: Docs
+
+# Builds the MkDocs site with the latest eval report and badge JSON, and
+# deploys it to GitHub Pages (ADR 0006). Secret-free, like the evals workflow.
+# Requires Pages to be enabled with "GitHub Actions" as the source.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build site and eval report
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    services:
+      postgres:
+        # pgvector/pgvector:pg17, pinned by digest (same as CI)
+        image: pgvector/pgvector@sha256:cf134a767f474095eeba57e0117be8e568e011a63f33fbf252f14c9b760f8e6f
+        env:
+          POSTGRES_USER: base_legal
+          POSTGRES_PASSWORD: base_legal # throwaway CI database, not a secret
+          POSTGRES_DB: base_legal
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U base_legal"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://base_legal:base_legal@localhost:5432/base_legal
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+      - run: uv sync --locked --extra local --group docs
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: models
+          key: models-${{ hashFiles('src/base_legal/embeddings/voyage-4-nano.lock.json') }}
+      - run: uv run base-legal model fetch
+      - run: uv run base-legal ingest --mode local
+      - name: Eval reports for the site
+        run: |
+          uv run base-legal eval retrieval --split dev --label latest --out-dir docs/evals \
+            --badge site-extra/badges/recall-at-5.json
+          uv run base-legal eval retrieval --split holdout --label latest --out-dir docs/evals
+          uv run base-legal eval redteam --seed ${{ github.run_id }} --out-dir docs/evals \
+            --badge site-extra/badges/redteam.json
+          mv docs/evals/redteam.md docs/evals/latest-redteam.md
+          mv docs/evals/redteam.json docs/evals/latest-redteam.json
+      - run: uv run mkdocs build --strict --site-dir site
+      - run: cp -r site-extra/badges site/badges
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: site
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

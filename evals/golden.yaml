@@ -1,0 +1,302 @@
+# Golden set for Base Legal retrieval and generation evals.
+#
+# Drafted with AI from docs/golden-set-draft.md; every item is
+# `status: unverified` until a DPO reviews it. Questions are synthetic.
+# Expected IDs are the minimum set a correct answer must cite, checked to
+# exist in the corpus snapshot of 2026-09-27.
+#
+# `split`: `dev` items may be used to tune retrieval; `holdout` items are
+# only used to confirm a change. Stratified and stable: the 30 % of
+# answerable items with the lowest sha256(id), and the lowest-hash refusal
+# of each reason, are holdout. g43 and g44, the known failures that
+# motivated tuning, are always dev.
+#
+# License: CC BY 4.0 (ADR 0007).
+version: 1
+answerable:
+  - id: g01
+    question: "O que é dado pessoal sensível?"
+    expected: [lgpd:art5:incII]
+    split: holdout
+    status: unverified
+  - id: g02
+    question: "Qual a definição de dado anonimizado?"
+    expected: [lgpd:art5:incIII]
+    split: dev
+    status: unverified
+  - id: g03
+    question: "Quem é o controlador segundo a LGPD?"
+    expected: [lgpd:art5:incVI]
+    split: holdout
+    status: unverified
+  - id: g04
+    question: "Qual a diferença entre controlador e operador?"
+    expected: [lgpd:art5:incVI, lgpd:art5:incVII]
+    split: dev
+    status: unverified
+  - id: g05
+    question: "O que é o encarregado e quais são suas atividades?"
+    expected: [lgpd:art5:incVIII, lgpd:art41:par2]
+    split: dev
+    status: unverified
+  - id: g06
+    question: "Quais são as hipóteses legais para o tratamento de dados pessoais?"
+    expected: [lgpd:art7]
+    split: dev
+    status: unverified
+    notes: "Tests parent + children expansion (incisos I–X)."
+  - id: g07
+    question: "Quais requisitos devo observar para usar o legítimo interesse?"
+    expected: [lgpd:art7:incIX, lgpd:art10]
+    split: dev
+    status: unverified
+  - id: g08
+    question: "Como deve ser obtido o consentimento?"
+    expected: [lgpd:art5:incXII, lgpd:art8]
+    split: dev
+    status: unverified
+  - id: g09
+    question: "O titular pode revogar o consentimento a qualquer momento?"
+    expected: [lgpd:art8:par5, lgpd:art18:incIX]
+    split: dev
+    status: unverified
+  - id: g10
+    question: "Em que hipóteses posso tratar dados sensíveis sem consentimento?"
+    expected: [lgpd:art11:incII]
+    split: dev
+    status: unverified
+  - id: g11
+    question: "Biometria para prevenção à fraude exige consentimento?"
+    expected: [lgpd:art11:incII:alig]
+    split: holdout
+    status: unverified
+    notes: "Paraphrase test."
+  - id: g12
+    question: "Quais cuidados no tratamento de dados de crianças?"
+    expected: [lgpd:art14, lgpd:art14:par1]
+    split: dev
+    status: unverified
+  - id: g13
+    question: "Quais são os princípios da LGPD?"
+    expected: [lgpd:art6]
+    split: dev
+    status: unverified
+  - id: g14
+    question: "O que diz o princípio da necessidade?"
+    expected: [lgpd:art6:incIII]
+    split: holdout
+    status: unverified
+  - id: g15
+    question: "A LGPD se aplica a tratamento para fins exclusivamente jornalísticos?"
+    expected: [lgpd:art4:incII:alia]
+    split: dev
+    status: unverified
+    notes: "Draft had lgpd:art4:incII; the journalistic purpose is alínea a."
+  - id: g16
+    question: "A LGPD se aplica a dados tratados para segurança pública?"
+    expected: [lgpd:art4:incIII:alia]
+    split: dev
+    status: unverified
+    notes: "Draft had lgpd:art4:incIII; public security is alínea a."
+  - id: g17
+    question: "Uma empresa estrangeira precisa cumprir a LGPD?"
+    expected: [lgpd:art3]
+    split: dev
+    status: unverified
+  - id: g18
+    question: "Quais são os direitos do titular?"
+    expected: [lgpd:art18]
+    split: dev
+    status: unverified
+  - id: g19
+    question: "O titular tem direito à portabilidade dos dados?"
+    expected: [lgpd:art18:incV]
+    split: dev
+    status: unverified
+  - id: g20
+    question: "Qual o prazo para fornecer a declaração completa de acesso aos dados?"
+    expected: [lgpd:art19:incII]
+    split: dev
+    status: unverified
+    notes: "15 dias."
+  - id: g21
+    question: "Posso pedir revisão de uma decisão tomada só por algoritmo?"
+    expected: [lgpd:art20]
+    split: holdout
+    status: unverified
+    notes: "Paraphrase test."
+  - id: g22
+    question: "Controladores precisam manter registro das operações de tratamento?"
+    expected: [lgpd:art37]
+    split: dev
+    status: unverified
+  - id: g23
+    question: "Quando a ANPD pode exigir relatório de impacto?"
+    expected: [lgpd:art38]
+    split: dev
+    status: unverified
+  - id: g24
+    question: "O que deve conter a comunicação de incidente de segurança?"
+    expected: [lgpd:art48:par1]
+    split: dev
+    status: unverified
+  - id: g25
+    question: "Qual o prazo para comunicar um incidente à ANPD?"
+    expected: [res-anpd-15-2024:anx1:art6]
+    split: dev
+    status: unverified
+    notes: "Três dias úteis (Regulamento de Comunicação de Incidente de Segurança, art. 6º)."
+  - id: g26
+    question: "Quais sanções a ANPD pode aplicar?"
+    expected: [lgpd:art52]
+    split: holdout
+    status: unverified
+  - id: g27
+    question: "Qual o valor máximo da multa simples?"
+    expected: [lgpd:art52:incII]
+    split: dev
+    status: unverified
+  - id: g28
+    question: "Órgãos públicos precisam indicar um encarregado?"
+    expected: [lgpd:art23:incIII]
+    split: holdout
+    status: unverified
+    notes: "Public sector."
+  - id: g29
+    question: "Quais as regras para uso compartilhado de dados pelo poder público?"
+    expected: [lgpd:art26]
+    split: dev
+    status: unverified
+    notes: "Public sector."
+  - id: g30
+    question: "Em que hipóteses é permitida a transferência internacional de dados?"
+    expected: [lgpd:art33]
+    split: dev
+    status: unverified
+  - id: g31
+    question: "O que são cláusulas-padrão contratuais para transferência internacional?"
+    expected: [res-anpd-19-2024:anx1:art15]
+    split: dev
+    status: unverified
+    notes: "Regulamento de Transferência Internacional de Dados, art. 15 (the clauses themselves are Annex II, not parsed yet)."
+  - id: g32
+    question: "Agentes de pequeno porte são obrigados a indicar encarregado?"
+    expected: [res-anpd-2-2022:anx1:art11]
+    split: dev
+    status: unverified
+  - id: g33
+    question: "O encarregado pode ser uma pessoa jurídica?"
+    expected: [res-anpd-18-2024:anx1:art12:incII]
+    split: holdout
+    status: unverified
+  - id: g34
+    question: "Como a ANPD trata conflito de interesse do encarregado?"
+    expected: [res-anpd-18-2024:anx1:art18, res-anpd-18-2024:anx1:art19:par1]
+    split: holdout
+    status: unverified
+    notes: "Arts. 20 and 21 are also relevant."
+  - id: g35
+    question: "O operador responde solidariamente por danos?"
+    expected: [lgpd:art42:par1:incI]
+    split: dev
+    status: unverified
+  - id: g36
+    question: "Quando o agente de tratamento não será responsabilizado?"
+    expected: [lgpd:art43]
+    split: holdout
+    status: unverified
+  - id: g37
+    question: "Quais medidas de segurança os agentes devem adotar?"
+    expected: [lgpd:art46]
+    split: dev
+    status: unverified
+  - id: g38
+    question: "Quando termina o tratamento e os dados devem ser eliminados?"
+    expected: [lgpd:art15, lgpd:art16]
+    split: holdout
+    status: unverified
+  - id: g39
+    question: "Dados anonimizados são considerados dados pessoais?"
+    expected: [lgpd:art12]
+    split: holdout
+    status: unverified
+  - id: g40
+    question: "Quais circunstâncias agravam uma sanção na dosimetria?"
+    expected: [res-anpd-4-2023:anx1:art12]
+    split: holdout
+    status: unverified
+    notes: "Regulamento de Dosimetria, art. 12 (circunstâncias agravantes)."
+  - id: g41
+    question: "Desde quando as sanções da LGPD podem ser aplicadas?"
+    expected: [lgpd:art65:incI-A]
+    split: dev
+    status: unverified
+    notes: "Inciso I-A; tests the ID rule."
+  - id: g42
+    question: "O que diz o art. 7º, inciso IX, da LGPD?"
+    expected: [lgpd:art7:incIX]
+    split: dev
+    status: unverified
+    notes: "Explicit reference → direct lookup."
+  - id: g43
+    question: "Houve um vazamento de dados na minha empresa; preciso avisar a ANPD?"
+    expected: [lgpd:art48]
+    split: dev
+    status: unverified
+    notes: "Known failure with nano + nano (overnight brief); forced into dev."
+  - id: g44
+    question: "Quero levar meus dados para outra empresa. Posso?"
+    expected: [lgpd:art18:incV]
+    split: dev
+    status: unverified
+    notes: "Known failure with nano + nano (overnight brief); forced into dev."
+  - id: g45
+    question: "Minha empresa vazou dados; de quanto será minha multa?"
+    expected: [lgpd:art52]
+    split: holdout
+    status: unverified
+    notes: "Draft R5. Generation must not predict an amount; cite the sanctions and the dosimetry regulation, with the disclaimer."
+refuse:
+  - id: r01
+    question: "Qual o valor máximo de multa previsto no GDPR?"
+    reason: out_of_corpus
+    split: holdout
+    status: unverified
+  - id: r02
+    question: "O que diz o art. 99 da LGPD?"
+    reason: nonexistent_provision
+    split: dev
+    status: unverified
+    notes: "The LGPD ends at art. 65."
+  - id: r03
+    question: "O que diz o art. 7º, inciso XII, da LGPD?"
+    reason: nonexistent_provision
+    split: holdout
+    status: unverified
+    notes: "Art. 7 has incisos I–X."
+  - id: r04
+    question: "Qual a melhor linguagem de programação?"
+    reason: off_topic
+    split: holdout
+    status: unverified
+  - id: r05
+    question: "Qual é a pena para o crime de furto no Código Penal?"
+    reason: out_of_corpus
+    split: dev
+    status: unverified
+  - id: r06
+    question: "Como faço um bolo de chocolate?"
+    reason: off_topic
+    split: dev
+    status: unverified
+  - id: r07
+    question: "O que diz o art. 3º da Resolução CD/ANPD nº 99/2030?"
+    reason: nonexistent_provision
+    split: dev
+    status: unverified
+    notes: "No such resolution."
+  - id: r08
+    question: "Quais são os direitos do consumidor na CCPA da Califórnia?"
+    reason: out_of_corpus
+    split: dev
+    status: unverified

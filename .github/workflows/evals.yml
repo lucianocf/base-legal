@@ -1,0 +1,81 @@
+name: Evals
+
+# Deterministic retrieval and red-team evals. No secrets and no paid APIs, so
+# they also run on pull requests from forks: questions are embedded on the
+# runner with the pinned voyage-4-nano, and documents in `local` mode (the
+# voyage-4-large vectors are not redistributed, ADR 0009).
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: evals-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  evals:
+    name: Retrieval and red-team evals
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    services:
+      postgres:
+        # pgvector/pgvector:pg17, pinned by digest (same as CI)
+        image: pgvector/pgvector@sha256:cf134a767f474095eeba57e0117be8e568e011a63f33fbf252f14c9b760f8e6f
+        env:
+          POSTGRES_USER: base_legal
+          POSTGRES_PASSWORD: base_legal # throwaway CI database, not a secret
+          POSTGRES_DB: base_legal
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U base_legal"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://base_legal:base_legal@localhost:5432/base_legal
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+        with:
+          enable-cache: true
+      - run: uv sync --locked --extra local
+
+      - name: Cache the pinned query model (keyed by its lockfile)
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: models
+          key: models-${{ hashFiles('src/base_legal/embeddings/voyage-4-nano.lock.json') }}
+      - name: Fetch or verify the model (every file's SHA-256, even from cache)
+        run: uv run base-legal model fetch
+
+      - name: Ingest the corpus (local mode)
+        run: uv run base-legal ingest --mode local
+
+      - name: Retrieval eval (gate)
+        run: >-
+          uv run base-legal eval retrieval --split all --label ci
+          --badge reports/badges/recall-at-5.json
+          --min-recall-at-5 0.65 --min-refusal-accuracy 0.6
+      - name: Red-team eval (deterministic checks, gate 100 %)
+        run: >-
+          uv run base-legal eval redteam --seed ${{ github.run_id }}
+          --badge reports/badges/redteam.json
+
+      - name: Job summary
+        if: always()
+        run: cat reports/*.md >> "$GITHUB_STEP_SUMMARY" 2>/dev/null || true
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always()
+        with:
+          name: eval-reports
+          path: reports/
+          retention-days: 30

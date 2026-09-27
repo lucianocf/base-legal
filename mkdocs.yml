@@ -1,0 +1,74 @@
+site_name: Base Legal
+site_description: Grounded, verifiable Q&A over Brazilian data protection law (LGPD + ANPD). Not legal advice.
+site_url: https://lucianocf.github.io/base-legal/
+repo_url: https://github.com/lucianocf/base-legal
+repo_name: lucianocf/base-legal
+edit_uri: ""
+docs_dir: docs
+strict: true
+
+theme:
+  name: material
+  language: en
+  features:
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+  palette:
+    - scheme: default
+      toggle: {icon: material/weather-night, name: Dark mode}
+    - scheme: slate
+      toggle: {icon: material/weather-sunny, name: Light mode}
+
+markdown_extensions:
+  - admonition
+  - tables
+  - toc: {permalink: true}
+  - pymdownx.snippets: {base_path: ["."], check_paths: true}
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+
+nav:
+  - Home: index.md
+  - Architecture: ARCHITECTURE.md
+  - Evaluation:
+      - Overview: evals/index.md
+      - "Latest: dev": evals/retrieval-latest-dev.md
+      - "Latest: holdout": evals/retrieval-latest-holdout.md
+      - "Latest: red team": evals/latest-redteam.md
+      - Retrieval tuning: evals/retrieval-tuning.md
+      - Embedding gate: evals/embedding-gate.md
+  - Security and privacy:
+      - Threat model: THREAT_MODEL.md
+      - Privacy: PRIVACY.md
+      - Legal notice: legal-notice.md
+  - MCP server: MCP.md
+  - Decisions (ADRs):
+      - Index: adr/README.md
+      - 0001 Own thin code: adr/0001-own-thin-code-no-rag-framework.md
+      - 0002 Structural chunking: adr/0002-structural-chunking-canonical-ids.md
+      - 0003 Asymmetric embeddings: adr/0003-asymmetric-voyage-embeddings.md
+      - 0004 Hybrid search: adr/0004-postgres-hybrid-search-rrf.md
+      - 0005 Strict grounding: adr/0005-strict-grounding-verified-citations.md
+      - 0006 No hosted demo: adr/0006-no-hosted-llm-demo-pages-for-docs.md
+      - 0007 Licensing: adr/0007-licensing-code-data-corpus.md
+      - 0008 Default model: adr/0008-default-generation-model.md
+      - 0009 Vector redistribution: adr/0009-no-redistribution-of-voyage-vectors-yet.md
+      - 0010 Annex IDs: adr/0010-annex-segment-in-provision-ids.md
+      - 0011 One document per provision: adr/0011-one-cited-document-per-provision.md
+      - 0012 Nano without remote code: adr/0012-load-voyage-4-nano-without-remote-code.md
+      - 0013 Nano for documents: adr/0013-voyage-4-nano-for-documents-by-default.md
+  - Plan: PLAN.md
+  - Contributing: contributing.md
+
+not_in_nav: |
+  /adr/0000-template.md
+  /golden-set-draft.md
+  /VISIBILITY.md
+  /progress/*
+
+exclude_docs: |
+  /evals/*.json

@@ -1,0 +1,7 @@
+# Changes to the corpus, pinned models and workflows need the maintainer's review
+# (docs/THREAT_MODEL.md S1, S7, S12, S13).
+*                       @lucianocf
+/corpus/                @lucianocf
+/src/base_legal/embeddings/*.lock.json  @lucianocf
+/benchmarks/models/     @lucianocf
+/.github/                @lucianocf
