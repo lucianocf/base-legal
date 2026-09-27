@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from enum import StrEnum
 from typing import Protocol
 
 from base_legal.corpus.models import Provision
@@ -27,20 +28,57 @@ class Hit:
     explicit: bool = False
 
 
+class SearchMode(StrEnum):
+    HYBRID = "hybrid"  # full-text + vector, fused with RRF (default, ADR 0004)
+    LEXICAL = "lexical"  # full-text only (benchmark baseline B0)
+    DENSE = "dense"  # vector only (benchmark)
+
+
+class RefusalReason(StrEnum):
+    NONEXISTENT_PROVISION = "nonexistent_provision"
+    LOW_SCORE = "low_score"
+
+
 @dataclass(frozen=True, slots=True)
 class SearchResult:
     hits: tuple[Hit, ...]
     best_similarity: float | None
     missing_references: tuple[str, ...] = field(default=())
 
+    def refusal(self, threshold: float | None) -> RefusalReason | None:
+        """Why retrieval alone says "no support in the corpus", or ``None`` (ADR 0005).
+
+        An explicit reference that resolved to a provision always wins. A
+        reference to a provision that does not exist ("art. 99 da LGPD")
+        refuses. Otherwise, with a ``threshold``, the best dense similarity
+        must reach it.
+        """
+        if any(hit.explicit for hit in self.hits):
+            return None
+        if self.missing_references:
+            return RefusalReason.NONEXISTENT_PROVISION
+        if threshold is not None and (
+            self.best_similarity is None or self.best_similarity < threshold
+        ):
+            return RefusalReason.LOW_SCORE
+        return None
+
 
 class Retriever:
     def __init__(
-        self, backend: SearchBackend, embedder: Embedder, *, candidate_pool: int = 50
+        self,
+        backend: SearchBackend,
+        embedder: Embedder | None,
+        *,
+        candidate_pool: int = 50,
+        mode: SearchMode = SearchMode.HYBRID,
     ) -> None:
+        if embedder is None and mode is not SearchMode.LEXICAL:
+            raise ValueError(f"{mode.value} search needs a query embedder")
         self.backend = backend
         self.embedder = embedder
         self.candidate_pool = candidate_pool
+        self.mode = mode
 
     def search(self, question: str, k: int = 8) -> SearchResult:
         """``question`` must already be redacted by :mod:`base_legal.privacy`."""
@@ -55,10 +93,18 @@ class Retriever:
             elif found[match].is_normative and match not in explicit:
                 explicit.append(match)
 
-        lexical = self.backend.lexical(question, self.candidate_pool)
-        dense = self.backend.dense(self.embedder.embed_query(question), self.candidate_pool)
+        lexical: list[Ranked] = []
+        dense: list[Ranked] = []
+        if self.mode is not SearchMode.DENSE:
+            lexical = self.backend.lexical(question, self.candidate_pool)
+        if self.mode is not SearchMode.LEXICAL and self.embedder is not None:
+            dense = self.backend.dense(self.embedder.embed_query(question), self.candidate_pool)
         fused = reciprocal_rank_fusion(
-            [[r.provision_id for r in lexical], [r.provision_id for r in dense]]
+            [
+                ranking
+                for ranking in ([r.provision_id for r in lexical], [r.provision_id for r in dense])
+                if ranking
+            ]
         )
 
         ranked: list[tuple[str, float, bool]] = [(ref, 1.0, True) for ref in explicit]

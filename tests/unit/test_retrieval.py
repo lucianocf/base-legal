@@ -1,8 +1,13 @@
 import pytest
 
 from base_legal.corpus.ids import ProvisionRef
+from base_legal.corpus.models import Provision, ProvisionKind
+from base_legal.embeddings.base import Vectors
+from base_legal.embeddings.providers import HashingEmbedder
 from base_legal.retrieval.fusion import reciprocal_rank_fusion
 from base_legal.retrieval.refs import candidate_ids, find_references
+from base_legal.retrieval.search import Retriever, SearchMode
+from base_legal.store.db import Ranked
 
 
 def test_rrf_rewards_agreement() -> None:
@@ -58,3 +63,56 @@ def test_resolution_references_prefer_the_annex_regulation() -> None:
     assert candidate_ids(ref) == ["res-anpd-15-2024:anx1:art6", "res-anpd-15-2024:art6"]
     (law,) = find_references("art. 6 da LGPD")
     assert candidate_ids(law) == ["lgpd:art6"]
+
+
+class _Backend:
+    def __init__(self) -> None:
+        self.calls: list[str] = []
+
+    def lexical(self, question: str, limit: int) -> list[Ranked]:
+        self.calls.append("lexical")
+        return [Ranked("lgpd:art1", 1.0)]
+
+    def dense(self, query_vector: Vectors, limit: int) -> list[Ranked]:
+        self.calls.append("dense")
+        return [Ranked("lgpd:art2", 0.8)]
+
+    def provisions(self, ids: list[str]) -> dict[str, Provision]:
+        return {
+            i: Provision(
+                id=i,
+                document_id="lgpd",
+                parent_id=None,
+                kind=ProvisionKind.ARTICLE,
+                label="Art.",
+                text="t",
+                path=("Art.",),
+                ordinal=0,
+            )
+            for i in ids
+            if i in {"lgpd:art1", "lgpd:art2"}
+        }
+
+
+@pytest.mark.parametrize(
+    ("mode", "calls", "ids", "best"),
+    [
+        (SearchMode.HYBRID, ["lexical", "dense"], ["lgpd:art1", "lgpd:art2"], 0.8),
+        (SearchMode.LEXICAL, ["lexical"], ["lgpd:art1"], None),
+        (SearchMode.DENSE, ["dense"], ["lgpd:art2"], 0.8),
+    ],
+)
+def test_search_modes(
+    mode: SearchMode, calls: list[str], ids: list[str], best: float | None
+) -> None:
+    backend = _Backend()
+    embedder = None if mode is SearchMode.LEXICAL else HashingEmbedder()
+    result = Retriever(backend, embedder, mode=mode).search("pergunta")
+    assert backend.calls == calls
+    assert [h.provision.id for h in result.hits] == ids
+    assert result.best_similarity == best
+
+
+def test_dense_modes_need_an_embedder() -> None:
+    with pytest.raises(ValueError, match="needs a query embedder"):
+        Retriever(_Backend(), None, mode=SearchMode.HYBRID)

@@ -37,3 +37,6 @@ class Settings(BaseSettings):
 
     top_k: int = 8
     candidate_pool: int = 50
+    # Minimum best dense similarity to answer; below it, refuse (ADR 0005).
+    # None disables the score check (explicit nonexistent references still refuse).
+    refusal_threshold: float | None = None
