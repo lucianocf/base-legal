@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import dataclasses
+import importlib.util
 import logging
 from pathlib import Path
 from typing import Annotated
@@ -171,9 +172,16 @@ def ingest(
     elif mode is IngestMode.LOCAL:
         fallback = make_local_document_embedder(settings)
     elif mode is IngestMode.AUTO:
+        use_api = settings.voyage_api_key is not None
+        if use_api and importlib.util.find_spec("voyageai") is None:
+            typer.echo(
+                "VOYAGE_API_KEY is set but the voyage extra is not installed; embedding locally",
+                err=True,
+            )
+            use_api = False
         fallback = (
             make_api_document_embedder(settings)
-            if settings.voyage_api_key is not None
+            if use_api
             else make_local_document_embedder(settings)
         )
     else:

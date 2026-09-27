@@ -1,4 +1,5 @@
 import datetime as dt
+import importlib.util
 import shutil
 from pathlib import Path
 from typing import Any
@@ -342,3 +343,48 @@ def test_eval_redteam_without_the_index(tmp_path: Path, monkeypatch: pytest.Monk
     assert "skipped" in result.output  # refusal checks need the index
     assert (out / "redteam.json").is_file()
     assert '"message": "100%"' in badge.read_text(encoding="utf-8")
+
+
+def test_auto_ingest_falls_back_to_local_without_the_voyage_sdk(
+    store: Store,
+    database_url: str,
+    fixtures_dir: Path,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    corpus_dir, raw_dir = tmp_path / "corpus", tmp_path / "corpus" / "raw"
+    raw_dir.mkdir(parents=True)
+    shutil.copy(fixtures_dir / "planalto_synthetic.html", raw_dir / "lgpd.html")
+    Manifest(
+        documents=[
+            ManifestEntry(
+                id="lgpd",
+                title="LGPD",
+                short_name="LGPD",
+                kind=DocumentKind.LAW,
+                source_url="https://example.org/l13709.htm",  # type: ignore[arg-type]
+                retrieved_at=dt.date(2026, 9, 26),
+                source_sha256=sha256_hex((raw_dir / "lgpd.html").read_bytes()),
+            )
+        ]
+    ).dump(corpus_dir / "manifest.yaml")
+    for key, value in {
+        "DATABASE_URL": database_url,
+        "BASE_LEGAL_CORPUS_DIR": str(corpus_dir),
+        "BASE_LEGAL_RAW_DIR": str(raw_dir),
+        "BASE_LEGAL_QUERY_EMBEDDER": "test-hashing",
+        "VOYAGE_API_KEY": "a-key-without-the-sdk",
+    }.items():
+        monkeypatch.setenv(key, value)
+    real_find_spec = importlib.util.find_spec
+    monkeypatch.setattr(
+        importlib.util,
+        "find_spec",
+        lambda name, *a: None if name == "voyageai" else real_find_spec(name, *a),
+    )
+    runner = CliRunner()
+    assert runner.invoke(app, ["corpus", "build"]).exit_code == 0
+    result = runner.invoke(app, ["ingest"])
+    assert result.exit_code == 0, result.output
+    assert "embedding locally" in result.output
+    assert "test-hashing (embedded), ingested" in result.output

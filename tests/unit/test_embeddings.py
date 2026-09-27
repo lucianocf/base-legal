@@ -5,6 +5,7 @@ from typing import Any
 import numpy as np
 import pytest
 
+from base_legal.config import Settings
 from base_legal.embeddings.base import (
     EMBEDDING_DIM,
     IncompatibleEmbedderError,
@@ -194,3 +195,14 @@ def test_unrecorded_vectors_are_found_through_their_sidecar(tmp_path: Path) -> N
     assert local_artifact(tmp_path, "lgpd", "voyage-4-large") == artifact
     assert local_artifact(tmp_path, "lgpd", "voyage-4-nano") is None
     assert local_artifact(tmp_path, "res-anpd-1-2021", "voyage-4-large") is None
+
+
+@pytest.mark.parametrize("value", ["", "   "])
+def test_empty_secrets_are_unset(value: str, monkeypatch: pytest.MonkeyPatch) -> None:
+    # Regression: compose passes unset variables as "" (`${VOYAGE_API_KEY:-}`), which
+    # made `ingest --mode auto` pick the Voyage API and crash without the SDK.
+    monkeypatch.setenv("VOYAGE_API_KEY", value)
+    monkeypatch.setenv("BASE_LEGAL_API_KEY", value)
+    settings = Settings()
+    assert settings.voyage_api_key is None
+    assert settings.api_key is None

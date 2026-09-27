@@ -5,7 +5,7 @@ from __future__ import annotations
 from enum import StrEnum
 from pathlib import Path
 
-from pydantic import AliasChoices, Field, SecretStr
+from pydantic import AliasChoices, Field, SecretStr, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from base_legal.retrieval.search import Tuning
@@ -59,6 +59,14 @@ class Settings(BaseSettings):
     # Generation (ADR 0008): model from configuration, never hardcoded in logic.
     model: str = "claude-haiku-4-5"
     max_answer_tokens: int = Field(default=1024, ge=64, le=4096)
+
+    @field_validator("voyage_api_key", "api_key", mode="before")
+    @classmethod
+    def _empty_secret_is_unset(cls, value: object) -> object:
+        # Compose and CI pass unset variables as "" (`${VAR:-}`); that is not a key.
+        if value is None or (isinstance(value, str) and not value.strip()):
+            return None
+        return value
 
     def tuning(self) -> Tuning:
         return Tuning(
