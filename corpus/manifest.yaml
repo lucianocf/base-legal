@@ -1,12 +1,97 @@
+# Provenance of every official act in the corpus (docs/adr/0007).
+# `source_sha256` is the SHA-256 of the raw bytes fetched on `retrieved_at`;
+# `base-legal corpus fetch` updates both, and changes are reviewed as a diff.
+# Source choice: the ANPD's compiled page (gov.br) when a resolution was
+# amended, otherwise the original DOU publication (in.gov.br).
 documents:
 - id: lgpd
-  title: Lei nº 13.709, de 14 de agosto de 2018 — Lei Geral de Proteção de Dados Pessoais
-    (LGPD)
+  title: Lei nº 13.709, de 14 de agosto de 2018 — Lei Geral de Proteção de Dados Pessoais (LGPD)
   short_name: LGPD
   kind: law
   source_url: https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm
-  redistribution_basis: 'Lei nº 9.610/1998, art. 8º, IV: official acts are not protected
-    by copyright'
-  retrieved_at: '2026-09-26'
-  source_sha256: 8f3be9837a803c43cc5201cfc3c85852003611ea5d7b735a92345e01516485d9
+  layout: planalto
+  notes: null
+  redistribution_basis: 'Lei nº 9.610/1998, art. 8º, IV: official acts are not protected by copyright'
+  retrieved_at: '2026-09-27'
+  source_sha256: 3afcb0c59762e39cc2f2daf513c2334d430b7fd52250629879307a07c78d8a47
+  embeddings: []
+- id: res-anpd-1-2021
+  title: Resolução CD/ANPD nº 1, de 28 de outubro de 2021 — Aprova o Regulamento do Processo de Fiscalização
+    e do Processo Administrativo Sancionador no âmbito da Autoridade Nacional de Proteção de Dados
+  short_name: Res. CD/ANPD nº 1/2021
+  kind: resolution
+  source_url: https://www.gov.br/anpd/pt-br/acesso-a-informacao/institucional/atos-normativos/regulamentacoes_anpd/resolucao-cd-anpd-no1-2021
+  layout: govbr
+  notes: Compiled text kept by the ANPD (in force "com retificações pela Resolução CD/ANPD nº 4, de 24
+    de fevereiro de 2023", per the ANPD regulations index). Amendment notes and struck text are inline.
+  redistribution_basis: 'Lei nº 9.610/1998, art. 8º, IV: official acts are not protected by copyright'
+  retrieved_at: '2026-09-27'
+  source_sha256: 7d25a5b4c21ff3250b56d745118f62f003a6b5b54583f90ff24f62f01faa29ca
+  embeddings: []
+- id: res-anpd-2-2022
+  title: Resolução CD/ANPD nº 2, de 27 de janeiro de 2022 — Aprova o Regulamento de aplicação da Lei nº
+    13.709, de 14 de agosto de 2018, Lei Geral de Proteção de Dados Pessoais (LGPD), para agentes de tratamento
+    de pequeno porte
+  short_name: Res. CD/ANPD nº 2/2022
+  kind: resolution
+  source_url: https://www.gov.br/anpd/pt-br/acesso-a-informacao/institucional/atos-normativos/regulamentacoes_anpd/resolucao-cd-anpd-no-2-de-27-de-janeiro-de-2022
+  layout: govbr
+  notes: Compiled text kept by the ANPD (in force "com alterações pela Resolução CD/ANPD nº 15, de 24
+    de abril de 2024", which rewrote art. 14, II, of the annex).
+  redistribution_basis: 'Lei nº 9.610/1998, art. 8º, IV: official acts are not protected by copyright'
+  retrieved_at: '2026-09-27'
+  source_sha256: 49309e9150cbb595d2ebae95d9b54a3a67e9788666a3ef8005f846f7dd994ffe
+  embeddings: []
+- id: res-anpd-4-2023
+  title: Resolução CD/ANPD nº 4, de 24 de fevereiro de 2023 — Aprova o Regulamento de Dosimetria e Aplicação
+    de Sanções Administrativas
+  short_name: Res. CD/ANPD nº 4/2023
+  kind: resolution
+  source_url: https://www.in.gov.br/en/web/dou/-/resolucao-cd/anpd-n-4-de-24-de-fevereiro-de-2023-466146077
+  layout: dou
+  notes: Original publication in the DOU; listed as in force with no amendments in the ANPD regulations
+    index.
+  redistribution_basis: 'Lei nº 9.610/1998, art. 8º, IV: official acts are not protected by copyright'
+  retrieved_at: '2026-09-27'
+  source_sha256: 8f5b5aec1134809f686b34580d61cbae1cdaf7d876ac813ceb08d76d37cb3083
+  embeddings: []
+- id: res-anpd-15-2024
+  title: Resolução CD/ANPD nº 15, de 24 de abril de 2024 — Aprova o Regulamento de Comunicação de Incidente
+    de Segurança
+  short_name: Res. CD/ANPD nº 15/2024
+  kind: resolution
+  source_url: https://www.in.gov.br/en/web/dou/-/resolucao-cd/anpd-n-15-de-24-de-abril-de-2024-556243024
+  layout: dou
+  notes: Original publication in the DOU; listed as in force with no amendments in the ANPD regulations
+    index.
+  redistribution_basis: 'Lei nº 9.610/1998, art. 8º, IV: official acts are not protected by copyright'
+  retrieved_at: '2026-09-27'
+  source_sha256: 2e63ddb6f3809f3ff7753bb272a4676f742eed82e33cdcf684db0f33671f21d4
+  embeddings: []
+- id: res-anpd-18-2024
+  title: Resolução CD/ANPD nº 18, de 16 de julho de 2024 — Aprova o Regulamento sobre a atuação do encarregado
+    pelo tratamento de dados pessoais
+  short_name: Res. CD/ANPD nº 18/2024
+  kind: resolution
+  source_url: https://www.in.gov.br/en/web/dou/-/resolucao-cd/anpd-n-18-de-16-de-julho-de-2024-572632074
+  layout: dou
+  notes: Original publication in the DOU; listed as in force with no amendments in the ANPD regulations
+    index.
+  redistribution_basis: 'Lei nº 9.610/1998, art. 8º, IV: official acts are not protected by copyright'
+  retrieved_at: '2026-09-27'
+  source_sha256: 3d91e251719782e0315aa340bf9d4b2cbcec829cc629477d2b653f5206d44fc1
+  embeddings: []
+- id: res-anpd-19-2024
+  title: Resolução CD/ANPD nº 19, de 23 de agosto de 2024 — Aprova o Regulamento de Transferência Internacional
+    de Dados e o conteúdo das cláusulas-padrão contratuais
+  short_name: Res. CD/ANPD nº 19/2024
+  kind: resolution
+  source_url: https://www.gov.br/anpd/pt-br/acesso-a-informacao/institucional/atos-normativos/regulamentacoes_anpd/resolucao-cd-anpd-no-19-de-23-de-agosto-de-2024
+  layout: govbr
+  notes: Compiled text kept by the ANPD (in force "com as alterações da RETIFICAÇÃO DE 18/08/2025", which
+    only touches Annex II). Only the enacting articles and Annex I (the regulation) are parsed; Annex
+    II (standard contractual clauses, numbered clauses rather than articles) is a documented follow-up.
+  redistribution_basis: 'Lei nº 9.610/1998, art. 8º, IV: official acts are not protected by copyright'
+  retrieved_at: '2026-09-27'
+  source_sha256: 8bfb90f1b8c15697f64e93f4252378cf3cfd0ff401f33f5af87926a221dfaa14
   embeddings: []

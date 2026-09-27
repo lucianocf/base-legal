@@ -150,19 +150,22 @@ red-team set size. **Never cut** the validator, the evals or the parser tests.
 
 ## 7. Corpus (MVP)
 
-| Document | Canonical prefix | Source |
+| Document | Canonical prefix | Source (layout) |
 |---|---|---|
-| LGPD — Lei nº 13.709/2018 (compiled) | `lgpd` | planalto.gov.br |
-| Res. CD/ANPD nº 1/2021 — inspection and sanctioning procedure | `res-anpd-1-2021` | DOU / gov.br/anpd |
-| Res. CD/ANPD nº 2/2022 — small processing agents | `res-anpd-2-2022` | DOU / gov.br/anpd |
-| Res. CD/ANPD nº 4/2023 — sanction dosimetry | `res-anpd-4-2023` | DOU / gov.br/anpd |
-| Res. CD/ANPD nº 15/2024 — security incident reporting | `res-anpd-15-2024` | DOU / gov.br/anpd |
-| Res. CD/ANPD nº 18/2024 — the DPO (encarregado) | `res-anpd-18-2024` | DOU / gov.br/anpd |
-| Res. CD/ANPD nº 19/2024 — international transfers | `res-anpd-19-2024` | DOU / gov.br/anpd |
+| LGPD — Lei nº 13.709/2018 (compiled) | `lgpd` | planalto.gov.br (`planalto`) |
+| Res. CD/ANPD nº 1, de 28/10/2021 — inspection and sanctioning procedure | `res-anpd-1-2021` | gov.br/anpd compiled page (`govbr`); corrected by Res. 4/2023 |
+| Res. CD/ANPD nº 2, de 27/01/2022 — small processing agents | `res-anpd-2-2022` | gov.br/anpd compiled page (`govbr`); amended by Res. 15/2024 |
+| Res. CD/ANPD nº 4, de 24/02/2023 — sanction dosimetry | `res-anpd-4-2023` | DOU (`dou`) |
+| Res. CD/ANPD nº 15, de 24/04/2024 — security incident reporting | `res-anpd-15-2024` | DOU (`dou`) |
+| Res. CD/ANPD nº 18, de 16/07/2024 — the DPO (encarregado) | `res-anpd-18-2024` | DOU (`dou`) |
+| Res. CD/ANPD nº 19, de 23/08/2024 — international transfers | `res-anpd-19-2024` | gov.br/anpd compiled page (`govbr`); DOU correction of 18/08/2025 (Annex II only) |
 
-`TODO(verify)`: confirm numbers, dates and current wording against the DOU at
-ingestion time, and check for amending resolutions. Nos. 15, 18 and 19/2024
-are confirmed; 1/2021, 2/2022 and 4/2023 come from memory.
+Numbers, dates, ementas and amending acts were confirmed on 2026-09-27
+against the ANPD's own index of regulations
+(<https://www.gov.br/anpd/pt-br/acesso-a-informacao/institucional/atos-normativos/regulamentacoes_anpd>).
+The regulation of each resolution sits in its annex (IDs `…:anx1:…`, ADR 0010).
+Res. 19/2024 Annex II (standard contractual clauses, numbered clauses rather
+than articles) is not parsed yet: follow-up.
 
 ## 8. Risks
 

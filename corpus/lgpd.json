@@ -3,8 +3,8 @@
   "title": "Lei nº 13.709, de 14 de agosto de 2018 — Lei Geral de Proteção de Dados Pessoais (LGPD)",
   "kind": "law",
   "source_url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm",
-  "source_sha256": "8f3be9837a803c43cc5201cfc3c85852003611ea5d7b735a92345e01516485d9",
-  "retrieved_at": "2026-09-26",
+  "source_sha256": "3afcb0c59762e39cc2f2daf513c2334d430b7fd52250629879307a07c78d8a47",
+  "retrieved_at": "2026-09-27",
   "redistribution_basis": "Lei nº 9.610/1998, art. 8º, IV: official acts are not protected by copyright",
   "provisions": [
     {
@@ -6876,11 +6876,7 @@
         "Seção I — Da Agência Nacional de Proteção de Dados",
         "Art. 55"
       ],
-      "amendments": [
-        "(Revogado pela Lei nº 14.460, de 2022)",
-        "(Revogado pela Lei nº 14.460, de 2022)",
-        "(Revogado pela Lei nº 14.460, de 2022)"
-      ],
+      "amendments": [],
       "revoked": false,
       "vetoed": true,
       "ordinal": 344,
@@ -6900,8 +6896,7 @@
         "Art. 55-A"
       ],
       "amendments": [
-        "(Redação dada pela Lei nº 15.452, de 2026)",
-        "(Revogado pela Lei nº 14.460, de 2022)"
+        "(Redação dada pela Lei nº 15.452, de 2026)"
       ],
       "revoked": false,
       "vetoed": false,
@@ -9050,7 +9045,7 @@
       "parent_id": null,
       "kind": "article",
       "label": "Art. 60",
-      "text": "A Lei nº 12.965, de 23 de abril de 2014 (Marco Civil da Internet), passa a vigorar com as seguintes alterações: Vigência “Art. 7º......................................................................................................................................................... X - exclusão definitiva dos dados pessoais que tiver fornecido a determinada aplicação de internet, a seu requerimento, ao término da relação entre as partes, ressalvadas as hipóteses de guarda obrigatória de registros previstas nesta Lei e na que dispõe sobre a proteção de dados pessoais;..............................................................................” (NR) “Art. 16......................................................................................................................................................... II - de dados pessoais que sejam excessivos em relação à finalidade para a qual foi dado consentimento pelo seu titular, exceto nas hipóteses previstas na Lei que dispõe sobre a proteção de dados pessoais.” (NR)",
+      "text": "A Lei nº 12.965, de 23 de abril de 2014 (Marco Civil da Internet), passa a vigorar com as seguintes alterações: Vigência “Art. 7º (...) X - exclusão definitiva dos dados pessoais que tiver fornecido a determinada aplicação de internet, a seu requerimento, ao término da relação entre as partes, ressalvadas as hipóteses de guarda obrigatória de registros previstas nesta Lei e na que dispõe sobre a proteção de dados pessoais; (...) ” (NR) “Art. 16. (...) II - de dados pessoais que sejam excessivos em relação à finalidade para a qual foi dado consentimento pelo seu titular, exceto nas hipóteses previstas na Lei que dispõe sobre a proteção de dados pessoais.” (NR)",
       "path": [
         "CAPÍTULO X — DISPOSIÇÕES FINAIS E TRANSITÓRIAS",
         "Art. 60"

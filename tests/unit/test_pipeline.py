@@ -92,3 +92,16 @@ def test_write_and_load_round_trip(tmp_path: Path, fixtures_dir: Path) -> None:
 def test_repo_manifest_is_valid() -> None:
     manifest = Manifest.load(Path(__file__).parents[2] / "corpus" / "manifest.yaml")
     assert manifest.get("lgpd").short_name == "LGPD"
+
+
+def test_committed_corpus_matches_the_manifest() -> None:
+    corpus = Path(__file__).parents[2] / "corpus"
+    manifest = Manifest.load(corpus / "manifest.yaml")
+    documents = {d.id: d for d in load_documents(corpus, manifest)}
+    assert set(documents) == {e.id for e in manifest.documents}
+    for entry in manifest.documents:
+        assert entry.embeddings == [], "vectors are not redistributed (ADR 0009)"
+    # Regulations live in the annex of each resolution (ADR 0010).
+    incident = documents["res-anpd-15-2024"].by_id()["res-anpd-15-2024:anx1:art6"]
+    assert "três dias úteis" in incident.text
+    assert documents["lgpd"].by_id()["lgpd:art7:incIX"].is_normative
