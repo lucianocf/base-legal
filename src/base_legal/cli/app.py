@@ -361,6 +361,9 @@ def search(
         store.close()
     for ref in result.missing_references:
         typer.echo(f"! {ref} does not exist in the corpus")
+    refusal = result.refusal(settings.refusal_threshold)
+    if refusal is not None:
+        typer.echo(f"! no support in the corpus ({refusal.value}); nearest provisions:")
     for n, hit in enumerate(result.hits, start=1):
         p = hit.provision
         marker = "=" if hit.explicit else " "
