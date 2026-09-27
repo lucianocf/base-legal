@@ -284,6 +284,14 @@ def serve(
         backend.close()
 
 
+@app.command("mcp")
+def mcp_server() -> None:
+    """Run the read-only MCP server on stdio (for Claude Desktop / Claude Code)."""
+    from base_legal.mcp_server.server import main as run_mcp
+
+    run_mcp()
+
+
 @eval_app.command("retrieval")
 def eval_retrieval(
     golden_path: Annotated[Path, typer.Option("--golden")] = Path("evals/golden.yaml"),
