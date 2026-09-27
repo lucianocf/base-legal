@@ -14,6 +14,7 @@ Security properties (docs/THREAT_MODEL.md):
 
 from __future__ import annotations
 
+import datetime as dt
 import hmac
 import logging
 import threading
@@ -29,6 +30,7 @@ from fastapi.responses import HTMLResponse, JSONResponse
 from pydantic import BaseModel, ConfigDict, Field
 
 from base_legal.config import Settings
+from base_legal.corpus.history import AsOf, ProvisionHistory, Version, wording_on
 from base_legal.corpus.ids import is_valid_id
 from base_legal.corpus.models import Provision
 from base_legal.corpus.xrefs import CrossReference
@@ -65,6 +67,8 @@ class Backend(Protocol):
     def answer(self, question: str) -> Answer: ...
 
     def provision(self, provision_id: str) -> Provision | None: ...
+
+    def history(self, provision_id: str) -> ProvisionHistory | None: ...
 
     def references(self, texts: Mapping[str, str]) -> Mapping[str, Sequence[CrossReference]]: ...
 
@@ -107,6 +111,13 @@ class ProvisionResponse(BaseModel):
     provision: ProvisionView
     document_id: str
     amendments: list[str]
+    as_of: AsOf | None = None  # set when ?at= asks for the wording on a past date
+    disclaimer: str = DISCLAIMER
+
+
+class HistoryResponse(BaseModel):
+    provision_id: str
+    versions: list[Version]  # oldest first; empty if never amended
     disclaimer: str = DISCLAIMER
 
 
@@ -256,18 +267,40 @@ def create_app(
             redactions=redacted.counts,
         )
 
-    @app.get("/provisions/{provision_id}", dependencies=[Depends(authorized)])
-    def provision(provision_id: str) -> ProvisionResponse:
-        """One provision by canonical ID (e.g. ``lgpd:art7:incIX``)."""
+    def current(provision_id: str) -> Provision:
         if not is_valid_id(provision_id):
             raise HTTPException(status_code=422, detail="not a canonical provision id")
         found = backend.provision(provision_id)
         if found is None:
             raise HTTPException(status_code=404, detail="provision not in the corpus")
+        return found
+
+    @app.get("/provisions/{provision_id}", dependencies=[Depends(authorized)])
+    def provision(provision_id: str, at: dt.date | None = None) -> ProvisionResponse:
+        """One provision by canonical ID (e.g. ``lgpd:art7:incIX``); ``?at=AAAA-MM-DD``
+        returns the wording in force on that date (ADR 0014)."""
+        found = current(provision_id)
+        view = ProvisionView.of(found)
+        as_of = None
+        if at is not None:
+            as_of = wording_on(found.text, backend.history(provision_id), at)
+            if as_of is None:
+                raise HTTPException(status_code=404, detail="provision not in force on that date")
+            view = view.model_copy(update={"text": as_of.text})
         return ProvisionResponse(
-            provision=linked([ProvisionView.of(found)])[0],
+            provision=linked([view])[0],
             document_id=found.document_id,
             amendments=list(found.amendments),
+            as_of=as_of,
+        )
+
+    @app.get("/provisions/{provision_id}/history", dependencies=[Depends(authorized)])
+    def provision_history(provision_id: str) -> HistoryResponse:
+        """Every recorded wording of a provision, oldest first, with its dates."""
+        current(provision_id)
+        history = backend.history(provision_id)
+        return HistoryResponse(
+            provision_id=provision_id, versions=list(history.versions) if history else []
         )
 
     @app.get("/health")

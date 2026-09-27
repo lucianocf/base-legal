@@ -1,3 +1,4 @@
+import datetime as dt
 from collections.abc import Callable
 from pathlib import Path
 from typing import Any
@@ -10,6 +11,7 @@ from fastapi.testclient import TestClient
 from base_legal.api.app import create_app
 from base_legal.chunking.chunker import chunk_document
 from base_legal.config import IngestMode, Settings
+from base_legal.corpus.history import DocumentHistory, ProvisionHistory, Version
 from base_legal.corpus.manifest import Manifest
 from base_legal.corpus.models import Document, DocumentKind, Provision, ProvisionKind
 from base_legal.embeddings.providers import HashingEmbedder
@@ -185,3 +187,65 @@ def test_annex_titles_name_each_regulation(store: Store) -> None:
     vectors = HashingEmbedder().embed_documents([c.content for c in chunks])
     store.replace_document(document, chunks, vectors, "test-hashing")
     assert store.annex_titles() == [("res-anpd-9-2099", "1", title)]
+
+
+def test_earlier_wordings_are_stored_and_served(
+    store: Store,
+    database_url: str,
+    document: Document,
+    manifest: Manifest,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    target = document.in_force()[0]
+    history = DocumentHistory(
+        document_id=document.id,
+        source_sha256=document.source_sha256,
+        provisions=(
+            ProvisionHistory(
+                provision_id=target.id,
+                versions=(
+                    Version(
+                        text="Redação antiga.", introduced_by=None, valid_to=dt.date(2019, 7, 9)
+                    ),
+                    Version(
+                        text=target.text, introduced_by="Lei A", valid_from=dt.date(2019, 7, 9)
+                    ),
+                ),
+            ),
+        ),
+    )
+
+    def ingest(histories: dict[str, DocumentHistory]) -> None:
+        ingest_documents(
+            store,
+            [document],
+            manifest,
+            embeddings_dir=tmp_path,
+            mode=IngestMode.LOCAL,
+            precomputed_model="voyage-4-large",
+            document_embedder=HashingEmbedder(),
+            histories=histories,
+        )
+
+    ingest({})
+    assert store.history(target.id) is None
+    ingest({document.id: history})  # unchanged document: the history is still loaded
+    stored = store.history(target.id)
+    assert stored is not None
+    assert [v.text for v in stored.versions] == ["Redação antiga.", target.text]
+    stale = history.model_copy(update={"source_sha256": "f" * 64})
+    ingest({document.id: stale})  # a stale history is refused, the stored one kept
+    assert store.history(target.id) == stored
+
+    monkeypatch.setattr(anthropic, "Anthropic", _Echo)
+    settings = Settings(database_url=database_url, query_embedder="test-hashing")
+    backend = DatabaseBackend(settings, with_generation=False)
+    try:
+        client = TestClient(create_app(backend, settings))
+        old = client.get(f"/provisions/{target.id}", params={"at": "2019-01-01"}).json()
+        versions = client.get(f"/provisions/{target.id}/history").json()["versions"]
+    finally:
+        backend.close()
+    assert old["provision"]["text"] == "Redação antiga."
+    assert len(versions) == 2

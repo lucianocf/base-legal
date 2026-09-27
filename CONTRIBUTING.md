@@ -82,6 +82,12 @@ committed corpus provision by provision (raw-byte changes alone are ignored);
 `Corpus watch` workflow runs it weekly and opens a draft pull request when the
 law changed.
 
+Earlier wordings (ADR 0014): `corpus build` writes `corpus/history/<doc>.json`
+for compiled texts, and `uv run base-legal corpus acts` records in
+`corpus/acts.yaml` when each amending act came into force, from its own page
+(`--refresh` fetches them again). Run `corpus acts` before `corpus build`
+when an amendment note names a new act, and review both diffs.
+
 ## Golden set
 
 `evals/golden.yaml` holds synthetic questions only, each `unverified` until a

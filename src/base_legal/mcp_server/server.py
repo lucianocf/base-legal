@@ -8,6 +8,7 @@ embedded locally, redacted anyway (defense in depth) and never logged.
 
 from __future__ import annotations
 
+import datetime as dt
 from collections.abc import Mapping, Sequence
 from typing import Protocol
 
@@ -16,6 +17,7 @@ from mcp.types import ToolAnnotations
 from pydantic import BaseModel
 
 from base_legal.config import Settings
+from base_legal.corpus.history import AsOf, ProvisionHistory, Version, wording_on
 from base_legal.corpus.ids import is_valid_id
 from base_legal.corpus.models import Provision
 from base_legal.corpus.xrefs import CrossReference
@@ -33,7 +35,9 @@ Base Legal: Brazilian data protection law (LGPD, the Access to Information Act
 (LAI) and CD/ANPD resolutions), with canonical provision IDs such as
 lgpd:art7:incIX, lai:art31 or res-anpd-15-2024:anx1:art6.
 Use search_provisions to find the provisions relevant to a question (in
-Portuguese), get_provision to read one by ID, and verify_citation to check
+Portuguese), get_provision to read one by ID (with at=AAAA-MM-DD for the wording
+in force on a past date; get_provision_history lists every wording), and
+verify_citation to check
 that a quote appears verbatim in a provision before relying on it. Provisions
 list the other provisions their text cites (references: character offsets and
 target IDs); read those with get_provision when they matter. Cite provision
@@ -47,6 +51,8 @@ class RetrievalBackend(Protocol):
     def provision(self, provision_id: str) -> Provision | None: ...
 
     def references(self, texts: Mapping[str, str]) -> Mapping[str, Sequence[CrossReference]]: ...
+
+    def history(self, provision_id: str) -> ProvisionHistory | None: ...
 
 
 class SearchHit(BaseModel):
@@ -68,6 +74,14 @@ class ProvisionOutput(BaseModel):
     provision: ProvisionView | None
     in_force: bool
     amendments: list[str]
+    as_of: AsOf | None = None
+    note: str | None = None
+    disclaimer: str = DISCLAIMER
+
+
+class HistoryOutput(BaseModel):
+    found: bool
+    versions: list[Version]
     disclaimer: str = DISCLAIMER
 
 
@@ -75,6 +89,15 @@ class VerifyOutput(BaseModel):
     valid: bool
     issue: str | None
     disclaimer: str = DISCLAIMER
+
+
+def _date(value: str | None) -> dt.date | None:
+    if value is None:
+        return None
+    try:
+        return dt.date.fromisoformat(value)
+    except ValueError:
+        raise ValueError("at must be a date in the form AAAA-MM-DD") from None
 
 
 def build_server(backend: RetrievalBackend, settings: Settings | None = None) -> MCPServer:
@@ -113,19 +136,48 @@ def build_server(backend: RetrievalBackend, settings: Settings | None = None) ->
         )
 
     @server.tool(annotations=READ_ONLY)
-    def get_provision(provision_id: str) -> ProvisionOutput:
-        """Read one provision by canonical ID, e.g. lgpd:art7:incIX."""
+    def get_provision(provision_id: str, at: str | None = None) -> ProvisionOutput:
+        """Read one provision by canonical ID, e.g. lgpd:art7:incIX.
+
+        ``at`` (AAAA-MM-DD) returns the wording in force on that date instead.
+        """
         if not is_valid_id(provision_id):
             raise ValueError("not a canonical provision id (e.g. lgpd:art7:incIX)")
+        when = _date(at)
         found = backend.provision(provision_id)
         if found is None:
             return ProvisionOutput(found=False, provision=None, in_force=False, amendments=[])
+        view = ProvisionView.of(found)
+        as_of = None
+        if when is not None:
+            as_of = wording_on(found.text, backend.history(provision_id), when)
+            if as_of is None:
+                return ProvisionOutput(
+                    found=True,
+                    provision=None,
+                    in_force=False,
+                    amendments=list(found.amendments),
+                    note="The provision did not exist yet on that date.",
+                )
+            view = view.model_copy(update={"text": as_of.text})
         return ProvisionOutput(
             found=True,
-            provision=linked([ProvisionView.of(found)])[0],
+            provision=linked([view])[0],
             in_force=found.is_normative,
             amendments=list(found.amendments),
+            as_of=as_of,
         )
+
+    @server.tool(annotations=READ_ONLY)
+    def get_provision_history(provision_id: str) -> HistoryOutput:
+        """Every recorded wording of a provision, oldest first, with the act that
+        introduced it and when it was in force (empty if never amended)."""
+        if not is_valid_id(provision_id):
+            raise ValueError("not a canonical provision id (e.g. lgpd:art7:incIX)")
+        if backend.provision(provision_id) is None:
+            return HistoryOutput(found=False, versions=[])
+        history = backend.history(provision_id)
+        return HistoryOutput(found=True, versions=list(history.versions) if history else [])
 
     @server.tool(annotations=READ_ONLY)
     def verify_citation(provision_id: str, quote: str) -> VerifyOutput:

@@ -1,6 +1,7 @@
 import datetime as dt
 import json
 
+from base_legal.corpus.history import DocumentHistory, ProvisionHistory, Version
 from base_legal.corpus.models import Document, DocumentKind, Provision, ProvisionKind
 from base_legal.corpus.xrefs import CrossReference
 from base_legal.explorer.site import CSP, build_site, linked_text
@@ -58,3 +59,29 @@ def test_corpus_text_is_escaped() -> None:
     assert "<script>" not in rendered
     assert "&lt;script&gt;" in rendered
     assert '"><img' not in rendered
+
+
+def test_earlier_wordings_are_listed_and_escaped() -> None:
+    lgpd = _document("lgpd", ("lgpd:art23", "Redação atual.", False))
+    history = DocumentHistory(
+        document_id="lgpd",
+        source_sha256="a" * 64,
+        provisions=(
+            ProvisionHistory(
+                provision_id="lgpd:art23",
+                versions=(
+                    Version(text="<b>antiga</b>", introduced_by=None, valid_to=dt.date(2019, 7, 9)),
+                    Version(
+                        text="Redação atual.",
+                        introduced_by="Lei nº 13.853, de 2019",
+                        valid_from=dt.date(2019, 7, 9),
+                    ),
+                ),
+            ),
+        ),
+    )
+    page = build_site([lgpd], {"lgpd": history})["lgpd.html"]
+    assert "Redações anteriores (1)" in page
+    assert "? a 2019-07-09 · texto original" in page
+    assert "&lt;b&gt;antiga&lt;/b&gt;" in page
+    assert "<b>antiga" not in page

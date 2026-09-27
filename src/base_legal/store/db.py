@@ -17,6 +17,7 @@ from pgvector.psycopg import register_vector
 from psycopg.rows import dict_row
 
 from base_legal.chunking.chunker import Chunk
+from base_legal.corpus.history import DocumentHistory, ProvisionHistory, Version
 from base_legal.corpus.models import Document, Provision
 from base_legal.embeddings.base import EMBEDDING_DIM, Vectors
 
@@ -60,6 +61,18 @@ CREATE TABLE IF NOT EXISTS chunks (
 CREATE INDEX IF NOT EXISTS chunks_fts_idx ON chunks USING gin (fts);
 CREATE INDEX IF NOT EXISTS chunks_embedding_idx
     ON chunks USING hnsw (embedding vector_cosine_ops);
+
+-- Earlier and current wordings of amended provisions (ADR 0014).
+CREATE TABLE IF NOT EXISTS provision_versions (
+    provision_id  text NOT NULL REFERENCES provisions (id) ON DELETE CASCADE,
+    seq           integer NOT NULL,
+    text          text NOT NULL,
+    introduced_by text,
+    valid_from    date,
+    valid_to      date,
+    review        text,
+    PRIMARY KEY (provision_id, seq)
+);
 
 CREATE TABLE IF NOT EXISTS index_meta (
     key   text PRIMARY KEY,
@@ -254,6 +267,40 @@ class Store:
             "SELECT * FROM provisions WHERE id = ANY(%s)", (list(ids),)
         ).fetchall()
         return {str(r["id"]): _row_to_provision(r) for r in rows}
+
+    def replace_versions(self, history: DocumentHistory) -> int:
+        """Replace the stored wordings of one document's provisions; return how many."""
+        rows = [
+            (h.provision_id, seq, v.text, v.introduced_by, v.valid_from, v.valid_to, v.review)
+            for h in history.provisions
+            for seq, v in enumerate(h.versions)
+        ]
+        with self.conn.transaction():
+            self.conn.execute(
+                "DELETE FROM provision_versions WHERE provision_id IN"
+                " (SELECT id FROM provisions WHERE document_id = %s)",
+                (history.document_id,),
+            )
+            with self.conn.cursor() as cursor:
+                cursor.executemany(
+                    "INSERT INTO provision_versions (provision_id, seq, text, introduced_by,"
+                    " valid_from, valid_to, review) VALUES (%s, %s, %s, %s, %s, %s, %s)",
+                    rows,
+                )
+        return len(rows)
+
+    def history(self, provision_id: str) -> ProvisionHistory | None:
+        rows = self.conn.execute(
+            "SELECT text, introduced_by, valid_from, valid_to, review FROM provision_versions"
+            " WHERE provision_id = %s ORDER BY seq",
+            (provision_id,),
+        ).fetchall()
+        if not rows:
+            return None
+        return ProvisionHistory(
+            provision_id=provision_id,
+            versions=tuple(Version.model_validate(row) for row in rows),
+        )
 
     def normative_ids(self, ids: Sequence[str]) -> set[str]:
         """The subset of ``ids`` that exist and are in force (neither revoked nor vetoed)."""

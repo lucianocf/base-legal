@@ -26,6 +26,7 @@ from base_legal.corpus.pipeline import (
     fetch,
     load_acts,
     load_documents,
+    load_histories,
     parse_source,
     raw_path,
     write_document,
@@ -198,8 +199,9 @@ def corpus_explorer(
 
     settings = _settings()
     documents = load_documents(settings.corpus_dir, Manifest.load(_manifest_path(settings)))
+    histories = load_histories(settings.corpus_dir, [d.id for d in documents])
     out.mkdir(parents=True, exist_ok=True)
-    for name, content in build_site(documents).items():
+    for name, content in build_site(documents, histories).items():
         (out / name).write_text(content, encoding="utf-8")
     typer.echo(f"{len(documents)} act(s) -> {out}")
 
@@ -322,6 +324,7 @@ def ingest(
             mode=mode,
             precomputed_model=settings.document_embedder,
             document_embedder=fallback,
+            histories=load_histories(settings.corpus_dir, [d.id for d in documents]),
         )
     finally:
         store.close()

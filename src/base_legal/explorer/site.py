@@ -15,6 +15,7 @@ import json
 from collections.abc import Iterable, Mapping, Sequence
 from importlib import resources
 
+from base_legal.corpus.history import DocumentHistory, ProvisionHistory, Version
 from base_legal.corpus.models import Document, Provision
 from base_legal.corpus.xrefs import CrossReference, find_candidates, regulation_index, resolve
 
@@ -73,7 +74,35 @@ def _status(provision: Provision) -> str:
     return ""
 
 
-def _document_page(document: Document, references: Mapping[str, Sequence[CrossReference]]) -> str:
+def _period(version: Version) -> str:
+    start = version.valid_from.isoformat() if version.valid_from else "?"
+    end = version.valid_to.isoformat() if version.valid_to else "hoje"
+    return f"{start} a {end}"
+
+
+def _earlier(history: ProvisionHistory | None) -> str:
+    """Earlier wordings, oldest first, in a collapsed block (no script needed)."""
+    if history is None or len(history.versions) < 2:
+        return ""
+    items = []
+    for version in history.versions[:-1]:
+        source = html.escape(version.introduced_by or "texto original")
+        items.append(
+            f'<li><span class="period">{_period(version)} · {source}</span> '
+            f"{html.escape(version.text)}</li>"
+        )
+    count = len(history.versions) - 1
+    return (
+        f'<details class="history"><summary>Redações anteriores ({count})</summary>'
+        f"<ol>{''.join(items)}</ol></details>"
+    )
+
+
+def _document_page(
+    document: Document,
+    references: Mapping[str, Sequence[CrossReference]],
+    histories: Mapping[str, ProvisionHistory],
+) -> str:
     body = [
         '<p class="nav"><a href="index.html">← Todos os atos</a></p>',
         f"<h1>{html.escape(document.title)}</h1>",
@@ -104,6 +133,9 @@ def _document_page(document: Document, references: Mapping[str, Sequence[CrossRe
             f'<a class="label" href="#{anchor}" title="{anchor}">{label}</a> '
             f"{_status(provision)}{text}</p>"
         )
+        earlier = _earlier(histories.get(provision.id))
+        if earlier:
+            body.append(earlier)
     return _page(document.title, body)
 
 
@@ -117,7 +149,9 @@ def _headings(provision: Provision) -> tuple[str, ...]:
     return provision.path[: len(provision.path) - _levels(provision)]
 
 
-def build_site(documents: Sequence[Document]) -> dict[str, str]:
+def build_site(
+    documents: Sequence[Document], histories: Mapping[str, DocumentHistory] | None = None
+) -> dict[str, str]:
     """Relative path -> file content for the whole explorer."""
     existing = {p.id for d in documents for p in d.provisions if p.is_normative}
     regulations = regulation_index(
@@ -135,7 +169,9 @@ def build_site(documents: Sequence[Document]) -> dict[str, str]:
             for p in document.provisions
             if p.is_normative
         }
-        files[f"{document.id}.html"] = _document_page(document, references)
+        history = (histories or {}).get(document.id)
+        by_id = history.by_id() if history is not None else {}
+        files[f"{document.id}.html"] = _document_page(document, references, by_id)
         in_force = len(document.in_force())
         index_rows.append(
             f'<li><a href="{document.id}.html">{html.escape(document.title)}</a> '

@@ -8,6 +8,7 @@ from the raw file, so CI never depends on government websites.
 from __future__ import annotations
 
 import datetime as dt
+from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -117,6 +118,15 @@ def build_history(entry: ManifestEntry, raw_dir: Path, document: Document) -> Do
 
 def history_path(corpus_dir: Path, doc_id: str) -> Path:
     return corpus_dir / "history" / f"{doc_id}.json"
+
+
+def load_histories(corpus_dir: Path, doc_ids: Iterable[str]) -> dict[str, DocumentHistory]:
+    histories: dict[str, DocumentHistory] = {}
+    for doc_id in doc_ids:
+        path = history_path(corpus_dir, doc_id)
+        if path.exists():
+            histories[doc_id] = DocumentHistory.model_validate_json(path.read_text("utf-8"))
+    return histories
 
 
 def load_acts(corpus_dir: Path) -> ActsFile:

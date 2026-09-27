@@ -7,6 +7,7 @@ from collections.abc import Mapping
 from typing import Any
 
 from base_legal.config import Settings
+from base_legal.corpus.history import ProvisionHistory
 from base_legal.corpus.models import Provision
 from base_legal.corpus.xrefs import CrossReference, find_candidates, regulation_index, resolve
 from base_legal.embeddings.base import Embedder, check_compatible
@@ -102,6 +103,10 @@ class DatabaseBackend:
     def provision(self, provision_id: str) -> Provision | None:
         with self._lock:
             return self.store.provisions([provision_id]).get(provision_id)
+
+    def history(self, provision_id: str) -> ProvisionHistory | None:
+        with self._lock:
+            return self.store.history(provision_id)
 
     def references(self, texts: Mapping[str, str]) -> dict[str, tuple[CrossReference, ...]]:
         """Cross-references in each provision's text (id -> text) that resolve in the index."""

@@ -56,7 +56,8 @@ docker compose exec app base-legal ask "Qual o prazo para comunicar um incidente
 ```
 
 Depois abra <http://127.0.0.1:8000> para a interface web local, ou use a API
-(`POST /ask`, `POST /search`, `GET /provisions/{id}`, documentação em `/docs`).
+(`POST /ask`, `POST /search`, `GET /provisions/{id}`, `GET /provisions/{id}?at=AAAA-MM-DD`
+para a redação vigente numa data passada, documentação em `/docs`).
 
 Sem Docker: `uv sync --extra local`, `uv run base-legal model fetch`, aponte
 `DATABASE_URL` para um PostgreSQL com pgvector e use os mesmos comandos

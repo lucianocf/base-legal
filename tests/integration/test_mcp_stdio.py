@@ -58,7 +58,12 @@ def test_stdio_server_end_to_end(
             return tools, found, check
 
     tools, found, check = anyio.run(go)
-    assert len(tools.tools) == 3
+    assert {t.name for t in tools.tools} == {
+        "search_provisions",
+        "get_provision",
+        "get_provision_history",
+        "verify_citation",
+    }
     assert not found.is_error
     assert found.structured_content["hits"][0]["provision"]["id"] == "lgpd:art7:incIX"
     assert check.structured_content["valid"] is True

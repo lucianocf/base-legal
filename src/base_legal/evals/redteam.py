@@ -18,6 +18,7 @@ from typing import Literal, Protocol
 import yaml
 from pydantic import BaseModel, ConfigDict, Field
 
+from base_legal.corpus.history import ProvisionHistory
 from base_legal.corpus.models import Provision, ProvisionKind
 from base_legal.corpus.xrefs import CrossReference
 from base_legal.generation.answer import Answer, RefusalCause, Status
@@ -256,6 +257,9 @@ class _NoWorkBackend:
 
     def references(self, texts: Mapping[str, str]) -> dict[str, tuple[CrossReference, ...]]:
         return {}
+
+    def history(self, provision_id: str) -> ProvisionHistory | None:
+        return None
 
     def health(self) -> dict[str, str]:
         return {}

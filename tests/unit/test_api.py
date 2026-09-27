@@ -1,3 +1,4 @@
+import datetime as dt
 import logging
 import re
 from collections.abc import Mapping
@@ -9,6 +10,7 @@ from pydantic import SecretStr
 
 from base_legal.api.app import CSP, RateLimiter, create_app
 from base_legal.config import Settings
+from base_legal.corpus.history import ProvisionHistory, Version
 from base_legal.corpus.models import Provision, ProvisionKind
 from base_legal.corpus.xrefs import CrossReference, find_candidates, resolve
 from base_legal.generation.answer import (
@@ -47,6 +49,23 @@ ART10 = Provision(
 )
 
 
+HISTORIES = {
+    ART10.id: ProvisionHistory(
+        provision_id=ART10.id,
+        versions=(
+            Version(text="Redação original.", introduced_by=None, valid_to=dt.date(2019, 7, 9)),
+            Version(text=ART10.text, introduced_by="Lei A", valid_from=dt.date(2019, 7, 9)),
+        ),
+    ),
+    ART7_IX.id: ProvisionHistory(
+        provision_id=ART7_IX.id,
+        versions=(
+            Version(text=ART7_IX.text, introduced_by="Lei B", valid_from=dt.date(2020, 1, 1)),
+        ),
+    ),
+}
+
+
 class _Backend:
     def __init__(self) -> None:
         self.asked: list[str] = []
@@ -74,6 +93,9 @@ class _Backend:
 
     def provision(self, provision_id: str) -> Provision | None:
         return {p.id: p for p in (ART7_IX, ART10)}.get(provision_id)
+
+    def history(self, provision_id: str) -> ProvisionHistory | None:
+        return HISTORIES.get(provision_id)
 
     def references(self, texts: Mapping[str, str]) -> dict[str, tuple[CrossReference, ...]]:
         existing = {ART7_IX.id, ART10.id}
@@ -252,3 +274,24 @@ def test_ui_renders_text_only_and_has_no_inline_code(client: TestClient) -> None
 def test_static_files_are_packaged() -> None:
     names = {p.name for p in resources.files("base_legal.api").joinpath("static").iterdir()}
     assert {"index.html", "app.js", "style.css"} <= names
+
+
+def test_provision_wording_on_a_past_date(client: TestClient) -> None:
+    old = client.get("/provisions/lgpd:art10", params={"at": "2019-01-15"}).json()
+    assert old["provision"]["text"] == "Redação original."
+    assert old["as_of"]["certain"] is False  # the original text's vigência is not modeled
+    new = client.get("/provisions/lgpd:art10", params={"at": "2020-01-15"}).json()
+    assert new["provision"]["text"].startswith("O legítimo interesse")
+    assert new["as_of"]["introduced_by"] == "Lei A"
+    assert new["as_of"]["certain"] is True
+    # added by a later act: not in force yet
+    early = client.get("/provisions/lgpd:art7:incIX", params={"at": "2019-06-01"})
+    assert early.status_code == 404
+    assert early.json()["detail"] == "provision not in force on that date"
+    assert client.get("/provisions/lgpd:art10", params={"at": "ontem"}).status_code == 422
+
+
+def test_provision_history(client: TestClient) -> None:
+    history = client.get("/provisions/lgpd:art10/history").json()
+    assert [v["introduced_by"] for v in history["versions"]] == [None, "Lei A"]
+    assert client.get("/provisions/lgpd:art99/history").status_code == 404

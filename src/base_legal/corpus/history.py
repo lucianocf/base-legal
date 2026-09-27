@@ -178,6 +178,49 @@ def version_at(history: ProvisionHistory, when: dt.date) -> tuple[Version | None
     return chosen, certain
 
 
+UNAMENDED_REVIEW = "no recorded amendments: the current wording, subject to the act's vigência"
+
+
+class AsOf(BaseModel):
+    """A provision's wording on a given date, with how that was established."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    as_of: dt.date
+    text: str
+    introduced_by: str | None
+    valid_from: dt.date | None
+    valid_to: dt.date | None
+    certain: bool
+    review: str | None
+
+
+def wording_on(current_text: str, history: ProvisionHistory | None, when: dt.date) -> AsOf | None:
+    """The wording in force on ``when``; ``None`` if the provision did not exist yet."""
+    if history is None:
+        return AsOf(
+            as_of=when,
+            text=current_text,
+            introduced_by=None,
+            valid_from=None,
+            valid_to=None,
+            certain=False,
+            review=UNAMENDED_REVIEW,
+        )
+    version, certain = version_at(history, when)
+    if version is None:
+        return None
+    return AsOf(
+        as_of=when,
+        text=version.text,
+        introduced_by=version.introduced_by,
+        valid_from=version.valid_from,
+        valid_to=version.valid_to,
+        certain=certain,
+        review=version.review,
+    )
+
+
 def _runs(blocks: Sequence[tuple[str, bool]]) -> list[tuple[int, list[str]]]:
     """Maximal runs of struck lines as (0-based index of the first line, lines)."""
     runs: list[tuple[int, list[str]]] = []
