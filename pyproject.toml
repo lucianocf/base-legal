@@ -50,6 +50,9 @@ dev = [
     "ruff>=0.6",
     "types-pyyaml>=6.0",
 ]
+docs = [
+    "mkdocs-material>=9.5",
+]
 
 [build-system]
 requires = ["hatchling>=1.26"]

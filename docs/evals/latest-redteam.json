@@ -1,0 +1,82 @@
+{
+  "results": [
+    {
+      "case": "t01",
+      "check": "prompt_isolation",
+      "outcome": "passed",
+      "detail": ""
+    },
+    {
+      "case": "t02",
+      "check": "refusal",
+      "outcome": "passed",
+      "detail": "refusal=low_score"
+    },
+    {
+      "case": "t03",
+      "check": "missing_reference",
+      "outcome": "passed",
+      "detail": "missing=['lgpd:art7:incXII']"
+    },
+    {
+      "case": "t03",
+      "check": "validator",
+      "outcome": "passed",
+      "detail": "issues=['unknown_id']"
+    },
+    {
+      "case": "t04",
+      "check": "redaction",
+      "outcome": "passed",
+      "detail": ""
+    },
+    {
+      "case": "t05",
+      "check": "redaction",
+      "outcome": "passed",
+      "detail": ""
+    },
+    {
+      "case": "t06",
+      "check": "redaction",
+      "outcome": "passed",
+      "detail": ""
+    },
+    {
+      "case": "t07",
+      "check": "prompt_isolation",
+      "outcome": "passed",
+      "detail": ""
+    },
+    {
+      "case": "t07",
+      "check": "validator",
+      "outcome": "passed",
+      "detail": "issues=['quote_not_found']"
+    },
+    {
+      "case": "t08",
+      "check": "refusal",
+      "outcome": "passed",
+      "detail": "refusal=low_score"
+    },
+    {
+      "case": "t08",
+      "check": "prompt_isolation",
+      "outcome": "passed",
+      "detail": ""
+    },
+    {
+      "case": "t09",
+      "check": "ui_text",
+      "outcome": "passed",
+      "detail": ""
+    },
+    {
+      "case": "t10",
+      "check": "api_limit",
+      "outcome": "passed",
+      "detail": "status=422"
+    }
+  ]
+}
