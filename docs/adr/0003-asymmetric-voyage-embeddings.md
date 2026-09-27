@@ -62,7 +62,9 @@ Qwen3-Embedding-0.6B (strong, Apache 2.0, fully local; kept as plan B).
    no I/O). It was reviewed and pinned at revision `67fabc9`; every file's
    SHA-256 is in `src/base_legal/embeddings/voyage-4-nano.lock.json` and is
    re-verified on every load (`base-legal model fetch` downloads it). The code
-   targets transformers 4.x, so the `local` extra pins `transformers<5`.
+   targets transformers 4.x, so the `local` extra pinned `transformers<5`.
+   **Superseded in part by [ADR 0012](0012-load-voyage-4-nano-without-remote-code.md)
+   (2026-09-27):** nano now loads without remote code, on transformers 5.x.
 7. **Behind an `Embedder` protocol**, so plan B can be swapped in by configuration.
 
 ### Redistributing the precomputed vectors

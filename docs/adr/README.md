@@ -18,5 +18,6 @@ decision, add a new ADR that supersedes the old one and mark the old one as
 | [0009](0009-no-redistribution-of-voyage-vectors-yet.md) | Do not redistribute voyage-4-large document vectors (yet) | Proposed |
 | [0010](0010-annex-segment-in-provision-ids.md) | Annex segment in canonical provision IDs | Proposed |
 | [0011](0011-one-cited-document-per-provision.md) | Generation: one cited document per provision | Proposed |
+| [0012](0012-load-voyage-4-nano-without-remote-code.md) | Load voyage-4-nano without remote code, on transformers 5.x | Proposed |
 
 Template: [`0000-template.md`](0000-template.md).

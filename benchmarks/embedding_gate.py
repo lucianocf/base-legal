@@ -7,6 +7,7 @@ only ever saw public law text (``corpus embed``, ADR 0009 vectors kept
 local). Qwen3 and BGE-M3 are pinned in ``benchmarks/models`` and are never
 production dependencies.
 
+    uv sync --extra local --extra bench
     uv run python benchmarks/embedding_gate.py --configs B0,B1,B2,B3,B4
 """
 

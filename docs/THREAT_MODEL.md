@@ -82,7 +82,7 @@ flowchart LR
 | S9 | `base-legal serve` binds 127.0.0.1; compose publishes on 127.0.0.1; optional `BASE_LEGAL_API_KEY` (`tests/unit/test_api.py::test_optional_api_key`) |
 | S10 | Content-free request log (method, path, status, timing; no body, no query string, no client IP; uvicorn's access log disabled) |
 | S11 | `tests/unit/test_api.py::test_ui_renders_text_only_and_has_no_inline_code` and `test_health_has_disclaimer_and_security_headers`; `evals/redteam.yaml` t09 |
-| S12 | `tests/unit/test_model_store.py`; `Dockerfile` fetches and verifies every file's SHA-256 at build time; the runtime is offline (`HF_HUB_OFFLINE=1`) and re-verifies on load; benchmark-only models pinned the same way (`benchmarks/models/`) |
+| S12 | No remote code is executed: voyage-4-nano runs on transformers' own Qwen3 (ADR 0012, `tests/integration/test_nano.py` checks it against the vendor code); `tests/unit/test_model_store.py`; `Dockerfile` fetches and verifies every file's SHA-256 at build time; the runtime is offline (`HF_HUB_OFFLINE=1`) and re-verifies on load; benchmark-only models pinned the same way (`benchmarks/models/`) |
 | S13 | `tests/unit/test_embeddings.py` and `tests/integration/test_store_and_search.py::test_precomputed_tampering_is_rejected`; vectors are not redistributed (ADR 0009) |
 
 ## 5. OWASP Top 10 for LLM Applications (2025)
