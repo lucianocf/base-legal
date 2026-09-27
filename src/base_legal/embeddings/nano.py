@@ -72,7 +72,9 @@ class NanoEmbedder:
     def __init__(self, path: Path, model: str = "voyage-4-nano") -> None:
         import torch
         from transformers import AutoTokenizer
+        from transformers.utils import logging as hf_logging
 
+        hf_logging.disable_progress_bar()  # keep CLI output and server logs clean
         self._torch = torch
         self._model_name = model
         prompts = json.loads((path / "config_sentence_transformers.json").read_text("utf-8"))

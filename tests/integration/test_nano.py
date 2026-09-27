@@ -44,3 +44,11 @@ def test_shape_normalization_and_no_remote_code(nano) -> None:  # type: ignore[n
     assert nano.embed_documents([]).shape == (0, 1024)
     assert type(nano).__module__ == "base_legal.embeddings.nano"
     assert not hasattr(nano, "_backend")  # no sentence-transformers / remote code path
+
+
+def test_loading_prints_no_progress_bar(nano) -> None:  # type: ignore[no-untyped-def]
+    # Regression: every CLI command and the server log printed transformers'
+    # "Loading weights" bar to stderr.
+    from transformers.utils import logging as hf_logging
+
+    assert not hf_logging.is_progress_bar_enabled()
