@@ -65,11 +65,12 @@ Qwen3-Embedding-0.6B (strong, Apache 2.0, fully local; kept as plan B).
    targets transformers 4.x, so the `local` extra pins `transformers<5`.
 7. **Behind an `Embedder` protocol**, so plan B can be swapped in by configuration.
 
-### Bonus pending verification
-Distributing the precomputed `voyage-4-large` vectors in the repo means end
-users need **no Voyage key at all**. `TODO(verify)`: whether Voyage's terms
-allow redistributing generated embeddings. If they do not, users run
-`api` mode once (free tier) or `local` mode.
+### Redistributing the precomputed vectors
+Distributing the precomputed `voyage-4-large` vectors in the repo would mean
+end users need **no Voyage key at all**. Checked 2026-09-27: Voyage's terms
+(last updated 2026-05-27) are **silent** on outputs, so the vectors are not
+committed until Voyage confirms in writing. Users run `api` mode once
+(free tier) or `local` mode. See [ADR 0009](0009-no-redistribution-of-voyage-vectors-yet.md).
 
 ### Validation gate (Weekend 1, ~2 h)
 Benchmark on the golden set before locking this in:

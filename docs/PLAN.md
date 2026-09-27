@@ -43,7 +43,8 @@ knowledge base.
   with Reciprocal Rank Fusion. **Asymmetric Voyage 4 embeddings** (ADR 0003):
   the law is embedded once with `voyage-4-large` via the API; questions are
   embedded **locally** with the open-weight `voyage-4-nano`, so questions never
-  reach Voyage. Precomputed document vectors ship in the repo if Voyage's terms allow.
+  reach Voyage. Precomputed document vectors are **not** shipped: Voyage's terms
+  are silent on redistributing outputs (ADR 0009), so the zero-key path is `local` mode.
 - **Grounded generation** with Claude (Haiku 4.5 default, Sonnet 5 configurable),
   citations mapped to provision IDs, **strict refusal** when unsupported.
 - **Citation validator:** every cited ID must exist and every quoted span must
@@ -171,7 +172,7 @@ are confirmed; 1/2021, 2/2022 and 4/2023 come from memory.
 | Resolutions published in different layouts (DOU vs gov.br) | One parser per source layout behind one interface; manual checks on small resolutions |
 | Voyage trains on customer data by default | Only public law text is sent to Voyage; questions are embedded locally (ADR 0003) |
 | `voyage-4-nano` has few independent benchmarks | Validation gate on the golden set; plan B is Qwen3-Embedding-0.6B (ADR 0003) |
-| Voyage terms may forbid redistributing vectors | `TODO(verify)`; fallback: users run `api` ingest once (free tier) or `local` mode |
+| Voyage terms may forbid redistributing vectors | Checked 2026-09-27: the terms are silent, so vectors are not committed (ADR 0009); users run `api` ingest once (free tier) or `local` mode. Written confirmation from Voyage would reopen this |
 | Hallucinated citations | Validator + strict refusal; tested in CI |
 | Scope creep (20 h budget) | Cut order in §4; everything else is roadmap |
 | Accidental employer reference | Pre-publish grep checklist + manual review (§9) |
