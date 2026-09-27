@@ -154,3 +154,18 @@ def test_badges(tmp_path: Path) -> None:
     assert badge("x", 0.2, good=0.65, fair=0.5)["color"] == "red"
     write_badge(tmp_path / "b" / "r.json", "red-team", 1.0, good=1.0, fair=0.9)
     assert json.loads((tmp_path / "b" / "r.json").read_text())["message"] == "100%"
+
+
+def test_ui_check_catches_upper_case_inline_scripts(monkeypatch: pytest.MonkeyPatch) -> None:
+    # Regression for CodeQL py/bad-tag-filter: <SCRIPT> is as executable as <script>.
+    import base_legal.api.app as api
+
+    real_static = api._static
+    monkeypatch.setattr(
+        api,
+        "_static",
+        lambda name: "<SCRIPT>alert(1)</SCRIPT>" if name == "index.html" else real_static(name),
+    )
+    outcome, detail = rt._ui_text()
+    assert outcome is Outcome.FAILED
+    assert "inline script" in detail

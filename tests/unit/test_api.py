@@ -206,7 +206,7 @@ def test_ui_renders_text_only_and_has_no_inline_code(client: TestClient) -> None
     assert page.status_code == 200
     assert page.headers["content-security-policy"] == CSP
     html = page.text
-    assert re.search(r"<script(?![^>]*\bsrc=)[^>]*>", html) is None  # no inline script
+    assert re.search(r"<script(?![^>]*\bsrc=)[^>]*>", html, re.IGNORECASE) is None
     assert "style=" not in html
     assert " on" + "click=" not in html
     js = client.get("/static/app.js")

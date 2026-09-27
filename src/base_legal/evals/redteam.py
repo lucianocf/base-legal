@@ -281,7 +281,7 @@ def _ui_text() -> tuple[Outcome, str]:
     problems = []
     if "script-src 'self'" not in csp or "unsafe-inline" in csp:
         problems.append("CSP allows inline scripts")
-    if re.search(r"<script(?![^>]*\bsrc=)[^>]*>", page.text):
+    if re.search(r"<script(?![^>]*\bsrc=)[^>]*>", page.text, re.IGNORECASE):
         problems.append("inline script in the page")
     code = re.sub(r"//.*", "", script.text)  # comments may mention what is forbidden
     if re.search(r"\binnerHTML\b|insertAdjacentHTML|outerHTML|document\.write", code):
