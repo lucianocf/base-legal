@@ -57,7 +57,7 @@ Setup fixes:
 |---|---|---|
 | M1 Law vectors (voyage-4-large) | ✅ done (vectors **not** committed) | 435 LGPD vectors generated. Voyage ToS (2026-05-27) is silent on outputs → not redistributed ([ADR 0009](../adr/0009-no-redistribution-of-voyage-vectors-yet.md)); vectors stay local with a git-ignored sidecar. Free tier (3 RPM / 10K TPM) forced token-budgeted batching + backoff. |
 | M2 CD/ANPD resolutions | ✅ done | 6 resolutions (846 provisions) confirmed against the ANPD index of regulations; numbers, dates, ementas and amendments verified (Res. 1/2021 ← Res. 4/2023; Res. 2/2022 ← Res. 15/2024; Res. 19/2024 ← DOU correction of 18/08/2025, Annex II only). New `dou` and `govbr` layouts, annex IDs ([ADR 0010](../adr/0010-annex-segment-in-provision-ids.md)). Output reviewed: every provision text is verbatim in its official page (3 exceptions, all "(...)" spacing in quoted amendments, checked by hand); article numbering has no gaps. Res. 19/2024 Annex II (standard clauses) is a follow-up. |
-| M3 Golden set + retrieval eval | pending | |
+| M3 Golden set + retrieval eval | ✅ done | `evals/golden.yaml` (45 answerable + 8 must-refuse, all `unverified`) and `evals/redteam.yaml` (10 cases with deterministic checks). All draft IDs exist; ⚠ rows resolved to the regulations' annex articles; g15/g16 narrowed to the exact alíneas. Stratified dev/holdout (31+5 / 14+3). `base-legal eval retrieval` → JSON + Markdown. |
 | M4 Embedding gate + tuning | pending | |
 | M5 Grounded generation | pending | |
 | M6 API + UI | pending | |
@@ -69,7 +69,19 @@ Setup fixes:
 
 ## Metrics (before → after)
 
-_Filled in from M3 onwards._
+Baseline ("before"): full corpus (7 acts, 1,281 chunks), `local` mode
+(voyage-4-nano for documents and questions), hybrid RRF, no refusal
+threshold. Golden set of 2026-09-27.
+
+| Split | recall@1 | recall@5 | recall@10 | MRR | Refusal acc. | False refusals | p50 / p95 |
+|---|---|---|---|---|---|---|---|
+| dev (31 + 5) | 19.4 % | 33.9 % | 50.0 % | 0.292 | 40.0 % | 0.0 % | 148 / 177 ms |
+| holdout (14 + 3) | 21.4 % | 42.9 % | 67.9 % | 0.326 | 33.3 % | 0.0 % | 146 / 198 ms |
+
+Main failure pattern: children crowd out the parent the question is about
+(art. 7 → art. 7 § 7; art. 18 → §§ 1–3; Res. 15 art. 6 → § 1), and the two
+known failures (g43 "vazamento… avisar a ANPD", g44 "levar meus dados para
+outra empresa") miss.
 
 ## Decisions
 
