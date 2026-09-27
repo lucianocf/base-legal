@@ -36,8 +36,11 @@ dependencies = [
 # Document embeddings via the Voyage API (maintainers / `api` ingest mode).
 voyage = ["voyageai>=0.3"]
 # Local query embeddings with open weights (voyage-4-nano). Heavy: pulls torch.
-# voyage-4-nano remote code targets transformers 4.x (fails on 5.x).
-local = ["sentence-transformers>=5.0,<6", "transformers>=4.51,<5", "torch>=2.6"]
+# Loaded without remote code (ADR 0012); transformers >= 5.10 carries the fixes
+# for the transformers 4.x advisories (e.g. CVE-2026-4372, CVE-2026-9856).
+local = ["transformers>=5.10,<6", "torch>=2.6"]
+# Benchmark-only models (embedding gate, ADR 0003); never a runtime dependency.
+bench = ["sentence-transformers>=5.0,<6"]
 
 [project.scripts]
 base-legal = "base_legal.cli.app:main"
@@ -89,7 +92,7 @@ ignore_missing_imports = true
 # Optional extras: type-check the same whether or not they are installed
 # (voyageai ships a py.typed without re-exporting ``Client``).
 [[tool.mypy.overrides]]
-module = ["voyageai", "voyageai.*"]
+module = ["voyageai", "voyageai.*", "torch", "torch.*", "transformers", "transformers.*"]
 follow_imports = "skip"
 
 [tool.pytest.ini_options]

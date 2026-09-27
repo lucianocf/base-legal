@@ -60,7 +60,9 @@ def test_shipped_nano_lock() -> None:
     lock = load_lock("voyage-4-nano")
     assert lock.license == "apache-2.0"
     assert len(lock.revision) == 40
-    assert lock.trust_remote_code
-    assert lock.remote_code is not None
-    assert set(lock.remote_code.files) <= set(lock.files)
+    # Loaded by base_legal.embeddings.nano; the repo's remote code is never run (ADR 0012).
+    assert not lock.trust_remote_code
+    assert lock.remote_code is None
+    assert lock.note is not None
+    assert "ADR 0012" in lock.note
     assert "model.safetensors" in lock.files

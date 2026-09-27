@@ -12,6 +12,7 @@ from base_legal.embeddings.providers import (
 )
 
 TEST_EMBEDDER = "test-hashing"
+NANO = "voyage-4-nano"
 
 
 def make_query_embedder(settings: Settings) -> Embedder:
@@ -20,7 +21,11 @@ def make_query_embedder(settings: Settings) -> Embedder:
         return HashingEmbedder()
     lock = load_lock(settings.query_embedder)
     directory = settings.models_dir / settings.query_embedder
-    verify_model(lock, directory)  # raises before any model code is imported
+    verify_model(lock, directory)  # raises before any model file is read
+    if settings.query_embedder == NANO:
+        from base_legal.embeddings.nano import NanoEmbedder  # optional: `--extra local`
+
+        return NanoEmbedder(directory, model=NANO)
     return LocalSentenceTransformerEmbedder(
         path=directory,
         model=settings.query_embedder,

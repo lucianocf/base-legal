@@ -2,11 +2,7 @@
   "repo": "voyageai/voyage-4-nano",
   "revision": "67fabc9bef010dabc5f6024aa1b1b6b93410426f",
   "license": "apache-2.0",
-  "remote_code": {
-    "reviewed": true,
-    "files": ["modeling_qwen3_bidirectional.py"],
-    "review_note": "84 lines; imports only torch/transformers; no I/O, network, subprocess, exec or eval. Makes Qwen3 attention bidirectional and adds a linear head. Reviewed 2026-09-26."
-  },
+  "remote_code": null,
   "files": {
     "1_Pooling/config.json": "2bc529695125f68de57d1fd347e3d2920b993bc635c5f4f09a45e130c102a989",
     "LICENSE.txt": "6128fb091df68c86035ebf80fde97956e9126c47ad90c19631f34cd98afbfe6c",
@@ -21,5 +17,6 @@
     "tokenizer.json": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539",
     "tokenizer_config.json": "58c4abbc36eeccd8b3c8453f262225e8f2803855c88790760b618f4cd9e43be9",
     "vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
-  }
+  },
+  "note": "Loaded without remote code by base_legal.embeddings.nano (ADR 0012). modeling_qwen3_bidirectional.py (84 lines, reviewed 2026-09-26) stays pinned for completeness but is never imported."
 }
