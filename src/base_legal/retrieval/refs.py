@@ -7,6 +7,7 @@ search results (ADR 0004). A reference to a provision that does not exist
 
 from __future__ import annotations
 
+import dataclasses
 import re
 
 from base_legal.corpus.ids import ProvisionRef, article_key, inciso_key, paragraph_key
@@ -57,3 +58,15 @@ def find_references(question: str) -> list[ProvisionRef]:
         if ref not in refs:
             refs.append(ref)
     return refs
+
+
+def candidate_ids(ref: ProvisionRef) -> list[str]:
+    """Canonical IDs a reference may denote, most likely first.
+
+    "Art. 6 da Resolução CD/ANPD nº 15/2024" colloquially means art. 6 of the
+    regulation the resolution approves in its annex (ADR 0010), so for
+    resolutions the annex article is tried before the enacting article.
+    """
+    if ref.annex is None and ref.doc.startswith("res-"):
+        return [str(dataclasses.replace(ref, annex="1")), str(ref)]
+    return [str(ref)]

@@ -8,7 +8,7 @@ from typing import Protocol
 from base_legal.corpus.models import Provision
 from base_legal.embeddings.base import Embedder, Vectors
 from base_legal.retrieval.fusion import reciprocal_rank_fusion
-from base_legal.retrieval.refs import find_references
+from base_legal.retrieval.refs import candidate_ids, find_references
 from base_legal.store.db import Ranked
 
 
@@ -44,10 +44,16 @@ class Retriever:
 
     def search(self, question: str, k: int = 8) -> SearchResult:
         """``question`` must already be redacted by :mod:`base_legal.privacy`."""
-        references = [str(r) for r in find_references(question)]
-        found = self.backend.provisions(references)
-        explicit = [ref for ref in references if ref in found and found[ref].is_normative]
-        missing = tuple(ref for ref in references if ref not in found)
+        candidates = [candidate_ids(r) for r in find_references(question)]
+        found = self.backend.provisions([c for group in candidates for c in group])
+        explicit: list[str] = []
+        missing: list[str] = []
+        for group in candidates:
+            match = next((c for c in group if c in found), None)
+            if match is None:
+                missing.append(group[-1])
+            elif found[match].is_normative and match not in explicit:
+                explicit.append(match)
 
         lexical = self.backend.lexical(question, self.candidate_pool)
         dense = self.backend.dense(self.embedder.embed_query(question), self.candidate_pool)
@@ -70,4 +76,4 @@ class Retriever:
             if pid in provisions
         )
         best = max((r.score for r in dense), default=None)
-        return SearchResult(hits=hits, best_similarity=best, missing_references=missing)
+        return SearchResult(hits=hits, best_similarity=best, missing_references=tuple(missing))

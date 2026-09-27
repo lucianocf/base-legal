@@ -159,7 +159,7 @@ with `output_config.format`).
 
 ## 4. Canonical provision IDs
 
-Format: `{doc}:{art}[:{par}][:{inc}][:{ali}][:{item}]`
+Format: `{doc}[:{anx}]:{art}[:{par}][:{inc}][:{ali}][:{item}]` (annex segment: ADR 0010)
 
 | Provision | ID |
 |---|---|
@@ -169,12 +169,12 @@ Format: `{doc}:{art}[:{par}][:{inc}][:{ali}][:{item}]`
 | LGPD art. 48, § 1º, inciso III | `lgpd:art48:par1:incIII` |
 | LGPD art. 24, parágrafo único | `lgpd:art24:paru` |
 | LGPD art. 55-J, inciso IV | `lgpd:art55J:incIV` |
-| Res. 15/2024, art. 6 | `res-anpd-15-2024:art6` |
-| Annex of Res. 19/2024, clause | `res-anpd-19-2024:anx1:…` (defined when parsing) |
-
 | LGPD art. 65, inciso I-A | `lgpd:art65:incI-A` |
+| Res. 15/2024, art. 1 (enacting article) | `res-anpd-15-2024:art1` |
+| Res. 15/2024, annex (the regulation), art. 6 | `res-anpd-15-2024:anx1:art6` |
+| Res. 19/2024, Annex I, art. 2, inciso I | `res-anpd-19-2024:anx1:art2:incI` |
 
-Rules: roman numerals for incisos (as in the source), lowercase letters for
+Rules: annexes in Arabic numerals (`ANEXO` alone is `anx1`), roman numerals for incisos (as in the source), lowercase letters for
 alíneas. Article suffixes are appended in uppercase without the hyphen (`55J`,
 unambiguous after digits). Inciso suffixes **keep the hyphen** (`I-A`),
 because otherwise `I-C` would read as the roman numeral `IC`. IDs are

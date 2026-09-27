@@ -2,7 +2,7 @@ import pytest
 
 from base_legal.corpus.ids import ProvisionRef
 from base_legal.retrieval.fusion import reciprocal_rank_fusion
-from base_legal.retrieval.refs import find_references
+from base_legal.retrieval.refs import candidate_ids, find_references
 
 
 def test_rrf_rewards_agreement() -> None:
@@ -51,3 +51,10 @@ def test_find_references(question: str, expected: list[str]) -> None:
 def test_references_are_structured() -> None:
     (ref,) = find_references("art. 7º, IX")
     assert ref == ProvisionRef(doc="lgpd", article="7", inciso="IX")
+
+
+def test_resolution_references_prefer_the_annex_regulation() -> None:
+    (ref,) = find_references("art. 6 da Resolução CD/ANPD nº 15/2024")
+    assert candidate_ids(ref) == ["res-anpd-15-2024:anx1:art6", "res-anpd-15-2024:art6"]
+    (law,) = find_references("art. 6 da LGPD")
+    assert candidate_ids(law) == ["lgpd:art6"]
