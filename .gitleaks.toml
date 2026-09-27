@@ -4,6 +4,13 @@ title = "base-legal gitleaks config"
 useDefault = true
 
 [allowlist]
-description = "Throwaway CI database credentials and synthetic test fixtures"
-paths = ['''tests/fixtures/.*''']
+description = "Throwaway CI database credentials, synthetic test fixtures and model lock files"
+# Model locks hold only SHA-256 digests keyed by file name ("tokenizer.json":
+# "<64 hex>"), which the generic-api-key rule mistakes for tokens. They are
+# reviewed via CODEOWNERS (docs/THREAT_MODEL.md S12).
+paths = [
+    '''tests/fixtures/.*''',
+    '''src/base_legal/embeddings/[a-z0-9.-]+\.lock\.json''',
+    '''benchmarks/models/[a-z0-9.-]+\.lock\.json''',
+]
 regexes = ['''postgresql://base_legal:base_legal@''']
