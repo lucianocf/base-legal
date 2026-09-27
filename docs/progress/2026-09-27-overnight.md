@@ -62,7 +62,7 @@ Setup fixes:
 | M5 Grounded generation | ✅ done (live test blocked) | `base_legal.generation` + `base-legal ask`. Citations on `claude-haiku-4-5` confirmed in the docs ("all active models support citations"); one custom-content document per provision ([ADR 0011](../adr/0011-one-cited-document-per-provision.md)). PII redaction first; retrieval refusals never call the model; validator + strict refusal. **Live test not run: no Anthropic credential in the environment** (cost not measured). |
 | M6 API + UI | ✅ done | FastAPI `/ask`, `/search`, `/provisions/{id}`, `/health`; length/k limits, rate limit, optional API key, strict CSP + security headers, disclaimer in every body, 422s never echo input, content-free request log (log-capture tests). Static UI renders with `textContent`. Smoke-tested live with `base-legal serve`. |
 | M7 MCP server | ✅ done | Official MCP SDK **2.x** (`MCPServer`); 3 read-only tools; stdio end-to-end test in a subprocess where constructing an Anthropic client aborts. Host config in `docs/MCP.md` (not yet tried inside Claude Desktop/Code). |
-| M8 Evals in CI + badge | pending | |
+| M8 Evals in CI + badge | ✅ done (CI run pending the PR) | `.github/workflows/evals.yml`: secret-free, nano cached by lockfile hash and re-verified, `local` ingest, gates recall@5 ≥ 0.65 / refusal ≥ 0.6 / red-team 100 %; `base-legal eval redteam` (13 deterministic checks, all passing locally); shields.io badge JSON. actionlint + zizmor clean. |
 | M9 Docker image + compose | pending | |
 | M10 Publish-ready docs | pending | |
 | M11 Draft PR + green CI | pending | |
