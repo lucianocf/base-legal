@@ -17,5 +17,6 @@ decision, add a new ADR that supersedes the old one and mark the old one as
 | [0008](0008-default-generation-model.md) | Default generation model | Proposed |
 | [0009](0009-no-redistribution-of-voyage-vectors-yet.md) | Do not redistribute voyage-4-large document vectors (yet) | Proposed |
 | [0010](0010-annex-segment-in-provision-ids.md) | Annex segment in canonical provision IDs | Proposed |
+| [0011](0011-one-cited-document-per-provision.md) | Generation: one cited document per provision | Proposed |
 
 Template: [`0000-template.md`](0000-template.md).

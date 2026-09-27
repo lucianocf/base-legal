@@ -155,7 +155,11 @@ unsuitable: structured outputs (`output_config.format`) returning
 The two cannot be combined in one request (the API rejects Citations together
 with `output_config.format`).
 
-`TODO(verify)`: Citations support on `claude-haiku-4-5`.
+Checked 2026-09-27: all active models support Citations, `claude-haiku-4-5`
+included. Each provision is sent as its own custom-content document (title =
+canonical ID and path, context = ancestors' text, one citable block = the
+provision text), so `document_index` maps to the canonical ID
+([ADR 0011](adr/0011-one-cited-document-per-provision.md)).
 
 ## 4. Canonical provision IDs
 

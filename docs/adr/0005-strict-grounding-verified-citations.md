@@ -25,7 +25,10 @@ provision and that a machine checks it.
    `{answer, citations[{provision_id, quote}]}` with the same validator. The
    API does not allow Citations and `output_config.format` in the same request.
 
-`TODO(verify)`: Citations support on `claude-haiku-4-5`.
+Checked 2026-09-27: the Citations documentation states that all active
+models support citations, `claude-haiku-4-5` included, so the fallback is
+not used. How provisions are packaged into documents is refined in
+[ADR 0011](0011-one-cited-document-per-provision.md).
 
 ## Consequences
 - ➕ Hallucinated citations cannot reach the user; the citation-validity metric is 100 % by construction.
