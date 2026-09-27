@@ -17,3 +17,5 @@ answer, Base Legal refuses and shows the nearest provisions instead.
 - **How good it is:** [evaluation](evals/index.md), updated by CI on every push to `main`.
 - **How it protects data:** [threat model](THREAT_MODEL.md) and [privacy](PRIVACY.md).
 - **Use it from Claude Desktop or Claude Code:** [MCP server](MCP.md).
+- **Read the law itself:** the [corpus explorer](https://lucianocf.github.io/base-legal/explorer/),
+  every provision with its canonical ID and its cross-references as links.

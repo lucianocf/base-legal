@@ -46,6 +46,7 @@ nav:
       - Privacy: PRIVACY.md
       - Legal notice: legal-notice.md
   - MCP server: MCP.md
+  - Corpus explorer: https://lucianocf.github.io/base-legal/explorer/
   - Decisions (ADRs):
       - Index: adr/README.md
       - 0001 Own thin code: adr/0001-own-thin-code-no-rag-framework.md

@@ -147,6 +147,23 @@ def corpus_check(
         report.write_text(render_report(diffs, selected, today.isoformat()), encoding="utf-8")
 
 
+@corpus_app.command("explorer")
+def corpus_explorer(
+    out: Annotated[Path, typer.Option(help="Directory for the static site.")] = Path(
+        "site/explorer"
+    ),
+) -> None:
+    """Build the static corpus explorer (one page per act, anchors, links, search)."""
+    from base_legal.explorer.site import build_site
+
+    settings = _settings()
+    documents = load_documents(settings.corpus_dir, Manifest.load(_manifest_path(settings)))
+    out.mkdir(parents=True, exist_ok=True)
+    for name, content in build_site(documents).items():
+        (out / name).write_text(content, encoding="utf-8")
+    typer.echo(f"{len(documents)} act(s) -> {out}")
+
+
 @corpus_app.command("build")
 def corpus_build(doc: DocOption = None) -> None:
     """Parse raw sources into normalized JSON under the corpus directory."""
