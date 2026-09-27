@@ -8,6 +8,12 @@ Recognized structure (Lei Complementar nº 95/1998 conventions):
 
 * headings: ``LIVRO``, ``TÍTULO``, ``CAPÍTULO``, ``Seção``, ``Subseção``
   (optionally followed by a title line);
+* rubrics: a short unnumbered line right before an article ("Intimação",
+  "Recurso ao Conselho Diretor da ANPD") names the articles that follow; it
+  joins their path until the next rubric or heading and is never provision text;
+* annexes: ``ANEXO``, ``ANEXO I`` (an ANPD resolution approves a regulation
+  "na forma do anexo"); articles after an annex heading get an ``anx{N}``
+  segment in their IDs (ADR 0010) and the annex title in their path;
 * ``Art. 7º``, ``Art. 10.``, ``Art. 55-J.``;
 * ``§ 1º``, ``§ 10.``, ``Parágrafo único.``;
 * incisos ``I -``, ``IX –``, ``I-A –``;
@@ -16,6 +22,12 @@ Recognized structure (Lei Complementar nº 95/1998 conventions):
 Lines between an opening quote and ``(NR)``/closing quote are amending text
 quoted inside a provision (e.g. LGPD art. 60) and are kept as text of the
 quoting provision, never parsed as structure.
+
+When a compiled text strikes a revoked provision *including its label*
+(Planalto's LGPD art. 55-B; gov.br's Res. CD/ANPD nº 1/2021 annex art. 35,
+§ 4º), only its "(Revogado pela …)" note survives, on a line of its own. That
+note cannot be tied to a provision ID, so it is dropped rather than attached
+to the provision before it, which is still in force.
 """
 
 from __future__ import annotations
@@ -25,7 +37,7 @@ import unicodedata
 from collections.abc import Iterable
 from dataclasses import dataclass, field
 
-from base_legal.corpus.ids import article_key, inciso_key, paragraph_key
+from base_legal.corpus.ids import annex_key, article_key, inciso_key, paragraph_key
 from base_legal.corpus.models import Provision, ProvisionKind
 
 _ROMAN = r"(?=[IVXLCDM])M{0,3}(?:CM|CD|D?C{0,3})(?:XC|XL|L?X{0,3})(?:IX|IV|V?I{0,3})"
@@ -44,7 +56,16 @@ HEADING_RE = re.compile(
     rf"(?P<num>{_ROMAN}(?:-[A-Z])?|[ÚU]NIC[OA])\b\s*[-–—.]?\s*(?P<title>.*)$",
     re.IGNORECASE,
 )
-END_RE = re.compile(r"^(Bras[íi]lia\s*,\s|Este texto n[ãa]o substitui)", re.IGNORECASE)
+ANNEX_RE = re.compile(rf"^ANEXO(?:\s+(?P<num>{_ROMAN}|[ÚU]NICO))?\b\s*(?:[-–—.]\s*(?P<title>.*))?$")
+END_RE = re.compile(
+    r"^(Bras[íi]lia\s*,\s|Este (?:texto|conte[úu]do) n[ãa]o substitui)", re.IGNORECASE
+)
+# Signature blocks of ANPD resolutions ("NOME EM CAIXA ALTA" / "Diretor-Presidente")
+# sit between the enacting articles and the annex; they are not provision text.
+SIGNATURE_RE = re.compile(r"^[A-ZÀ-Ý][A-ZÀ-Ý'’.-]*(?:\s+[A-ZÀ-Ý'’.-]+)+$")
+ROLE_RE = re.compile(r"^Diretor[a]?[- ]Presidente\b", re.IGNORECASE)
+# Rows of dots mark elided text in quoted amendments ("Art. 14. ......").
+ELISION_RE = re.compile(r"(?:[.…]{4,}\s*)+")
 NOTE_RE = re.compile(
     r"\((?:Reda[çc][ãa]o dada|Inclu[íi]d[oa]|Acrescid[oa]|Revogad[oa]|Renumerad[oa]|"
     r"Vide|Vig[êe]ncia|Promulga[çc][ãa]o|Regulamento|Convertid[oa]|Produ[çc][ãa]o de efeitos)"
@@ -59,6 +80,9 @@ OPEN_QUOTE_RE = re.compile(r"^[“\"‘]")
 CLOSE_QUOTE_RE = re.compile(r"(?:[”\"’]\s*(?:\(NR\))?|\(NR\))\s*[.;,]?\s*$")
 
 _HEADING_LEVELS = {"LIVRO": 0, "TITULO": 1, "CAPITULO": 2, "SECAO": 3, "SUBSECAO": 4}
+_ANNEX_LEVEL = -1
+_RUBRIC_LEVEL = 5
+MAX_RUBRIC_CHARS = 120
 
 
 class ParseError(ValueError):
@@ -80,6 +104,33 @@ def _fold(text: str) -> str:
     return "".join(c for c in stripped if not unicodedata.combining(c)).upper()
 
 
+def _is_rubric(line: str, following: str) -> bool:
+    return (
+        len(line) <= MAX_RUBRIC_CHARS
+        and ART_RE.match(following) is not None
+        and not line.endswith((".", ";", ":", ",", ")", "”", '"'))
+        and NOTE_RE.search(line) is None
+        and not OPEN_QUOTE_RE.match(line)
+    )
+
+
+def _is_revocation_note(line: str) -> bool:
+    notes = NOTE_RE.findall(line)
+    return (
+        bool(notes)
+        and not NOTE_RE.sub("", line).strip(" .;")
+        and all(_fold(n).startswith("(REVOGAD") for n in notes)
+    )
+
+
+def _awaits_revocation(node: _Node | None) -> bool:
+    """True if ``node`` has no text of its own yet (label kept, text struck) or says "revogado"."""
+    if node is None:
+        return False
+    text = NOTE_RE.sub(" ", " ".join(node.parts)).strip(" .;")
+    return not text or REVOKED_TEXT_RE.match(text) is not None
+
+
 @dataclass
 class _Node:
     id: str
@@ -95,6 +146,7 @@ class _Node:
 class _State:
     headings: dict[int, str] = field(default_factory=dict)
     pending_heading: int | None = None
+    annex: str | None = None
     article: _Node | None = None
     paragraph: _Node | None = None
     inciso: _Node | None = None
@@ -123,10 +175,12 @@ class StructureParser:
             state.last = node
             return node
 
-        for line_no, raw in enumerate(lines, start=1):
-            line = normalize_text(raw)
-            if not line or state.ended:
-                continue
+        numbered = [(n, normalize_text(raw)) for n, raw in enumerate(lines, start=1)]
+        numbered = [(n, line) for n, line in numbered if line]
+        for index, (line_no, line) in enumerate(numbered):
+            if state.ended:
+                break
+            following = numbered[index + 1][1] if index + 1 < len(numbered) else ""
             if state.quoted:
                 self._append(state, line)
                 if CLOSE_QUOTE_RE.search(line):
@@ -139,7 +193,7 @@ class StructureParser:
             if END_RE.match(line):
                 state.ended = True
                 continue
-            if self._heading(state, line):
+            if self._annex(state, line) or self._heading(state, line):
                 continue
 
             node = self._structural(state, line, len(nodes))
@@ -154,6 +208,13 @@ class StructureParser:
                 title = line.strip("’‘'\" ")
                 state.headings[level] = f"{state.headings[level]} — {title}"
                 state.pending_heading = None
+            elif _is_rubric(line, following):
+                state.headings[_RUBRIC_LEVEL] = line
+                state.last = None
+            elif SIGNATURE_RE.match(line) or ROLE_RE.match(line):
+                continue  # signature block or a regulation's title in capitals
+            elif _is_revocation_note(line) and not _awaits_revocation(state.last):
+                continue  # orphan note of a provision struck with its label
             elif state.last is not None:
                 self._append(state, line)
             # else: preamble (title, ementa, enacting clause) — not a provision
@@ -161,6 +222,19 @@ class StructureParser:
         return [self._finish(n) for n in nodes]
 
     # -- structure -----------------------------------------------------------
+
+    def _annex(self, state: _State, line: str) -> bool:
+        match = ANNEX_RE.match(line)
+        if match is None:
+            return False
+        state.annex = annex_key(match["num"])
+        state.headings.clear()
+        state.article = state.paragraph = state.inciso = state.alinea = state.last = None
+        label = f"Anexo {match['num']}" if match["num"] else "Anexo"
+        title = (match["title"] or "").strip()
+        state.headings[_ANNEX_LEVEL] = f"{label} — {title}" if title else label
+        state.pending_heading = None if title else _ANNEX_LEVEL
+        return True
 
     def _heading(self, state: _State, line: str) -> bool:
         match = HEADING_RE.match(line)
@@ -171,6 +245,7 @@ class StructureParser:
             del state.headings[deeper]
         label = f"{match['kind']} {match['num']}"
         title = match["title"].strip()
+        state.last = None  # nothing after a heading belongs to the previous provision
         state.headings[level] = f"{label} — {title}" if title else label
         state.pending_heading = None if title else level
         return True
@@ -184,8 +259,9 @@ class StructureParser:
             label = f"Art. {number}{'º' if number < 10 else ''}"
             label += f"-{m['suf']}" if m["suf"] else ""
             headings = tuple(state.headings[k] for k in sorted(state.headings))
+            annex = f":anx{state.annex}" if state.annex else ""
             node = _Node(
-                id=f"{self.document_id}:art{key}",
+                id=f"{self.document_id}{annex}:art{key}",
                 kind=ProvisionKind.ARTICLE,
                 label=label,
                 parent_id=None,
@@ -275,7 +351,7 @@ class StructureParser:
             state.last.parts.append(line)
 
     def _finish(self, node: _Node) -> Provision:
-        text = normalize_text(" ".join(p for p in node.parts if p))
+        text = normalize_text(ELISION_RE.sub(" (...) ", " ".join(p for p in node.parts if p)))
         amendments = tuple(normalize_text(n) for n in NOTE_RE.findall(text))
         text = normalize_text(NOTE_RE.sub(" ", text))
         if amendments:

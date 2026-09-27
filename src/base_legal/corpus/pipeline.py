@@ -70,7 +70,7 @@ def build(entry: ManifestEntry, raw_dir: Path) -> Document:
         raise IntegrityError(
             f"{entry.id}: raw file hash {digest} != manifest {entry.source_sha256}"
         )
-    lines = html_to_lines(decode_html(data))
+    lines = html_to_lines(decode_html(data), entry.layout)
     provisions = StructureParser(entry.id).parse(lines)
     return Document(
         id=entry.id,

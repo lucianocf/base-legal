@@ -2,8 +2,8 @@ from pathlib import Path
 
 import pytest
 
-from base_legal.corpus.html import decode_html, html_to_lines
-from base_legal.corpus.models import Provision, ProvisionKind
+from base_legal.corpus.html import LayoutError, decode_html, html_to_lines
+from base_legal.corpus.models import Provision, ProvisionKind, SourceLayout
 from base_legal.corpus.parser import ParseError, StructureParser, normalize_text
 
 
@@ -200,3 +200,182 @@ def test_heading_with_amendment_note_and_signature_block() -> None:
     assert art54.text == "Texto do artigo."
     assert art55a.path == ("CAPÍTULO IX — DA AGÊNCIA NACIONAL DE PROTEÇÃO DE DADOS", "Art. 55-A")
     assert art55a.text == "Texto do novo artigo."
+
+
+# -- ANPD resolutions: real excerpts from the DOU and gov.br layouts ---------
+
+
+def _parse_fixture(
+    fixtures_dir: Path, name: str, layout: SourceLayout, doc: str
+) -> dict[str, Provision]:
+    lines = html_to_lines(decode_html((fixtures_dir / name).read_bytes()), layout)
+    return {p.id: p for p in StructureParser(doc).parse(lines)}
+
+
+@pytest.fixture
+def res15(fixtures_dir: Path) -> dict[str, Provision]:
+    return _parse_fixture(
+        fixtures_dir, "dou_res_15_2024_excerpt.html", SourceLayout.DOU, "res-anpd-15-2024"
+    )
+
+
+@pytest.fixture
+def res1(fixtures_dir: Path) -> dict[str, Provision]:
+    return _parse_fixture(
+        fixtures_dir, "govbr_res_1_2021_excerpt.html", SourceLayout.GOVBR, "res-anpd-1-2021"
+    )
+
+
+def test_portal_chrome_is_never_parsed(
+    res15: dict[str, Provision], res1: dict[str, Provision]
+) -> None:
+    for provisions in (res15, res1):
+        assert not any(":art99" in pid or ":art100" in pid for pid in provisions)
+        assert all("REDES SOCIAIS" not in p.text for p in provisions.values())
+
+
+def test_missing_layout_container_is_rejected(fixtures_dir: Path) -> None:
+    html = (fixtures_dir / "planalto_synthetic.html").read_bytes()
+    with pytest.raises(LayoutError, match="texto-dou"):
+        html_to_lines(decode_html(html), SourceLayout.DOU)
+
+
+def test_enacting_articles_and_annex_regulation_get_distinct_ids(
+    res15: dict[str, Provision],
+) -> None:
+    assert res15["res-anpd-15-2024:art1"].text.startswith("Aprovar o Regulamento")
+    assert res15["res-anpd-15-2024:art1"].path == ("Art. 1º",)
+    annex_art1 = res15["res-anpd-15-2024:anx1:art1"]
+    assert annex_art1.text.startswith("Este Regulamento tem por objetivo")
+    assert annex_art1.path[:2] == (
+        "Anexo — REGULAMENTO DE COMUNICAÇÃO DE INCIDENTE DE SEGURANÇA",
+        "CAPÍTULO I — DISPOSIÇÕES PRELIMINARES",
+    )
+
+
+def test_signature_block_is_not_provision_text(res15: dict[str, Provision]) -> None:
+    art3 = res15["res-anpd-15-2024:art3"]
+    assert art3.text == "Esta Resolução entra em vigor na data da sua publicação."
+
+
+def test_quoted_amendment_with_elided_rows(res15: dict[str, Provision]) -> None:
+    art2 = res15["res-anpd-15-2024:art2"]
+    assert '"Art. 14. (...) II - no caso da comunicação' in art2.text
+    assert "...." not in art2.text
+    assert "res-anpd-15-2024:art14" not in res15  # quoted text is not structure
+
+
+def test_incident_deadline_article(res15: dict[str, Provision]) -> None:
+    art6 = res15["res-anpd-15-2024:anx1:art6"]
+    assert "no prazo de três dias úteis" in art6.text
+    assert res15["res-anpd-15-2024:anx1:art6:par2:incXII"].parent_id == (
+        "res-anpd-15-2024:anx1:art6:par2"
+    )
+
+
+def test_govbr_struck_text_notes_and_div_headings(res1: dict[str, Provision]) -> None:
+    # <del>Parágrafo único…</del> was renumbered to § 1º by Res. 4/2023.
+    assert "res-anpd-1-2021:anx1:art32:paru" not in res1
+    par1 = res1["res-anpd-1-2021:anx1:art32:par1"]
+    assert par1.amendments == (
+        "(Redação dada pela Resolução CD/ANPD nº 4, de 24 de fevereiro de 2023)",
+    )
+    assert par1.text.endswith("se compatíveis com o disposto nos arts. 30 e 31.")
+    # Chapter and section titles live in bare <div>s on gov.br.
+    assert res1["res-anpd-1-2021:anx1:art33"].path[-3:] == (
+        "CAPÍTULO IV — DA ATIVIDADE PREVENTIVA",
+        "Seção I — Da Divulgação de Informações",
+        "Art. 33",
+    )
+
+
+def test_text_of_a_block_containing_nested_blocks_is_kept() -> None:
+    # Regression: only innermost blocks were read, so the text of a <p> that
+    # also wrapped another block was silently dropped.
+    html = "<body><p>Art. 1º Texto do caput<p>§ 1º Parágrafo aninhado.</p></p></body>"
+    provisions = {p.id: p for p in StructureParser("x").parse(html_to_lines(html))}
+    assert provisions["x:art1"].text == "Texto do caput"
+    assert provisions["x:art1:par1"].text == "Parágrafo aninhado."
+
+
+def test_numbered_annexes() -> None:
+    lines = [
+        "Art. 1º Aprovar os Anexos I e II.",
+        "ANEXO I",
+        "REGULAMENTO",
+        "Art. 1º Primeiro anexo.",
+        "ANEXO II - CLÁUSULAS",
+        "Art. 1º Segundo anexo.",
+    ]
+    provisions = {p.id: p for p in StructureParser("r").parse(lines)}
+    assert set(provisions) == {"r:art1", "r:anx1:art1", "r:anx2:art1"}
+    assert provisions["r:anx1:art1"].path[0] == "Anexo I — REGULAMENTO"
+    assert provisions["r:anx2:art1"].path[0] == "Anexo II — CLÁUSULAS"
+
+
+def test_orphan_revocation_note_is_not_attached_to_the_previous_provision() -> None:
+    # Regression: gov.br strikes Res. 1/2021 annex art. 35, § 4º with its label,
+    # leaving "(Revogado pela …)" alone on a line; it was attached to § 3º.
+    html = (
+        "<body><p>Art. 35. Caput.</p>"
+        "<p>§ 3º O agente poderá requerer prorrogação do prazo.</p>"
+        "<p><del>§ 4º O não atendimento enseja atuação repressiva.</del> "
+        "(Revogado pela Resolução CD/ANPD nº 4, de 24 de fevereiro de 2023)</p>"
+        "<p>Art. 36. Seguinte.</p></body>"
+    )
+    provisions = {p.id: p for p in StructureParser("r").parse(html_to_lines(html))}
+    par3 = provisions["r:art35:par3"]
+    assert not par3.revoked
+    assert par3.amendments == ()
+    assert "r:art35:par4" not in provisions
+
+
+def test_revocation_note_after_a_kept_label_still_revokes() -> None:
+    lines = [
+        "Art. 7º Caput.",
+        "§ 1º",
+        "(Revogado pela Lei nº 13.853, de 2019)",
+        "§ 2º Em vigor.",
+    ]
+    provisions = {p.id: p for p in StructureParser("x").parse(lines)}
+    assert provisions["x:art7:par1"].revoked
+    assert provisions["x:art7:par1"].amendments == ("(Revogado pela Lei nº 13.853, de 2019)",)
+    assert not provisions["x:art7:par2"].revoked
+
+
+def test_rubrics_join_the_path_and_never_the_previous_text() -> None:
+    # Regression: gov.br Res. 1/2021 puts unnumbered rubrics before articles;
+    # they were appended to the text of the provision above them.
+    lines = [
+        "CAPÍTULO I",
+        "DISPOSIÇÕES GERAIS",
+        "Objeto da atuação responsiva",
+        "Art. 15. A ANPD adotará atividades de monitoramento.",
+        "Parágrafo único. Texto do parágrafo.",
+        "Intimação",
+        "Art. 16. Primeiro artigo sob a rubrica.",
+        "Art. 17. Segundo artigo sob a mesma rubrica.",
+        "Seção I",
+        "Da Seção",
+        "Art. 18. Depois de um novo título.",
+    ]
+    provisions = {p.id: p for p in StructureParser("r").parse(lines)}
+    assert provisions["r:art15:paru"].text == "Texto do parágrafo."
+    assert provisions["r:art15"].path == (
+        "CAPÍTULO I — DISPOSIÇÕES GERAIS",
+        "Objeto da atuação responsiva",
+        "Art. 15",
+    )
+    assert provisions["r:art16"].path[-2:] == ("Intimação", "Art. 16")
+    assert provisions["r:art17"].path[-2:] == ("Intimação", "Art. 17")
+    assert provisions["r:art18"].path == (
+        "CAPÍTULO I — DISPOSIÇÕES GERAIS",
+        "Seção I — Da Seção",
+        "Art. 18",
+    )
+
+
+def test_a_continuation_line_before_an_article_is_not_a_rubric() -> None:
+    lines = ["Art. 1º Caput que continua", "na linha seguinte;", "Art. 2º Outro."]
+    provisions = {p.id: p for p in StructureParser("x").parse(lines)}
+    assert provisions["x:art1"].text == "Caput que continua na linha seguinte;"
