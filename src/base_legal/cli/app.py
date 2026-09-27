@@ -22,14 +22,17 @@ from base_legal.embeddings.factory import (
 )
 from base_legal.embeddings.model_store import fetch_model, load_lock
 from base_legal.embeddings.precomputed import artifact_filename, save_vectors, write_sidecar
+from base_legal.evals.badge import write_badge
 from base_legal.evals.golden import GoldenSet, Split
+from base_legal.evals.redteam import RedTeamSet, run_redteam
+from base_legal.evals.redteam import to_markdown as redteam_markdown
 from base_legal.evals.retrieval import evaluate, to_markdown
 from base_legal.generation.answer import Answer, Status
 from base_legal.ingest import ingest_documents
 from base_legal.privacy.redact import redact
 from base_legal.retrieval.search import Retriever, SearchMode
 from base_legal.store.db import Store
-from base_legal.wiring import GenerationUnavailableError, make_answerer
+from base_legal.wiring import GenerationUnavailableError, make_answerer, make_retriever
 
 app = typer.Typer(no_args_is_help=True, add_completion=False, help=__doc__)
 corpus_app = typer.Typer(no_args_is_help=True, help="Maintain the normalized corpus.")
@@ -302,6 +305,15 @@ def eval_retrieval(
     ] = None,
     out_dir: Annotated[Path, typer.Option()] = Path("reports"),
     label: Annotated[str, typer.Option(help="Name of this configuration.")] = "current",
+    badge_path: Annotated[
+        Path | None, typer.Option("--badge", help="Write a shields.io badge (recall@5).")
+    ] = None,
+    min_recall_at_5: Annotated[
+        float | None, typer.Option(help="Fail (exit 1) below this recall@5 (0-1).")
+    ] = None,
+    min_refusal_accuracy: Annotated[
+        float | None, typer.Option(help="Fail (exit 1) below this refusal accuracy (0-1).")
+    ] = None,
 ) -> None:
     """Recall@k, MRR, refusal accuracy and latency on the golden set -> JSON + Markdown."""
     settings = _settings()
@@ -345,6 +357,57 @@ def eval_retrieval(
     markdown = to_markdown(report)
     stem.with_suffix(".md").write_text(markdown, "utf-8")
     typer.echo(markdown)
+    metrics = report.metrics
+    if badge_path is not None:
+        write_badge(badge_path, "recall@5", metrics.recall_at_5, good=0.65, fair=0.5)
+    failures = []
+    if min_recall_at_5 is not None and metrics.recall_at_5 < min_recall_at_5:
+        failures.append(f"recall@5 {metrics.recall_at_5:.3f} < {min_recall_at_5}")
+    accuracy = metrics.refusal_accuracy
+    if min_refusal_accuracy is not None and (accuracy is None or accuracy < min_refusal_accuracy):
+        failures.append(f"refusal accuracy {accuracy} < {min_refusal_accuracy}")
+    if failures:
+        typer.echo("Eval gate failed: " + "; ".join(failures), err=True)
+        raise typer.Exit(1)
+
+
+@eval_app.command("redteam")
+def eval_redteam(
+    cases_path: Annotated[Path, typer.Option("--cases")] = Path("evals/redteam.yaml"),
+    out_dir: Annotated[Path, typer.Option()] = Path("reports"),
+    with_index: Annotated[
+        bool, typer.Option(help="Run retrieval-refusal checks against DATABASE_URL.")
+    ] = True,
+    seed: Annotated[int | None, typer.Option(help="Seed for synthetic test data.")] = None,
+    badge_path: Annotated[
+        Path | None, typer.Option("--badge", help="Write a shields.io badge (pass rate).")
+    ] = None,
+    min_pass_rate: Annotated[float, typer.Option(help="Fail (exit 1) below this rate.")] = 1.0,
+) -> None:
+    """Deterministic red-team checks: redaction, validator, refusal, isolation, limits, UI."""
+    settings = _settings()
+    cases = RedTeamSet.load(cases_path).cases
+    manifest = Manifest.load(_manifest_path(settings))
+    corpus = {p.id: p for d in load_documents(settings.corpus_dir, manifest) for p in d.provisions}
+    store = Store.connect(settings.database_url) if with_index else None
+    try:
+        searcher = make_retriever(settings, store) if store is not None else None
+        report = run_redteam(
+            cases, corpus, searcher=searcher, threshold=settings.refusal_threshold, seed=seed
+        )
+    finally:
+        if store is not None:
+            store.close()
+    out_dir.mkdir(parents=True, exist_ok=True)
+    (out_dir / "redteam.json").write_text(report.model_dump_json(indent=2) + "\n", "utf-8")
+    markdown = redteam_markdown(report, cases)
+    (out_dir / "redteam.md").write_text(markdown, "utf-8")
+    typer.echo(markdown)
+    if badge_path is not None:
+        write_badge(badge_path, "red-team", report.pass_rate, good=1.0, fair=0.9)
+    if report.pass_rate < min_pass_rate:
+        typer.echo(f"Red-team gate failed: pass rate {report.pass_rate:.3f}", err=True)
+        raise typer.Exit(1)
 
 
 def main() -> None:

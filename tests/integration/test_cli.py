@@ -130,6 +130,16 @@ def test_eval_retrieval_writes_reports(
     assert (out / "retrieval-t-dev.json").is_file()
     assert (out / "retrieval-t-dev.md").is_file()
 
+    badge = tmp_path / "badges" / "recall.json"
+    result = runner.invoke(app, [*args, "--badge", str(badge), "--min-recall-at-5", "0.9"])
+    assert result.exit_code == 0, result.output
+    assert '"label": "recall@5"' in badge.read_text(encoding="utf-8")
+    result = runner.invoke(
+        app, [*args, "--min-recall-at-5", "1.01", "--min-refusal-accuracy", "1.01"]
+    )
+    assert result.exit_code == 1
+    assert "Eval gate failed" in result.output
+
     result = runner.invoke(app, [*args, "--mode", "lexical", "--split", "holdout"])
     assert result.exit_code == 0, result.output
     assert "query_embedder=none" in result.output
@@ -308,3 +318,27 @@ def test_ask_without_credentials_exits_cleanly(
     result = CliRunner().invoke(app, ["ask", "dados pessoais"])
     assert result.exit_code == 2
     assert "no Anthropic credentials" in result.output
+
+
+def test_eval_redteam_without_the_index(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.delenv("BASE_LEGAL_CORPUS_DIR", raising=False)  # the committed corpus
+    out, badge = tmp_path / "reports", tmp_path / "redteam.json"
+    result = CliRunner().invoke(
+        app,
+        [
+            "eval",
+            "redteam",
+            "--no-with-index",
+            "--seed",
+            "3",
+            "--out-dir",
+            str(out),
+            "--badge",
+            str(badge),
+        ],
+    )
+    assert result.exit_code == 0, result.output
+    assert "Pass rate: **100.0 %**" in result.output
+    assert "skipped" in result.output  # refusal checks need the index
+    assert (out / "redteam.json").is_file()
+    assert '"message": "100%"' in badge.read_text(encoding="utf-8")
