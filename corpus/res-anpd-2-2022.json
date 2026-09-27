@@ -636,7 +636,7 @@
       "parent_id": null,
       "kind": "article",
       "label": "Art. 9º",
-      "text": "Os agentes de tratamento de pequeno porte podem cumprir a obrigação de elaboração e manutenção de registro das operações de tratamento de dados pessoais, constante do art. 37 da LGPD, de forma simplificada. Parágrafo único. A ANPD fornecerá modelo para o registro simplificado de que trata o caput.",
+      "text": "Os agentes de tratamento de pequeno porte podem cumprir a obrigação de elaboração e manutenção de registro das operações de tratamento de dados pessoais, constante do art. 37 da LGPD, de forma simplificada.",
       "path": [
         "Anexo I — REGULAMENTO DE APLICAÇÃO DA LEI Nº 13.709, DE 14 DE AGOSTO DE 2018, LEI GERAL DE PROTEÇÃO DE DADOS PESSOAIS (LGPD), PARA AGENTES DE TRATAMENTO DE PEQUENO PORTE",
         "TÍTULO II — DO TRATAMENTO DE DADOS PESSOAIS PELOS AGENTES DE TRATAMENTO DE PEQUENO",
@@ -648,6 +648,28 @@
       "revoked": false,
       "vetoed": false,
       "ordinal": 30,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "res-anpd-2-2022:anx1:art9:paru",
+      "document_id": "res-anpd-2-2022",
+      "parent_id": "res-anpd-2-2022:anx1:art9",
+      "kind": "paragraph",
+      "label": "Parágrafo único",
+      "text": "A ANPD fornecerá modelo para o registro simplificado de que trata o caput.",
+      "path": [
+        "Anexo I — REGULAMENTO DE APLICAÇÃO DA LEI Nº 13.709, DE 14 DE AGOSTO DE 2018, LEI GERAL DE PROTEÇÃO DE DADOS PESSOAIS (LGPD), PARA AGENTES DE TRATAMENTO DE PEQUENO PORTE",
+        "TÍTULO II — DO TRATAMENTO DE DADOS PESSOAIS PELOS AGENTES DE TRATAMENTO DE PEQUENO",
+        "CAPÍTULO II — DAS OBRIGAÇÕES DO AGENTE DE TRATAMENTO DE PEQUENO PORTE",
+        "SEÇÃO II — DO REGISTRO DAS ATIVIDADES DE TRATAMENTO",
+        "Art. 9º",
+        "Parágrafo único"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 31,
       "valid_from": null,
       "valid_to": null
     },
@@ -668,7 +690,7 @@
       "amendments": [],
       "revoked": false,
       "vetoed": false,
-      "ordinal": 31,
+      "ordinal": 32,
       "valid_from": null,
       "valid_to": null
     },
@@ -689,7 +711,7 @@
       "amendments": [],
       "revoked": false,
       "vetoed": false,
-      "ordinal": 32,
+      "ordinal": 33,
       "valid_from": null,
       "valid_to": null
     },
@@ -711,7 +733,7 @@
       "amendments": [],
       "revoked": false,
       "vetoed": false,
-      "ordinal": 33,
+      "ordinal": 34,
       "valid_from": null,
       "valid_to": null
     },
@@ -733,7 +755,7 @@
       "amendments": [],
       "revoked": false,
       "vetoed": false,
-      "ordinal": 34,
+      "ordinal": 35,
       "valid_from": null,
       "valid_to": null
     },
@@ -743,7 +765,7 @@
       "parent_id": null,
       "kind": "article",
       "label": "Art. 12",
-      "text": "Os agentes de tratamento de pequeno porte devem adotar medidas administrativas e técnicas essenciais e necessárias, com base em requisitos mínimos de segurança da informação para proteção dos dados pessoais, considerando, ainda, o nível de risco à privacidade dos titulares de dados e a realidade do agente de tratamento. Parágrafo único. O atendimento às recomendações e às boas práticas de prevenção e segurança divulgadas pela ANPD, inclusive por meio de guias orientativos, será considerado como observância ao disposto no art. 52, § 1º VIII da LGPD.",
+      "text": "Os agentes de tratamento de pequeno porte devem adotar medidas administrativas e técnicas essenciais e necessárias, com base em requisitos mínimos de segurança da informação para proteção dos dados pessoais, considerando, ainda, o nível de risco à privacidade dos titulares de dados e a realidade do agente de tratamento.",
       "path": [
         "Anexo I — REGULAMENTO DE APLICAÇÃO DA LEI Nº 13.709, DE 14 DE AGOSTO DE 2018, LEI GERAL DE PROTEÇÃO DE DADOS PESSOAIS (LGPD), PARA AGENTES DE TRATAMENTO DE PEQUENO PORTE",
         "TÍTULO II — DO TRATAMENTO DE DADOS PESSOAIS PELOS AGENTES DE TRATAMENTO DE PEQUENO",
@@ -754,7 +776,29 @@
       "amendments": [],
       "revoked": false,
       "vetoed": false,
-      "ordinal": 35,
+      "ordinal": 36,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "res-anpd-2-2022:anx1:art12:paru",
+      "document_id": "res-anpd-2-2022",
+      "parent_id": "res-anpd-2-2022:anx1:art12",
+      "kind": "paragraph",
+      "label": "Parágrafo único",
+      "text": "O atendimento às recomendações e às boas práticas de prevenção e segurança divulgadas pela ANPD, inclusive por meio de guias orientativos, será considerado como observância ao disposto no art. 52, § 1º VIII da LGPD.",
+      "path": [
+        "Anexo I — REGULAMENTO DE APLICAÇÃO DA LEI Nº 13.709, DE 14 DE AGOSTO DE 2018, LEI GERAL DE PROTEÇÃO DE DADOS PESSOAIS (LGPD), PARA AGENTES DE TRATAMENTO DE PEQUENO PORTE",
+        "TÍTULO II — DO TRATAMENTO DE DADOS PESSOAIS PELOS AGENTES DE TRATAMENTO DE PEQUENO",
+        "CAPÍTULO II — DAS OBRIGAÇÕES DO AGENTE DE TRATAMENTO DE PEQUENO PORTE",
+        "SEÇÃO V — DA SEGURANÇA E DAS BOAS PRÁTICAS",
+        "Art. 12",
+        "Parágrafo único"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 37,
       "valid_from": null,
       "valid_to": null
     },
@@ -775,7 +819,7 @@
       "amendments": [],
       "revoked": false,
       "vetoed": false,
-      "ordinal": 36,
+      "ordinal": 38,
       "valid_from": null,
       "valid_to": null
     },
@@ -797,7 +841,7 @@
       "amendments": [],
       "revoked": false,
       "vetoed": false,
-      "ordinal": 37,
+      "ordinal": 39,
       "valid_from": null,
       "valid_to": null
     },
@@ -819,7 +863,7 @@
       "amendments": [],
       "revoked": false,
       "vetoed": false,
-      "ordinal": 38,
+      "ordinal": 40,
       "valid_from": null,
       "valid_to": null
     },
@@ -838,7 +882,7 @@
       "amendments": [],
       "revoked": false,
       "vetoed": false,
-      "ordinal": 39,
+      "ordinal": 41,
       "valid_from": null,
       "valid_to": null
     },
@@ -858,7 +902,7 @@
       "amendments": [],
       "revoked": false,
       "vetoed": false,
-      "ordinal": 40,
+      "ordinal": 42,
       "valid_from": null,
       "valid_to": null
     },
@@ -880,7 +924,7 @@
       ],
       "revoked": false,
       "vetoed": false,
-      "ordinal": 41,
+      "ordinal": 43,
       "valid_from": null,
       "valid_to": null
     },
@@ -900,7 +944,7 @@
       "amendments": [],
       "revoked": false,
       "vetoed": false,
-      "ordinal": 42,
+      "ordinal": 44,
       "valid_from": null,
       "valid_to": null
     },
@@ -920,7 +964,7 @@
       "amendments": [],
       "revoked": false,
       "vetoed": false,
-      "ordinal": 43,
+      "ordinal": 45,
       "valid_from": null,
       "valid_to": null
     },
@@ -940,7 +984,7 @@
       "amendments": [],
       "revoked": false,
       "vetoed": false,
-      "ordinal": 44,
+      "ordinal": 46,
       "valid_from": null,
       "valid_to": null
     },
@@ -959,7 +1003,7 @@
       "amendments": [],
       "revoked": false,
       "vetoed": false,
-      "ordinal": 45,
+      "ordinal": 47,
       "valid_from": null,
       "valid_to": null
     },
@@ -978,7 +1022,7 @@
       "amendments": [],
       "revoked": false,
       "vetoed": false,
-      "ordinal": 46,
+      "ordinal": 48,
       "valid_from": null,
       "valid_to": null
     }

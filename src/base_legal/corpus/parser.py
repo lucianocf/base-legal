@@ -99,6 +99,24 @@ def normalize_text(text: str) -> str:
     return re.sub(r"\s+", " ", text).strip()
 
 
+# gov.br sometimes prints a sole paragraph in the same block as its article:
+# "Art. 9º … de forma simplificada. Parágrafo único. A ANPD fornecerá …"
+_INLINE_SOLE_PARAGRAPH = re.compile(r"(?<=[.;:])\s+(?=Par[áa]grafo\s+[úu]nico\s*[.:–-])")
+
+
+def split_inline_paragraphs(line: str) -> list[str]:
+    """Split a sole paragraph printed inline after its article, outside quoted text."""
+    parts: list[str] = []
+    start = 0
+    for match in _INLINE_SOLE_PARAGRAPH.finditer(line):
+        if any(quote in line[: match.start()] for quote in '“"‘'):
+            break  # quoted amendment text belongs to the provision that quotes it
+        parts.append(line[start : match.start()])
+        start = match.end()
+    parts.append(line[start:])
+    return parts
+
+
 def _fold(text: str) -> str:
     stripped = unicodedata.normalize("NFKD", text)
     return "".join(c for c in stripped if not unicodedata.combining(c)).upper()
@@ -175,8 +193,12 @@ class StructureParser:
             state.last = node
             return node
 
-        numbered = [(n, normalize_text(raw)) for n, raw in enumerate(lines, start=1)]
-        numbered = [(n, line) for n, line in numbered if line]
+        numbered = [
+            (n, part)
+            for n, raw in enumerate(lines, start=1)
+            for part in split_inline_paragraphs(normalize_text(raw))
+            if part
+        ]
         for index, (line_no, line) in enumerate(numbered):
             if state.ended:
                 break
