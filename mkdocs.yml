@@ -60,6 +60,7 @@ nav:
       - 0010 Annex IDs: adr/0010-annex-segment-in-provision-ids.md
       - 0011 One document per provision: adr/0011-one-cited-document-per-provision.md
       - 0012 Nano without remote code: adr/0012-load-voyage-4-nano-without-remote-code.md
+      - 0013 Nano for documents: adr/0013-voyage-4-nano-for-documents-by-default.md
   - Plan: PLAN.md
   - Contributing: contributing.md
 

@@ -20,7 +20,7 @@ flowchart LR
         MCP[MCP server adapter]
         PRIV[privacy<br/>PII redaction]
         RET[retrieval<br/>FTS + vector + RRF]
-        NANO[query embedder<br/>voyage-4-nano, local]
+        NANO[embedder<br/>voyage-4-nano, local]
         GEN[generation<br/>Claude + citations]
         GRD[grounding<br/>validator + refusal]
         ING[corpus + chunking<br/>ingestion]
@@ -32,7 +32,7 @@ flowchart LR
     end
 
     subgraph Third_parties[Third parties]
-        VOY[Voyage API<br/>voyage-4-large<br/>maintainer-time only]
+        VOY[Voyage API<br/>voyage-4-large<br/>opt-in api mode only]
         ANT[Anthropic API<br/>Claude · processor]
     end
 
@@ -49,10 +49,12 @@ flowchart LR
 ```
 
 Key properties:
-- **Questions are embedded locally.** Voyage 4 models share one embedding
-  space: the law is embedded once with `voyage-4-large` via the API, and
-  questions are embedded in-process with the open-weight `voyage-4-nano`
-  (ADR 0003). Voyage never receives user questions.
+- **Everything is embedded locally by default.** Questions and, since the
+  embedding gate, the law too are embedded in-process with the open-weight
+  `voyage-4-nano` (ADR 0003, ADR 0013). Voyage never receives user
+  questions; it only sees public law text, and only in the opt-in `api`
+  ingest mode (Voyage 4 models share one embedding space, so
+  `voyage-4-large` document vectors still match nano query vectors).
 - **Anthropic is the only processor of user data**, and it only receives
   the question after the `privacy` module has redacted it.
 - **The MCP path sends nothing to any third party.** The MCP server only runs
@@ -81,23 +83,26 @@ sequenceDiagram
     Dev->>P: base-legal corpus build
     P->>P: HTML/text → provision tree<br/>(drop revoked text, keep amendment notes as metadata)
     P-->>Dev: corpus/<doc>.json (committed)
-    Dev->>C: base-legal corpus embed (maintainers, once per snapshot)
+    Dev->>C: base-legal corpus embed (optional, maintainers)
     C->>C: one chunk per provision,<br/>prefix hierarchy path
     C->>V: embed(chunks, input_type=document)<br/>public law text only
     V-->>C: vectors
     C-->>Dev: corpus/embeddings/<doc>.voyage-4-large.1024.npy<br/>+ SHA-256 in manifest.yaml
-    Note over Dev,DB: End user: base-legal ingest (no Voyage key needed*)
+    Note over Dev,DB: End user: base-legal ingest (local mode by default, no Voyage key)
     C->>DB: upsert documents, provisions, chunks + vectors<br/>(idempotent by source_sha256)
 ```
 
 - `fetch`, `build` and `embed` are separate on purpose. The normalized JSON
-  (and, pending terms, the vectors) are committed, so CI and evals never
-  depend on government websites or paid APIs.
-- `ingest` picks a mode (ADR 0003): **precomputed** vectors when their hashes
-  match the corpus snapshot; **api** to re-embed with `voyage-4-large`;
-  **local** to embed documents with `voyage-4-nano` too (fully offline).
-- \* If Voyage's terms turn out not to allow redistributing the vectors, users
-  run `api` mode once (it fits the free allowance) or `local` mode.
+  is committed, so CI and evals never depend on government websites or paid
+  APIs.
+- `ingest` picks a mode: **local** (the default since ADR 0013) embeds
+  documents with `voyage-4-nano`, fully offline; **api** re-embeds with
+  `voyage-4-large`; **precomputed** loads `voyage-4-large` vectors whose
+  hashes match the corpus snapshot; **auto** tries precomputed, then api when
+  a Voyage key is set, then local. The embedding gate measured local mode as
+  the best retrieval ([results](evals/embedding-gate.md)); the refusal
+  threshold is calibrated for it.
+- The `voyage-4-large` vectors are not committed (ADR 0009).
 - Ingestion is idempotent: re-running with an unchanged `source_sha256` does nothing.
 
 ## 3. Query flow
@@ -236,7 +241,7 @@ erDiagram
 |---|---|---|
 | `corpus` | Fetch official sources, verify hashes, parse to a provision tree, write normalized JSON | One parser per source layout; test fixtures of the hardest articles |
 | `chunking` | One chunk per provision, with the hierarchy path prefixed | Deterministic "contextual retrieval" without an LLM |
-| `embeddings` | `Embedder` protocol; `voyage-4-large` (API, documents), `voyage-4-nano` (local, queries); shared-space guard | Weights pinned by revision + SHA-256, baked into the image (ADR 0003) |
+| `embeddings` | `Embedder` protocol; `voyage-4-nano` (local: questions, and documents by default); optional `voyage-4-large` (API, documents); shared-space guard | Weights pinned by revision + SHA-256, baked into the image (ADR 0003, 0012, 0013) |
 | `store` | Schema, migrations, upserts, queries (psycopg 3) | No ORM magic in the query path |
 | `retrieval` | FTS rank + vector kNN, RRF fusion (k = 60), score threshold | Postgres FTS is not true BM25 (ParadeDB/pg_search is an option) |
 | `privacy` | PII detection and redaction (CPF/CNPJ with check digits, e-mail, phone), log policy | Placeholders like `[CPF_1]`; original values never stored |
@@ -270,7 +275,7 @@ base-legal/
 ├── src/base_legal/
 │   ├── corpus/          # fetch, per-layout HTML (planalto, dou, govbr), parser, IDs
 │   ├── chunking/
-│   ├── embeddings/      # Embedder protocol, Voyage API (law) + local nano (questions), model locks
+│   ├── embeddings/      # Embedder protocol, local nano, optional Voyage API (law only), model locks
 │   ├── store/           # schema, queries
 │   ├── retrieval/       # explicit refs, FTS + vector, weighted RRF, ancestor propagation
 │   ├── privacy/
@@ -313,10 +318,10 @@ files committed to the repo, and empty values count as unset.
 |---|---|---|
 | `DATABASE_URL` | local PostgreSQL | Index |
 | `ANTHROPIC_API_KEY` | unset | Generation (`ask`, `POST /ask`) only |
-| `VOYAGE_API_KEY` | unset | Maintainers / `api` ingest mode; public law text only |
+| `VOYAGE_API_KEY` | unset | Opt-in `api` ingest mode and `corpus embed`; public law text only |
 | `BASE_LEGAL_MODEL` | `claude-haiku-4-5` | Generation model (`claude-sonnet-5` for quality) |
 | `BASE_LEGAL_MAX_ANSWER_TOKENS` | 1024 (≤ 4096) | `max_tokens` cap |
-| `BASE_LEGAL_INGEST_MODE` | `auto` | `precomputed`, `api` or `local` (ADR 0003) |
+| `BASE_LEGAL_INGEST_MODE` | `local` | `local`, `api`, `precomputed` or `auto` (ADR 0003, ADR 0013) |
 | `BASE_LEGAL_QUERY_EMBEDDER` | `voyage-4-nano` | Local query model (pinned) |
 | `BASE_LEGAL_TOP_K` | 8 | Provisions sent to the model |
 | `BASE_LEGAL_REFUSAL_THRESHOLD` | 0.40 | Minimum best dense similarity to answer |

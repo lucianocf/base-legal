@@ -31,7 +31,7 @@ class Settings(BaseSettings):
     corpus_dir: Path = Path("corpus")
     raw_dir: Path = Path("corpus/raw")
 
-    ingest_mode: IngestMode = IngestMode.AUTO
+    ingest_mode: IngestMode = IngestMode.LOCAL  # ADR 0013
     document_embedder: str = "voyage-4-large"
     query_embedder: str = "voyage-4-nano"
     # Local model weights, pinned by revision + SHA-256 (src/base_legal/embeddings/*.lock.json).

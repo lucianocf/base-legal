@@ -5,7 +5,7 @@ from typing import Any
 import numpy as np
 import pytest
 
-from base_legal.config import Settings
+from base_legal.config import IngestMode, Settings
 from base_legal.embeddings.base import (
     EMBEDDING_DIM,
     IncompatibleEmbedderError,
@@ -206,3 +206,11 @@ def test_empty_secrets_are_unset(value: str, monkeypatch: pytest.MonkeyPatch) ->
     settings = Settings()
     assert settings.voyage_api_key is None
     assert settings.api_key is None
+
+
+def test_default_ingest_embeds_documents_locally(monkeypatch: pytest.MonkeyPatch) -> None:
+    # ADR 0013: the gate chose voyage-4-nano for documents; a Voyage key alone
+    # must not switch a default installation to the API.
+    monkeypatch.delenv("BASE_LEGAL_INGEST_MODE", raising=False)
+    monkeypatch.setenv("VOYAGE_API_KEY", "synthetic-test-key")
+    assert Settings().ingest_mode is IngestMode.LOCAL

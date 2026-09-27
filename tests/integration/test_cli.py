@@ -384,7 +384,7 @@ def test_auto_ingest_falls_back_to_local_without_the_voyage_sdk(
     )
     runner = CliRunner()
     assert runner.invoke(app, ["corpus", "build"]).exit_code == 0
-    result = runner.invoke(app, ["ingest"])
+    result = runner.invoke(app, ["ingest", "--mode", "auto"])
     assert result.exit_code == 0, result.output
     assert "embedding locally" in result.output
     assert "test-hashing (embedded), ingested" in result.output

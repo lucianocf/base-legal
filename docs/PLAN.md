@@ -40,11 +40,11 @@ knowledge base.
 - **Structural parsing** into canonical provision IDs (`lgpd:art7:incIX`) with the
   hierarchy path (Chapter > Section > Article) kept on every chunk.
 - **Hybrid retrieval:** PostgreSQL full-text (`portuguese`) + pgvector, fused
-  with Reciprocal Rank Fusion. **Asymmetric Voyage 4 embeddings** (ADR 0003):
-  the law is embedded once with `voyage-4-large` via the API; questions are
+  with Reciprocal Rank Fusion. **Local Voyage 4 embeddings:** questions are
   embedded **locally** with the open-weight `voyage-4-nano`, so questions never
-  reach Voyage. Precomputed document vectors are **not** shipped: Voyage's terms
-  are silent on redistributing outputs (ADR 0009), so the zero-key path is `local` mode.
+  reach Voyage (ADR 0003). The embedding gate showed that embedding the law with
+  nano too beats `voyage-4-large` documents on this golden set, so `local` mode
+  is the default and needs no key (ADR 0013); `api` mode stays opt-in.
 - **Grounded generation** with Claude (Haiku 4.5 default, Sonnet 5 configurable),
   citations mapped to provision IDs, **strict refusal** when unsupported.
 - **Citation validator:** every cited ID must exist and every quoted span must
@@ -174,7 +174,7 @@ than articles) is not parsed yet: follow-up.
 | **Planalto compiled HTML is irregular.** Revoked text is struck through (`<strike>`), amendments are annotated inline ("Redação dada pela Lei nº …"), and articles like "55-J" and "Parágrafo único" need care | Parser built test-first on a fixture set of the nastiest articles; normalized output committed and reviewed as a diff |
 | Resolutions published in different layouts (DOU vs gov.br) | One parser per source layout behind one interface; manual checks on small resolutions |
 | Voyage trains on customer data by default | Only public law text is sent to Voyage; questions are embedded locally (ADR 0003) |
-| `voyage-4-nano` has few independent benchmarks | Validation gate on the golden set; plan B is Qwen3-Embedding-0.6B (ADR 0003) |
+| `voyage-4-nano` has few independent benchmarks | Validation gate run on the golden set: nano for documents and questions came first (ADR 0013); Qwen3-Embedding-0.6B stays plan B |
 | Voyage terms may forbid redistributing vectors | Checked 2026-09-27: the terms are silent, so vectors are not committed (ADR 0009); users run `api` ingest once (free tier) or `local` mode. Written confirmation from Voyage would reopen this |
 | Hallucinated citations | Validator + strict refusal; tested in CI |
 | Scope creep (20 h budget) | Cut order in §4; everything else is roadmap |

@@ -36,8 +36,6 @@ services:
       # Only needed for `ask` / POST /ask (generation). Retrieval, search, the
       # UI's search mode and the MCP server work without it.
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
-      # Optional: re-embed the public law text with voyage-4-large (ADR 0003/0009).
-      VOYAGE_API_KEY: ${VOYAGE_API_KEY:-}
       BASE_LEGAL_MODEL: ${BASE_LEGAL_MODEL:-claude-haiku-4-5}
       BASE_LEGAL_API_KEY: ${BASE_LEGAL_API_KEY:-}
     ports:

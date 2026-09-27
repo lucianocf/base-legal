@@ -1,6 +1,7 @@
 # 0003. Asymmetric Voyage 4 embeddings: API for the law, local model for questions
 
-- Status: Proposed (revised 2026-09-26 after embedding research)
+- Status: Proposed (revised 2026-09-26 after embedding research); document
+  embedding superseded by [0013](0013-voyage-4-nano-for-documents-by-default.md)
 - Date: 2026-09-26
 
 ## Context

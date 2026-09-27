@@ -21,7 +21,7 @@
 | Asset | Why it matters |
 |---|---|
 | A1 User questions | May contain personal data (the user's own or third parties') |
-| A2 API keys (Anthropic; Voyage for maintainers only) | Financial abuse, account compromise |
+| A2 API keys (Anthropic; Voyage only in the opt-in `api` ingest mode) | Financial abuse, account compromise |
 | A8 Local model weights and precomputed vectors | Tampered weights or vectors silently degrade or bias retrieval |
 | A3 Corpus integrity | A poisoned corpus means wrong legal answers presented as grounded |
 | A4 Answer integrity | Users may act on answers; hallucinated citations damage trust |
@@ -36,7 +36,7 @@ flowchart LR
     U([User / MCP host]) -- TB1 --> APP[base_legal<br/>API · CLI · MCP]
     APP -- TB2 --> DB[(PostgreSQL)]
     APP -- TB3: redacted question + provisions --> ANT[Anthropic API]
-    ING -- TB3b: public law text only --> VOY[Voyage API]
+    ING -. TB3b: public law text only, opt-in .-> VOY[Voyage API]
     SRC[Official sources<br/>planalto.gov.br · in.gov.br] -- TB4 --> ING[Ingestion]
     ING --> DB
     GH[GitHub Actions · PyPI · Docker Hub · Hugging Face] -- TB5 --> APP
@@ -45,7 +45,9 @@ flowchart LR
 - **TB1:** user → application (untrusted input).
 - **TB2:** application → database (a trusted network, but still least privilege).
 - **TB3:** application → Anthropic (the only processor of user data).
-- **TB3b:** ingestion → Voyage (public legal text only; no user data).
+- **TB3b:** ingestion → Voyage (public legal text only; no user data). Not
+  crossed by default: only `corpus embed` and the opt-in `api` ingest mode use
+  it (ADR 0013).
 - **TB4:** official sources → ingestion (untrusted until hashed and reviewed).
 - **TB5:** supply chain → build and runtime.
 

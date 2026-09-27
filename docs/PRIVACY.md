@@ -17,12 +17,13 @@ acts as an **operador** (processor) on behalf of the deployer:
 | Third party | Purpose | Data sent | Role | Notes |
 |---|---|---|---|---|
 | Anthropic (Claude API) | Answer generation | The **redacted** question + retrieved public provisions | **Processor** | Commercial API terms; `TODO(verify)` current retention period and training policy at each release |
-| Voyage AI | Embedding the **law** (`voyage-4-large`) | **Only public legal text**, once per corpus snapshot, by maintainers (or by a deployer choosing `api` ingest mode) | **Not a processor of personal data** | Voyage's training-by-default does not matter here: the content is public legislation. Opt-out is optional |
+| Voyage AI (optional, not used by default) | Embedding the **law** (`voyage-4-large`) | **Only public legal text**, and only when a maintainer runs `corpus embed` or a deployer opts into `api` ingest mode (ADR 0013) | **Not a processor of personal data** | Voyage's training-by-default does not matter here: the content is public legislation. Opt-out is optional |
 
 **User questions are embedded locally** with the open-weight `voyage-4-nano`
-(ADR 0003). Voyage 4 models share one embedding space, so the local query
-vector can be matched against vectors the API computed for the law. Voyage
-never sees a question.
+(ADR 0003), and by default so is the law (ADR 0013), so a default deployment
+makes no call to Voyage at all. In the opt-in `api` mode, Voyage 4 models
+share one embedding space, so the local query vector can still be matched
+against vectors the API computed for the law. Voyage never sees a question.
 
 Sending questions to Anthropic is an international data transfer (LGPD
 arts. 33 to 36; Res. CD/ANPD nº 19/2024). Choosing the mechanism is the
@@ -79,11 +80,11 @@ chosen by the user, receives the question under the host's terms.
 
 1. **Anthropic:** set a monthly spend limit in the Console; review the current
    data retention terms (`TODO(verify)`).
-2. **Voyage AI (maintainers only):** no user data is sent, so the training
+2. **Voyage AI (opt-in `api` mode only):** no user data is sent, so the training
    opt-out is **optional**. It is still reasonable hygiene if the account is
    ever used for other content. Per Voyage's FAQ, opting out requires a
    payment method and may void free-token credits.
-3. **Local query model:** `voyage-4-nano` weights (Apache 2.0) are pinned by
+3. **Local embedding model:** `voyage-4-nano` weights (Apache 2.0) are pinned by
    revision and SHA-256 and baked into the image, so the runtime makes no
    model downloads.
 
