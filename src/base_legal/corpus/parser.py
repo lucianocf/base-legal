@@ -179,8 +179,11 @@ class StructureParser:
 
     def __init__(self, document_id: str) -> None:
         self.document_id = document_id
+        # 1-based index, in the input lines, of the line each provision starts on
+        self.start_lines: dict[str, int] = {}
 
     def parse(self, lines: Iterable[str]) -> list[Provision]:
+        self.start_lines = {}
         state = _State()
         nodes: list[_Node] = []
         seen: set[str] = set()
@@ -189,6 +192,7 @@ class StructureParser:
             if node.id in seen:
                 raise ParseError(line_no, line, f"duplicate provision {node.id}")
             seen.add(node.id)
+            self.start_lines[node.id] = line_no
             nodes.append(node)
             state.last = node
             return node

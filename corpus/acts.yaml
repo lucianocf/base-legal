@@ -1,0 +1,101 @@
+# Amending acts cited by the compiled texts and when their wordings came into
+# force (ADR 0014). Written by `base-legal corpus acts` from each act's own page
+# on planalto.gov.br; review changes as a diff. `in_force_from: null` means the
+# date could not be established from the page (see `review`).
+acts:
+- name: Lei nº 13.853, de 2019
+  url: https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2019/lei/l13853.htm
+  retrieved_at: '2026-09-27'
+  sha256: b2ac161ce20c5e1cb6f0fe3658d78b3a3a94b203c4f24d6ade4b8651ea80214d
+  dou_date: '2019-07-09'
+  vigencia: Esta Lei entra em vigor na data de sua publicação
+  in_force_from: '2019-07-09'
+  review: null
+- name: Lei nº 14.010, de 2020
+  url: https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2020/lei/l14010.htm
+  retrieved_at: '2026-09-27'
+  sha256: a5fca3ca4d2a30ef831f708ec9d8a96405c3285100951259ac46fdda48f0f00f
+  dou_date: '2020-06-12'
+  vigencia: Esta Lei entra em vigor na data de sua publicação.
+  in_force_from: '2020-06-12'
+  review: null
+- name: Lei nº 14.129, de 2021
+  url: https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2021/lei/l14129.htm
+  retrieved_at: '2026-09-27'
+  sha256: b71bcb9d9f36b3bebf93ca19f394d2a7a5943a277fe95420e04cfc82e5c7b025
+  dou_date: '2021-03-30'
+  vigencia: 'Esta Lei entra em vigor após decorridos:'
+  in_force_from: null
+  review: 'staggered vigência: check each provision'
+- name: Lei nº 14.345, de 2022
+  url: https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2022/lei/l14345.htm
+  retrieved_at: '2026-09-27'
+  sha256: a1631e51dba42f5aed47c31bb15d2e61db4abfeb1a009ec5d1b2901c2ab5ed2f
+  dou_date: '2022-05-25'
+  vigencia: Esta Lei entra em vigor na data de sua publicação.
+  in_force_from: '2022-05-25'
+  review: null
+- name: Lei nº 14.460, de 2022
+  url: https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2022/lei/l14460.htm
+  retrieved_at: '2026-09-27'
+  sha256: 382b16a5f73011d500395fa37e8b4a3da927125420d6d72a4a3727c09b9a3c3c
+  dou_date: '2022-10-26'
+  vigencia: Esta Lei entra em vigor na data de sua publicação.
+  in_force_from: '2022-10-26'
+  review: null
+- name: Lei nº 15.141, de 2025
+  url: https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2025/lei/l15141.htm
+  retrieved_at: '2026-09-27'
+  sha256: ac91284926db246e02ea7b66f6073780255b293ab260f0d4023960b6ae88ba73
+  dou_date: '2025-06-03'
+  vigencia: Esta Lei entra em vigor na data de sua publicação.
+  in_force_from: '2025-06-03'
+  review: null
+- name: Lei nº 15.352, de 2026
+  url: https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2026/lei/l15352.htm
+  retrieved_at: '2026-09-27'
+  sha256: 2c6ba98b009a2b9ede2771a6166e2d0b3d1f9a103f147260af4528705ed78db1
+  dou_date: '2026-02-25'
+  vigencia: Esta Lei entra em vigor na data de sua publicação.
+  in_force_from: '2026-02-25'
+  review: null
+- name: Lei nº 15.452, de 2026
+  url: https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2026/lei/l15352.htm
+  retrieved_at: '2026-09-27'
+  sha256: 818ab74309084429c5d5a9693ef99e6fc83cf1349bca6e85448267c56034b8f9
+  dou_date: null
+  vigencia: null
+  in_force_from: null
+  review: 'the note links to a page whose title is another act: check the source'
+- name: Medida Provisória nº 1.124, de 2022
+  url: https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2022/mpv/mpv1124.htm
+  retrieved_at: '2026-09-27'
+  sha256: e393ff0a6dd50888530a0ea07354cfaacd5da47a8bf41f6e82678c7ae5e7cacf
+  dou_date: '2022-06-14'
+  vigencia: Esta Medida Provisória entra em vigor na data de sua publicação.
+  in_force_from: '2022-06-14'
+  review: null
+- name: Medida Provisória nº 1.317, de 2025
+  url: https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2025/mpv/mpv1317.htm
+  retrieved_at: '2026-09-27'
+  sha256: b6709fa972245b4f888334b4194479eaf9be438ec5cd6d445cfcfc208c38990f
+  dou_date: '2025-09-18'
+  vigencia: Esta Medida Provisória entra em vigor na data de sua publicação.
+  in_force_from: '2025-09-18'
+  review: null
+- name: Medida Provisória nº 869, de 2018
+  url: https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/mpv/mpv869.htm
+  retrieved_at: '2026-09-27'
+  sha256: c904c0c24b8160b89811ce0906f5454f9ae71f23050db54013dc497badfaf657
+  dou_date: '2018-12-28'
+  vigencia: Esta Medida Provisória entra em vigor na data de sua publicação.
+  in_force_from: '2018-12-28'
+  review: null
+- name: Medida Provisória nº 959, de 2020
+  url: https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2020/mpv/mpv959.htm
+  retrieved_at: '2026-09-27'
+  sha256: fefb31faa008160ea50e50159e8f1fa4fd296a934fa9b0a833e97eadaef158c9
+  dou_date: '2020-04-29'
+  vigencia: Esta Medida Provisória entra em vigor na data de sua publicação.
+  in_force_from: '2020-04-29'
+  review: null

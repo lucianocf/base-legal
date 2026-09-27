@@ -12,8 +12,11 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import httpx
+import yaml
 
-from base_legal.corpus.html import decode_html, html_to_lines
+from base_legal.corpus.acts import ActsFile
+from base_legal.corpus.history import DocumentHistory, extract_history
+from base_legal.corpus.html import decode_html, html_to_blocks, html_to_lines
 from base_legal.corpus.manifest import Manifest, ManifestEntry, sha256_hex
 from base_legal.corpus.models import Document
 from base_legal.corpus.parser import StructureParser
@@ -97,6 +100,50 @@ def parse_source(entry: ManifestEntry, data: bytes) -> Document:
         redistribution_basis=entry.redistribution_basis,
         provisions=tuple(provisions),
     )
+
+
+def build_history(entry: ManifestEntry, raw_dir: Path, document: Document) -> DocumentHistory:
+    """Earlier wordings of ``document``'s provisions from its raw compiled page (ADR 0014)."""
+    data = raw_path(raw_dir, entry.id).read_bytes()
+    if sha256_hex(data) != document.source_sha256:
+        raise IntegrityError(f"{entry.id}: raw file does not match the built document")
+    blocks = html_to_blocks(decode_html(data), entry.layout)
+    parser = StructureParser(entry.id)
+    provisions = parser.parse([text if not struck else "" for text, struck in blocks])
+    if tuple(provisions) != document.provisions:
+        raise IntegrityError(f"{entry.id}: history parse differs from the built document")
+    return extract_history(blocks, document, parser.start_lines)
+
+
+def history_path(corpus_dir: Path, doc_id: str) -> Path:
+    return corpus_dir / "history" / f"{doc_id}.json"
+
+
+def load_acts(corpus_dir: Path) -> ActsFile:
+    path = corpus_dir / "acts.yaml"
+    if not path.exists():
+        return ActsFile(acts=())
+    return ActsFile.model_validate(yaml.safe_load(path.read_text(encoding="utf-8")))
+
+
+def dump_acts(acts: ActsFile, corpus_dir: Path) -> Path:
+    path = corpus_dir / "acts.yaml"
+    header = (
+        "# Amending acts cited by the compiled texts and when their wordings came into\n"
+        "# force (ADR 0014). Written by `base-legal corpus acts` from each act's own page\n"
+        "# on planalto.gov.br; review changes as a diff. `in_force_from: null` means the\n"
+        "# date could not be established from the page (see `review`).\n"
+    )
+    body = yaml.safe_dump(acts.model_dump(mode="json"), allow_unicode=True, sort_keys=False)
+    path.write_text(header + body, encoding="utf-8")
+    return path
+
+
+def write_history(history: DocumentHistory, corpus_dir: Path) -> Path:
+    path = history_path(corpus_dir, history.document_id)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(history.model_dump_json(indent=2) + "\n", encoding="utf-8")
+    return path
 
 
 def document_path(corpus_dir: Path, doc_id: str) -> Path:

@@ -14,17 +14,22 @@ import typer
 
 from base_legal.chunking.chunker import chunk_document
 from base_legal.config import IngestMode, Settings
+from base_legal.corpus.history import date_history
+from base_legal.corpus.html import decode_html
 from base_legal.corpus.manifest import Manifest
-from base_legal.corpus.models import Document
+from base_legal.corpus.models import Document, SourceLayout
 from base_legal.corpus.pipeline import (
     build,
+    build_history,
     document_path,
     download,
     fetch,
+    load_acts,
     load_documents,
     parse_source,
     raw_path,
     write_document,
+    write_history,
 )
 from base_legal.corpus.watch import DocumentDiff, diff_documents, render_report
 from base_legal.embeddings.base import Embedder, check_compatible
@@ -147,6 +152,41 @@ def corpus_check(
         report.write_text(render_report(diffs, selected, today.isoformat()), encoding="utf-8")
 
 
+@corpus_app.command("acts")
+def corpus_acts(
+    refresh: Annotated[bool, typer.Option(help="Fetch again acts already recorded.")] = False,
+) -> None:
+    """Record when each amending act came into force, from its own official page."""
+    from base_legal.corpus.acts import act_links, describe, merge
+    from base_legal.corpus.pipeline import USER_AGENT, dump_acts, load_acts
+
+    settings = _settings()
+    manifest = Manifest.load(_manifest_path(settings))
+    known = load_acts(settings.corpus_dir)
+    recorded = known.by_name()
+    wanted: dict[str, str] = {}
+    for entry in manifest.documents:
+        path = raw_path(settings.raw_dir, entry.id)
+        if entry.layout is SourceLayout.PLANALTO and path.exists():
+            html = decode_html(path.read_bytes())
+            wanted |= act_links(html, str(entry.source_url))
+    today = dt.date.today()
+    fetched = []
+    with httpx.Client(timeout=60, follow_redirects=True) as client:
+        for name, url in sorted(wanted.items()):
+            if name in recorded and not refresh:
+                continue
+            response = client.get(url, headers={"User-Agent": USER_AGENT})
+            response.raise_for_status()
+            act = describe(
+                name, str(response.url), decode_html(response.content), response.content, today
+            )
+            fetched.append(act)
+            when = act.in_force_from or f"undated ({act.review})"
+            typer.echo(f"{name}: {when}")
+    dump_acts(merge(known.acts, fetched), settings.corpus_dir)
+
+
 @corpus_app.command("explorer")
 def corpus_explorer(
     out: Annotated[Path, typer.Option(help="Directory for the static site.")] = Path(
@@ -170,8 +210,14 @@ def corpus_build(doc: DocOption = None) -> None:
     settings = _settings()
     manifest = Manifest.load(_manifest_path(settings))
     for doc_id in _selected(manifest, doc):
-        document = build(manifest.get(doc_id), settings.raw_dir)
+        entry = manifest.get(doc_id)
+        document = build(entry, settings.raw_dir)
         path = write_document(document, settings.corpus_dir)
+        if entry.layout is SourceLayout.PLANALTO:
+            acts = {a.name: a.in_force_from for a in load_acts(settings.corpus_dir).acts}
+            history = date_history(build_history(entry, settings.raw_dir, document), acts)
+            write_history(history, settings.corpus_dir)
+            typer.echo(f"{doc_id}: earlier wordings of {len(history.provisions)} provision(s)")
         in_force = len(document.in_force())
         typer.echo(
             f"{doc_id}: {len(document.provisions)} provisions ({in_force} in force) -> {path}"
