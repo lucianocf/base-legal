@@ -46,18 +46,12 @@ def fetch(
     today: dt.date | None = None,
 ) -> tuple[ManifestEntry, FetchResult]:
     """Download one official source and return the updated manifest entry."""
-    response = client.get(str(entry.source_url), headers={"User-Agent": USER_AGENT})
-    response.raise_for_status()
-    data = response.content
-    digest = sha256_hex(data)
+    updated, data = download(entry, client, today)
     raw_dir.mkdir(parents=True, exist_ok=True)
     path = raw_path(raw_dir, entry.id)
     path.write_bytes(data)
-    changed = digest != entry.source_sha256
-    updated = entry.model_copy(
-        update={"source_sha256": digest, "retrieved_at": today or dt.date.today()}
-    )
-    return updated, FetchResult(entry.id, path, digest, changed)
+    digest = str(updated.source_sha256)
+    return updated, FetchResult(entry.id, path, digest, digest != entry.source_sha256)
 
 
 def build(entry: ManifestEntry, raw_dir: Path) -> Document:
@@ -70,6 +64,27 @@ def build(entry: ManifestEntry, raw_dir: Path) -> Document:
         raise IntegrityError(
             f"{entry.id}: raw file hash {digest} != manifest {entry.source_sha256}"
         )
+    return parse_source(entry, data)
+
+
+def download(
+    entry: ManifestEntry, client: httpx.Client, today: dt.date | None = None
+) -> tuple[ManifestEntry, bytes]:
+    """Download one official source; return the entry updated with its hash and date."""
+    response = client.get(str(entry.source_url), headers={"User-Agent": USER_AGENT})
+    response.raise_for_status()
+    data = response.content
+    updated = entry.model_copy(
+        update={"source_sha256": sha256_hex(data), "retrieved_at": today or dt.date.today()}
+    )
+    return updated, data
+
+
+def parse_source(entry: ManifestEntry, data: bytes) -> Document:
+    """Parse raw source bytes (whose hash ``entry`` records) into a :class:`Document`."""
+    if entry.retrieved_at is None:
+        raise IntegrityError(f"{entry.id}: not fetched yet (no date in manifest)")
+    digest = sha256_hex(data)
     lines = html_to_lines(decode_html(data), entry.layout)
     provisions = StructureParser(entry.id).parse(lines)
     return Document(

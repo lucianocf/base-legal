@@ -76,6 +76,12 @@ uv run base-legal eval redteam
 4. Legal facts that are not confirmed in an official source are marked
    `TODO(verify)`.
 
+`uv run base-legal corpus check` compares every official source with the
+committed corpus provision by provision (raw-byte changes alone are ignored);
+`--apply --report report.md` writes the changed acts and a review report. The
+`Corpus watch` workflow runs it weekly and opens a draft pull request when the
+law changed.
+
 ## Golden set
 
 `evals/golden.yaml` holds synthetic questions only, each `unverified` until a

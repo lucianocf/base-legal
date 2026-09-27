@@ -3,6 +3,7 @@ import shutil
 from pathlib import Path
 from typing import Any
 
+import httpx
 import pytest
 from typer.testing import CliRunner
 
@@ -77,3 +78,47 @@ def test_embed_with_record_updates_the_manifest_and_keeps_comments(corpus_dir: P
     (artifact,) = Manifest.load(corpus_dir / "manifest.yaml").get("lgpd").embeddings
     assert artifact.model == "voyage-4-large"
     assert local_artifact(corpus_dir / "embeddings", "lgpd", "voyage-4-large") is None
+
+
+def _serve(monkeypatch: pytest.MonkeyPatch, body: bytes) -> None:
+    real_client = httpx.Client
+    transport = httpx.MockTransport(lambda _: httpx.Response(200, content=body))
+    monkeypatch.setattr(cli.httpx, "Client", lambda **_: real_client(transport=transport))
+
+
+def test_check_ignores_byte_changes_that_leave_the_law_unchanged(
+    corpus_dir: Path, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    # Regression: Planalto returns different bytes for identical content, which
+    # `corpus fetch` reported as a change.
+    raw = (corpus_dir / "raw" / "lgpd.html").read_bytes()
+    _serve(monkeypatch, raw + b"<!-- served at another time -->")
+    before = (corpus_dir / "manifest.yaml").read_text(encoding="utf-8")
+    report = tmp_path / "report.md"
+    result = CliRunner().invoke(cli.app, ["corpus", "check", "--apply", "--report", str(report)])
+    assert result.exit_code == 0, result.output
+    assert "lgpd: no normative change" in result.output
+    assert (corpus_dir / "manifest.yaml").read_text(encoding="utf-8") == before
+    assert "Acts with normative changes: none." in report.read_text(encoding="utf-8")
+
+
+def test_check_applies_a_real_change_and_reports_it(
+    corpus_dir: Path, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    raw = (corpus_dir / "raw" / "lgpd.html").read_bytes()
+    changed = raw.replace(b"considera-se", b"entende-se")
+    assert changed != raw
+    _serve(monkeypatch, changed)
+    report = tmp_path / "report.md"
+    dry = CliRunner().invoke(cli.app, ["corpus", "check"])
+    assert "lgpd: 1 provision change(s)" in dry.output
+    assert Manifest.load(corpus_dir / "manifest.yaml").get("lgpd").source_sha256 == sha256_hex(raw)
+
+    args = ["corpus", "check", "--apply", "--report", str(report)]
+    assert CliRunner().invoke(cli.app, args).exit_code == 0
+    entry = Manifest.load(corpus_dir / "manifest.yaml").get("lgpd")
+    assert entry.source_sha256 == sha256_hex(changed)
+    assert "entende-se" in (corpus_dir / "lgpd.json").read_text(encoding="utf-8")
+    text = report.read_text(encoding="utf-8")
+    assert "### `lgpd:art5`: changed" in text
+    assert "Acts with normative changes: lgpd." in text

@@ -68,6 +68,7 @@ flowchart LR
 | S11 | UI | **Tampering (XSS)** | Model output or corpus text renders HTML/JS in the UI | Output rendered as text (no `innerHTML`); strict CSP; no third-party scripts | CSP header test |
 | S12 | TB5 | **Tampering / EoP** | Malicious or swapped model weights; `trust_remote_code` runs arbitrary code | Pin the Hugging Face revision + file SHA-256; safetensors only; no `trust_remote_code` unless reviewed and pinned; weights baked into the image at build time | Build-time hash check |
 | S13 | TB5 | **Tampering** | Poisoned precomputed vectors in `corpus/embeddings/` | SHA-256 in `manifest.yaml`, checked on load; regenerated only by the maintainer command, reviewed in PR | Hash check test; CODEOWNERS |
+| S14 | TB4 | **Tampering / EoP** | The scheduled corpus watcher (`watch.yml`) turns untrusted official-page content into a pull request with a write-scoped token | Job-level `contents`/`pull-requests: write` only, no other secrets; the page text only ever reaches git and the PR body as files (never interpolated into shell or expressions); the PR is a draft that a maintainer must review against the official page; nothing merges automatically | zizmor and actionlint in CI; `tests/unit/test_watch.py` (fenced, truncated report) |
 
 ### Where each control is verified (v0.1.0)
 
@@ -86,6 +87,7 @@ flowchart LR
 | S11 | `tests/unit/test_api.py::test_ui_renders_text_only_and_has_no_inline_code` and `test_health_has_disclaimer_and_security_headers`; `evals/redteam.yaml` t09 |
 | S12 | No remote code is executed: voyage-4-nano runs on transformers' own Qwen3 (ADR 0012, `tests/integration/test_nano.py` checks it against the vendor code); `tests/unit/test_model_store.py`; `Dockerfile` fetches and verifies every file's SHA-256 at build time; the runtime is offline (`HF_HUB_OFFLINE=1`) and re-verifies on load; benchmark-only models pinned the same way (`benchmarks/models/`) |
 | S13 | `tests/unit/test_embeddings.py` and `tests/integration/test_store_and_search.py::test_precomputed_tampering_is_rejected`; vectors are not redistributed (ADR 0009) |
+| S14 | `.github/workflows/watch.yml` (minimal permissions, report passed as a file); `tests/unit/test_watch.py::test_report_fences_untrusted_text`; `tests/unit/test_cli_corpus.py` (byte-only changes are ignored) |
 
 ## 5. OWASP Top 10 for LLM Applications (2025)
 

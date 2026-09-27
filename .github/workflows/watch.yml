@@ -1,0 +1,67 @@
+name: Corpus watch
+
+# Weekly: download every official source, compare the parsed provisions with
+# the committed corpus (`base-legal corpus check`) and, only if the law really
+# changed, open a draft pull request for human review. Nothing is merged
+# automatically. Raw-byte differences alone (common on planalto.gov.br) are
+# ignored.
+#
+# Repository setting needed: Settings -> Actions -> General -> "Allow GitHub
+# Actions to create and approve pull requests". Pull requests opened with the
+# workflow token do not trigger other workflows; to run CI on one, push a
+# commit to its branch.
+
+on:
+  schedule:
+    - cron: "23 7 * * 1" # Mondays, 07:23 UTC
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: corpus-watch
+  cancel-in-progress: false
+
+jobs:
+  check:
+    name: Compare official sources with the corpus
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: write # push the update branch
+      pull-requests: write # open the draft pull request
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+        with:
+          enable-cache: false
+      - run: uv sync --locked
+
+      - name: Check the official sources
+        run: uv run base-legal corpus check --apply --report "$RUNNER_TEMP/corpus-watch.md"
+
+      - name: Open a draft pull request if the law changed
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BASE_BRANCH: ${{ github.ref_name }}
+        run: |
+          if git diff --quiet -- corpus/; then
+            echo "No normative change in the official sources." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          # The report quotes untrusted source text; it only ever goes in as a file.
+          head -c 60000 "$RUNNER_TEMP/corpus-watch.md" > "$RUNNER_TEMP/body.md"
+          cat "$RUNNER_TEMP/body.md" >> "$GITHUB_STEP_SUMMARY"
+          branch="corpus-watch/$(date -u +%Y-%m-%d)-${GITHUB_RUN_ID}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$branch"
+          git add corpus/
+          git commit -m "chore(corpus): update from the official sources"
+          git push "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" \
+            "HEAD:refs/heads/${branch}"
+          gh pr create --draft --base "$BASE_BRANCH" --head "$branch" \
+            --title "chore(corpus): official sources changed ($(date -u +%F))" \
+            --body-file "$RUNNER_TEMP/body.md"

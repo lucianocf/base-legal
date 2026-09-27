@@ -249,7 +249,7 @@ erDiagram
 | `grounding` | Validate citations, enforce strict refusal | Pure functions, heavily unit-tested |
 | `api` | FastAPI app, input limits, security headers, serves the UI | OpenAPI documented |
 | `mcp_server` | Tools `search_provisions`, `get_provision`, `verify_citation` | Read-only; stdio transport |
-| `cli` | `corpus fetch/build/embed`, `ingest`, `search`, `ask`, `eval` | Typer |
+| `cli` | `corpus fetch/build/check/embed`, `ingest`, `search`, `ask`, `eval` | Typer |
 | `evals` | Golden set and red-team runners, metrics, report + badge JSON | Deterministic in CI (local query embedder) |
 
 ## 7. Evaluation

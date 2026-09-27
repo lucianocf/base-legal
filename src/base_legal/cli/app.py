@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import dataclasses
+import datetime as dt
 import importlib.util
 import logging
 from pathlib import Path
@@ -14,7 +15,18 @@ import typer
 from base_legal.chunking.chunker import chunk_document
 from base_legal.config import IngestMode, Settings
 from base_legal.corpus.manifest import Manifest
-from base_legal.corpus.pipeline import build, fetch, load_documents, write_document
+from base_legal.corpus.models import Document
+from base_legal.corpus.pipeline import (
+    build,
+    document_path,
+    download,
+    fetch,
+    load_documents,
+    parse_source,
+    raw_path,
+    write_document,
+)
+from base_legal.corpus.watch import DocumentDiff, diff_documents, render_report
 from base_legal.embeddings.base import Embedder, check_compatible
 from base_legal.embeddings.factory import (
     make_api_document_embedder,
@@ -84,6 +96,55 @@ def corpus_fetch(doc: DocOption = None) -> None:
             status = "changed" if result.changed else "unchanged"
             typer.echo(f"{doc_id}: {status} sha256={result.sha256}")
     manifest.dump(_manifest_path(settings))
+
+
+@corpus_app.command("check")
+def corpus_check(
+    doc: DocOption = None,
+    apply: Annotated[
+        bool, typer.Option(help="Write changed acts (raw file, manifest entry and JSON).")
+    ] = False,
+    report: Annotated[
+        Path | None, typer.Option(help="Write a Markdown report of the changes here.")
+    ] = None,
+) -> None:
+    """Compare the official sources with the committed corpus, provision by provision.
+
+    Raw hashes alone are ignored (official pages change bytes without changing
+    the law); only a change in the parsed provisions counts.
+    """
+    settings = _settings()
+    manifest = Manifest.load(_manifest_path(settings))
+    today = dt.date.today()
+    diffs: list[DocumentDiff] = []
+    selected = _selected(manifest, doc)
+    with httpx.Client(timeout=60, follow_redirects=True) as client:
+        for doc_id in selected:
+            updated, data = download(manifest.get(doc_id), client, today)
+            document = parse_source(updated, data)
+            path = document_path(settings.corpus_dir, doc_id)
+            old = (
+                Document.model_validate_json(path.read_text(encoding="utf-8"))
+                if path.exists()
+                else None
+            )
+            diff = diff_documents(old, document)
+            diffs.append(diff)
+            if not diff.changed:
+                typer.echo(f"{doc_id}: no normative change")
+                continue
+            typer.echo(f"{doc_id}: {len(diff.changes)} provision change(s)")
+            if apply:
+                raw = raw_path(settings.raw_dir, doc_id)
+                raw.parent.mkdir(parents=True, exist_ok=True)
+                raw.write_bytes(data)
+                index = next(i for i, e in enumerate(manifest.documents) if e.id == doc_id)
+                manifest.documents[index] = updated
+                write_document(document, settings.corpus_dir)
+    if apply and any(d.changed for d in diffs):
+        manifest.dump(_manifest_path(settings))
+    if report is not None:
+        report.write_text(render_report(diffs, selected, today.isoformat()), encoding="utf-8")
 
 
 @corpus_app.command("build")
