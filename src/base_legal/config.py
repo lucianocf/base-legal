@@ -51,6 +51,10 @@ class Settings(BaseSettings):
     dense_weight: float = 1.0
     parent_weight: float = 0.2
 
+    # Generation (ADR 0008): model from configuration, never hardcoded in logic.
+    model: str = "claude-haiku-4-5"
+    max_answer_tokens: int = Field(default=1024, ge=64, le=4096)
+
     def tuning(self) -> Tuning:
         return Tuning(
             fts_normalization=self.fts_normalization,
