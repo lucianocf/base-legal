@@ -1,0 +1,18 @@
+# Build context: only what the image needs (Dockerfile COPYs are explicit).
+.git
+.venv
+.pgserver
+.mypy_cache
+.ruff_cache
+.pytest_cache
+.coverage
+models
+reports
+corpus/raw
+corpus/embeddings
+docs
+tests
+benchmarks
+**/__pycache__
+.env
+.env.*
