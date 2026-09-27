@@ -21,9 +21,11 @@ from base_legal.embeddings.factory import (
 )
 from base_legal.embeddings.model_store import fetch_model, load_lock
 from base_legal.embeddings.precomputed import artifact_filename, save_vectors, write_sidecar
+from base_legal.evals.golden import GoldenSet, Split
+from base_legal.evals.retrieval import evaluate, to_markdown
 from base_legal.ingest import ingest_documents
 from base_legal.privacy.redact import redact
-from base_legal.retrieval.search import Retriever
+from base_legal.retrieval.search import Retriever, SearchMode
 from base_legal.store.db import Store
 
 app = typer.Typer(no_args_is_help=True, add_completion=False, help=__doc__)
@@ -31,6 +33,8 @@ corpus_app = typer.Typer(no_args_is_help=True, help="Maintain the normalized cor
 app.add_typer(corpus_app, name="corpus")
 model_app = typer.Typer(no_args_is_help=True, help="Manage pinned local model weights.")
 app.add_typer(model_app, name="model")
+eval_app = typer.Typer(no_args_is_help=True, help="Deterministic evaluations (no paid APIs).")
+app.add_typer(eval_app, name="eval")
 
 DocOption = Annotated[
     list[str] | None, typer.Option("--doc", help="Limit to these document ids (repeatable).")
@@ -212,6 +216,54 @@ def search(
         marker = "=" if hit.explicit else " "
         typer.echo(f"{n:>2}{marker} {p.id:<28} {hit.score:.4f}  {' > '.join(p.path)}")
         typer.echo(f"     {p.text[:160]}")
+
+
+@eval_app.command("retrieval")
+def eval_retrieval(
+    golden_path: Annotated[Path, typer.Option("--golden")] = Path("evals/golden.yaml"),
+    split: Annotated[Split, typer.Option(help="dev to tune, holdout to confirm.")] = Split.DEV,
+    mode: Annotated[SearchMode, typer.Option()] = SearchMode.HYBRID,
+    threshold: Annotated[
+        float | None, typer.Option(help="Refusal threshold (default: settings).")
+    ] = None,
+    out_dir: Annotated[Path, typer.Option()] = Path("reports"),
+    label: Annotated[str, typer.Option(help="Name of this configuration.")] = "current",
+) -> None:
+    """Recall@k, MRR, refusal accuracy and latency on the golden set -> JSON + Markdown."""
+    settings = _settings()
+    golden = GoldenSet.load(golden_path)
+    threshold = settings.refusal_threshold if threshold is None else threshold
+    embedder = None if mode is SearchMode.LEXICAL else make_query_embedder(settings)
+    store = Store.connect(settings.database_url)
+    try:
+        meta = store.get_meta()
+        if embedder is not None and meta:
+            check_compatible(meta["embedding_family"], int(meta["embedding_dim"]), embedder)
+        expected = sorted({pid for item in golden.answerable for pid in item.expected})
+        unknown = golden.unknown_ids(store.provisions(expected))
+        if unknown:
+            raise typer.BadParameter(f"golden set cites provisions not in the index: {unknown}")
+        retriever = Retriever(store, embedder, candidate_pool=settings.candidate_pool, mode=mode)
+        report = evaluate(
+            retriever,
+            golden,
+            split=split,
+            threshold=threshold,
+            label=label,
+            config={
+                "mode": mode.value,
+                "query_embedder": embedder.model if embedder else "none",
+                "document_embedder": store.document_embedding_models() or "none",
+            },
+        )
+    finally:
+        store.close()
+    out_dir.mkdir(parents=True, exist_ok=True)
+    stem = out_dir / f"retrieval-{label}-{split.value}"
+    stem.with_suffix(".json").write_text(report.model_dump_json(indent=2) + "\n", "utf-8")
+    markdown = to_markdown(report)
+    stem.with_suffix(".md").write_text(markdown, "utf-8")
+    typer.echo(markdown)
 
 
 def main() -> None:

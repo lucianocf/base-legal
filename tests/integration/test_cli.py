@@ -69,3 +69,69 @@ def test_unknown_doc_is_rejected(monkeypatch: pytest.MonkeyPatch, tmp_path: Path
     monkeypatch.setenv("BASE_LEGAL_CORPUS_DIR", str(tmp_path))
     result = CliRunner().invoke(app, ["corpus", "build", "--doc", "nope"])
     assert result.exit_code != 0
+
+
+def test_eval_retrieval_writes_reports(
+    store: Store,
+    database_url: str,
+    fixtures_dir: Path,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    corpus_dir, raw_dir = tmp_path / "corpus", tmp_path / "corpus" / "raw"
+    raw_dir.mkdir(parents=True)
+    shutil.copy(fixtures_dir / "planalto_synthetic.html", raw_dir / "lgpd.html")
+    Manifest(
+        documents=[
+            ManifestEntry(
+                id="lgpd",
+                title="LGPD (synthetic fixture)",
+                short_name="LGPD",
+                kind=DocumentKind.LAW,
+                source_url="https://example.org/l13709.htm",  # type: ignore[arg-type]
+                retrieved_at=dt.date(2026, 9, 26),
+                source_sha256=sha256_hex((raw_dir / "lgpd.html").read_bytes()),
+            )
+        ]
+    ).dump(corpus_dir / "manifest.yaml")
+    golden = tmp_path / "golden.yaml"
+    golden.write_text(
+        "version: 1\n"
+        "answerable:\n"
+        "  - {id: a1, question: 'O que diz o art. 7º, IX?', expected: [lgpd:art7:incIX],"
+        " split: dev, status: unverified}\n"
+        "  - {id: a2, question: 'prevenção à fraude', expected: [lgpd:art11:incII:alig],"
+        " split: holdout, status: unverified}\n"
+        "refuse:\n"
+        "  - {id: r1, question: 'O que diz o art. 99?', reason: nonexistent_provision,"
+        " split: dev, status: unverified}\n",
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("DATABASE_URL", database_url)
+    monkeypatch.setenv("BASE_LEGAL_CORPUS_DIR", str(corpus_dir))
+    monkeypatch.setenv("BASE_LEGAL_RAW_DIR", str(raw_dir))
+    monkeypatch.setenv("BASE_LEGAL_QUERY_EMBEDDER", "test-hashing")
+    runner = CliRunner()
+    assert runner.invoke(app, ["corpus", "build"]).exit_code == 0
+    assert runner.invoke(app, ["ingest", "--mode", "local"]).exit_code == 0
+
+    out = tmp_path / "reports"
+    args = ["eval", "retrieval", "--golden", str(golden), "--out-dir", str(out), "--label", "t"]
+    result = runner.invoke(app, args)
+    assert result.exit_code == 0, result.output
+    assert "| recall@1 | 100.0 % |" in result.output
+    assert "| Refusal accuracy (must-refuse) | 100.0 % |" in result.output
+    assert (out / "retrieval-t-dev.json").is_file()
+    assert (out / "retrieval-t-dev.md").is_file()
+
+    result = runner.invoke(app, [*args, "--mode", "lexical", "--split", "holdout"])
+    assert result.exit_code == 0, result.output
+    assert "query_embedder=none" in result.output
+
+    golden.write_text(
+        golden.read_text(encoding="utf-8").replace("lgpd:art7:incIX]", "lgpd:art7:incXII]"),
+        encoding="utf-8",
+    )
+    result = runner.invoke(app, args)
+    assert result.exit_code != 0
+    assert "lgpd:art7:incXII" in result.output

@@ -238,6 +238,13 @@ class Store:
         ).fetchall()
         return {str(r["id"]): _row_to_provision(r) for r in rows}
 
+    def document_embedding_models(self) -> str:
+        """Comma-separated embedding models the indexed documents were embedded with."""
+        rows = self.conn.execute(
+            "SELECT DISTINCT embedding_model FROM documents ORDER BY embedding_model"
+        ).fetchall()
+        return ",".join(str(r["embedding_model"]) for r in rows)
+
     def count_chunks(self) -> int:
         row = self.conn.execute("SELECT count(*) AS n FROM chunks").fetchone()
         return int(row["n"]) if row else 0  # type: ignore[call-overload]

@@ -34,3 +34,6 @@ corpus/embeddings/
 
 # Local model weights (fetched and hash-verified by `base-legal model fetch`)
 models/
+
+# Local eval reports (published ones live under docs/evals/)
+reports/
