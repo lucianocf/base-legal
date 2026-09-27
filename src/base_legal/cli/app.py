@@ -24,11 +24,12 @@ from base_legal.embeddings.model_store import fetch_model, load_lock
 from base_legal.embeddings.precomputed import artifact_filename, save_vectors, write_sidecar
 from base_legal.evals.golden import GoldenSet, Split
 from base_legal.evals.retrieval import evaluate, to_markdown
-from base_legal.generation.answer import Answer, Answerer, Status
+from base_legal.generation.answer import Answer, Status
 from base_legal.ingest import ingest_documents
 from base_legal.privacy.redact import redact
 from base_legal.retrieval.search import Retriever, SearchMode
 from base_legal.store.db import Store
+from base_legal.wiring import GenerationUnavailableError, make_answerer
 
 app = typer.Typer(no_args_is_help=True, add_completion=False, help=__doc__)
 corpus_app = typer.Typer(no_args_is_help=True, help="Maintain the normalized corpus.")
@@ -220,28 +221,6 @@ def search(
         typer.echo(f"     {p.text[:160]}")
 
 
-def make_answerer(settings: Settings, store: Store) -> Answerer:
-    """Wire retrieval and Claude from settings (shared by the CLI and the API)."""
-    import anthropic  # credentials from the environment (ANTHROPIC_API_KEY, ...)
-
-    embedder = make_query_embedder(settings)
-    meta = store.get_meta()
-    if meta:
-        check_compatible(meta["embedding_family"], int(meta["embedding_dim"]), embedder)
-    retriever = Retriever(
-        store, embedder, candidate_pool=settings.candidate_pool, tuning=settings.tuning()
-    )
-    return Answerer(
-        retriever,
-        store,
-        anthropic.Anthropic(),
-        model=settings.model,
-        max_tokens=settings.max_answer_tokens,
-        k=settings.top_k,
-        threshold=settings.refusal_threshold,
-    )
-
-
 def render_answer(answer: Answer) -> str:
     lines: list[str] = []
     if answer.status is Status.ANSWERED:
@@ -268,14 +247,13 @@ def render_answer(answer: Answer) -> str:
 @app.command()
 def ask(question: Annotated[str, typer.Argument(help="Question in Portuguese.")]) -> None:
     """Answer with Claude, citing verified provisions, or refuse (PII redacted first)."""
-    import anthropic
-
     settings = _settings()
     store = Store.connect(settings.database_url)
     try:
         answer = make_answerer(settings, store).answer(question)
-    except anthropic.APIError as error:
-        raise typer.Exit(_api_error(error)) from None
+    except GenerationUnavailableError as error:
+        typer.echo(f"Claude API unavailable: {error}", err=True)
+        raise typer.Exit(2) from None
     finally:
         store.close()
     if answer.redactions:
@@ -283,9 +261,27 @@ def ask(question: Annotated[str, typer.Argument(help="Question in Portuguese.")]
     typer.echo(render_answer(answer))
 
 
-def _api_error(error: Exception) -> int:
-    typer.echo(f"Claude API error: {type(error).__name__}", err=True)
-    return 2
+@app.command()
+def serve(
+    host: Annotated[
+        str, typer.Option(help="Bind address. Keep 127.0.0.1 unless behind a reverse proxy.")
+    ] = "127.0.0.1",
+    port: Annotated[int, typer.Option(min=1, max=65535)] = 8000,
+) -> None:
+    """Run the HTTP API and the local web UI."""
+    import uvicorn
+
+    from base_legal.api.app import create_app
+    from base_legal.wiring import DatabaseBackend
+
+    settings = _settings()
+    backend = DatabaseBackend(settings)
+    try:
+        # No uvicorn access log: it records client IPs (docs/PRIVACY.md); the app
+        # logs method, path, status and timing only.
+        uvicorn.run(create_app(backend, settings), host=host, port=port, access_log=False)
+    finally:
+        backend.close()
 
 
 @eval_app.command("retrieval")

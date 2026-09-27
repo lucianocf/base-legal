@@ -9,8 +9,11 @@ import pytest
 from typer.testing import CliRunner
 
 from base_legal.cli.app import app
+from base_legal.config import IngestMode
 from base_legal.corpus.manifest import Manifest, ManifestEntry, sha256_hex
-from base_legal.corpus.models import DocumentKind
+from base_legal.corpus.models import Document, DocumentKind
+from base_legal.embeddings.providers import HashingEmbedder
+from base_legal.ingest import ingest_documents
 from base_legal.store.db import Store
 
 pytestmark = pytest.mark.integration
@@ -240,18 +243,68 @@ def test_ask_answers_with_verified_citations_or_refuses(
     assert "lgpd:art99 não existe no corpus" in result.output
 
 
+def _ingest_fixture(store: Store, document: Document, manifest: Manifest, tmp: Path) -> None:
+    ingest_documents(
+        store,
+        [document],
+        manifest,
+        embeddings_dir=tmp,
+        mode=IngestMode.LOCAL,
+        precomputed_model="voyage-4-large",
+        document_embedder=HashingEmbedder(),
+    )
+
+
 def test_ask_reports_api_errors_without_content(
-    store: Store, database_url: str, monkeypatch: pytest.MonkeyPatch
+    store: Store,
+    database_url: str,
+    document: Document,
+    manifest: Manifest,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    class _Failing:
-        def __init__(self) -> None:
+    _ingest_fixture(store, document, manifest, tmp_path)
+    monkeypatch.setenv("BASE_LEGAL_REFUSAL_THRESHOLD", "0")
+
+    class _FailingMessages:
+        def create(self, **_: Any) -> None:
             request = httpx2.Request("POST", "https://api.anthropic.com/v1/messages")
             raise anthropic.APIConnectionError(request=request)
+
+    class _Failing:
+        def __init__(self) -> None:
+            self.messages = _FailingMessages()
 
     monkeypatch.setenv("DATABASE_URL", database_url)
     monkeypatch.setenv("BASE_LEGAL_QUERY_EMBEDDER", "test-hashing")
     monkeypatch.setattr(anthropic, "Anthropic", _Failing)
     result = CliRunner().invoke(app, ["ask", "pergunta sigilosa"])
     assert result.exit_code == 2
-    assert "APIConnectionError" in result.output
+    assert "APIConnectionError" in result.output  # content-free error name
     assert "pergunta sigilosa" not in result.output
+
+
+def test_ask_without_credentials_exits_cleanly(
+    store: Store,
+    database_url: str,
+    document: Document,
+    manifest: Manifest,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _ingest_fixture(store, document, manifest, tmp_path)
+
+    class _NoCredentials:
+        def __init__(self) -> None:
+            self.messages = self
+
+        def create(self, **_: Any) -> None:
+            raise TypeError("Could not resolve authentication method. Expected one of api_key")
+
+    monkeypatch.setenv("DATABASE_URL", database_url)
+    monkeypatch.setenv("BASE_LEGAL_QUERY_EMBEDDER", "test-hashing")
+    monkeypatch.setenv("BASE_LEGAL_REFUSAL_THRESHOLD", "0")
+    monkeypatch.setattr(anthropic, "Anthropic", _NoCredentials)
+    result = CliRunner().invoke(app, ["ask", "dados pessoais"])
+    assert result.exit_code == 2
+    assert "no Anthropic credentials" in result.output
