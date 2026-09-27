@@ -2,6 +2,7 @@ from pathlib import Path
 from typing import Any
 
 import anthropic
+import psycopg
 import pytest
 from fastapi.testclient import TestClient
 
@@ -100,3 +101,22 @@ def test_database_backend_behind_the_api(
         assert response.status_code == 503
     finally:
         no_generation.close()
+
+
+def test_backend_starts_on_a_fresh_database(
+    database_url: str, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # Regression: `serve` crashed with "relation index_meta does not exist" when
+    # started before the first `ingest` (the README quickstart order).
+    with psycopg.connect(database_url, autocommit=True) as conn:
+        conn.execute(b"DROP TABLE IF EXISTS chunks, provisions, documents, index_meta CASCADE")
+    monkeypatch.setattr(anthropic, "Anthropic", _Echo)
+    settings = Settings(database_url=database_url, query_embedder="test-hashing")
+    backend = DatabaseBackend(settings)
+    try:
+        client = TestClient(create_app(backend, settings))
+        assert client.get("/health").json()["index"]["provisions_indexed"] == "0"
+        answer = client.post("/ask", json={"question": "O que é dado pessoal?"}).json()
+        assert answer["status"] == "refused"
+    finally:
+        backend.close()

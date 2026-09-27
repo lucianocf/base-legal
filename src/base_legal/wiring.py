@@ -18,6 +18,14 @@ class GenerationUnavailableError(RuntimeError):
     """Claude could not be called (no credentials, network, API error). Content-free."""
 
 
+def open_store(settings: Settings) -> Store:
+    """Connect and make sure the (idempotent) schema exists, so every command and
+    the API work on a fresh database, before the first ``ingest``."""
+    store = Store.connect(settings.database_url)
+    store.init_schema()
+    return store
+
+
 def make_retriever(settings: Settings, store: Store, embedder: Embedder | None = None) -> Retriever:
     embedder = embedder or make_query_embedder(settings)
     meta = store.get_meta()
@@ -70,7 +78,7 @@ class DatabaseBackend:
 
     def __init__(self, settings: Settings, *, with_generation: bool = True) -> None:
         self.settings = settings
-        self.store = Store.connect(settings.database_url)
+        self.store = open_store(settings)
         self.retriever = make_retriever(settings, self.store)
         self.answerer = (
             make_answerer(settings, self.store, self.retriever) if with_generation else None

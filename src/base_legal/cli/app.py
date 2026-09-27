@@ -32,7 +32,12 @@ from base_legal.ingest import ingest_documents
 from base_legal.privacy.redact import redact
 from base_legal.retrieval.search import Retriever, SearchMode
 from base_legal.store.db import Store
-from base_legal.wiring import GenerationUnavailableError, make_answerer, make_retriever
+from base_legal.wiring import (
+    GenerationUnavailableError,
+    make_answerer,
+    make_retriever,
+    open_store,
+)
 
 app = typer.Typer(no_args_is_help=True, add_completion=False, help=__doc__)
 corpus_app = typer.Typer(no_args_is_help=True, help="Maintain the normalized corpus.")
@@ -205,7 +210,7 @@ def search(
     if redacted.total:
         typer.echo(f"[privacy] redacted {redacted.counts} before search", err=True)
     embedder = make_query_embedder(settings)
-    store = Store.connect(settings.database_url)
+    store = open_store(settings)
     try:
         meta = store.get_meta()
         if meta:
@@ -251,7 +256,7 @@ def render_answer(answer: Answer) -> str:
 def ask(question: Annotated[str, typer.Argument(help="Question in Portuguese.")]) -> None:
     """Answer with Claude, citing verified provisions, or refuse (PII redacted first)."""
     settings = _settings()
-    store = Store.connect(settings.database_url)
+    store = open_store(settings)
     try:
         answer = make_answerer(settings, store).answer(question)
     except GenerationUnavailableError as error:
@@ -320,7 +325,7 @@ def eval_retrieval(
     golden = GoldenSet.load(golden_path)
     threshold = settings.refusal_threshold if threshold is None else threshold
     embedder = None if mode is SearchMode.LEXICAL else make_query_embedder(settings)
-    store = Store.connect(settings.database_url)
+    store = open_store(settings)
     try:
         meta = store.get_meta()
         if embedder is not None and meta:
@@ -389,7 +394,7 @@ def eval_redteam(
     cases = RedTeamSet.load(cases_path).cases
     manifest = Manifest.load(_manifest_path(settings))
     corpus = {p.id: p for d in load_documents(settings.corpus_dir, manifest) for p in d.provisions}
-    store = Store.connect(settings.database_url) if with_index else None
+    store = open_store(settings) if with_index else None
     try:
         searcher = make_retriever(settings, store) if store is not None else None
         report = run_redteam(
