@@ -36,6 +36,7 @@ class ModelLock(BaseModel):
     license: str
     remote_code: RemoteCode | None = None
     files: dict[str, str]
+    note: str | None = None
 
     @property
     def trust_remote_code(self) -> bool:
@@ -49,6 +50,11 @@ class ModelIntegrityError(RuntimeError):
 def load_lock(name: str = "voyage-4-nano") -> ModelLock:
     text = resources.files("base_legal.embeddings").joinpath(f"{name}.lock.json").read_text()
     return ModelLock.model_validate(json.loads(text))
+
+
+def load_lock_file(path: Path) -> ModelLock:
+    """A lock outside the package (benchmark-only models, ``benchmarks/models``)."""
+    return ModelLock.model_validate(json.loads(path.read_text(encoding="utf-8")))
 
 
 def file_sha256(path: Path) -> str:
