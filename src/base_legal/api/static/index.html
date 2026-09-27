@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Base Legal</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Base Legal</h1>
+      <p class="tagline">Perguntas sobre a LGPD e as resoluções da ANPD, com citações verificadas.</p>
+    </header>
+
+    <p class="notice" role="note">
+      Não inclua dados pessoais na pergunta. CPF, CNPJ, e-mail e telefone são
+      removidos antes de qualquer envio; a pergunta é convertida em vetor
+      localmente e, para gerar a resposta, enviada (já sem esses dados) à
+      Anthropic. Nada é armazenado.
+    </p>
+
+    <form id="form">
+      <label for="question">Pergunta</label>
+      <textarea id="question" name="question" rows="3" maxlength="2000" required
+        placeholder="Ex.: Qual o prazo para comunicar um incidente de segurança à ANPD?"></textarea>
+      <div class="actions">
+        <button type="submit" data-mode="ask">Perguntar</button>
+        <button type="submit" data-mode="search" class="secondary">Só buscar dispositivos</button>
+      </div>
+    </form>
+
+    <section id="status" aria-live="polite"></section>
+    <section id="result"></section>
+
+    <footer>
+      <p id="disclaimer">O Base Legal é uma ferramenta de pesquisa e não constitui aconselhamento jurídico.</p>
+    </footer>
+  </main>
+</body>
+</html>

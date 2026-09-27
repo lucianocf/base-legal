@@ -37,6 +37,11 @@ class Settings(BaseSettings):
     # Local model weights, pinned by revision + SHA-256 (src/base_legal/embeddings/*.lock.json).
     models_dir: Path = Path("models")
 
+    # API limits (docs/THREAT_MODEL.md S6, S9)
+    max_question_chars: int = Field(default=2000, ge=10, le=20_000)
+    rate_limit_per_minute: int = Field(default=30, ge=1)
+    api_key: SecretStr | None = None  # BASE_LEGAL_API_KEY; required as X-API-Key when set
+
     top_k: int = 8
     candidate_pool: int = 50
     # Minimum best dense similarity to answer; below it, refuse (ADR 0005).
