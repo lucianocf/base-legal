@@ -23,7 +23,10 @@ _CPF_RE = re.compile(r"(?<![\w.])\d{3}\.?\d{3}\.?\d{3}-?\d{2}(?![\w-])")
 _CNPJ_RE = re.compile(
     r"(?<![\w.])[0-9A-Z]{2}\.?[0-9A-Z]{3}\.?[0-9A-Z]{3}/?[0-9A-Z]{4}-?\d{2}(?![\w-])"
 )
-_EMAIL_RE = re.compile(r"(?<![\w.+-])[\w.+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+")
+# Bounded by RFC 5321 (local part <= 64, labels <= 63): linear time on any input.
+_EMAIL_RE = re.compile(
+    r"(?<![\w.+-])[\w.+-]{1,64}@[A-Za-z0-9-]{1,63}(?:\.[A-Za-z0-9-]{1,63}){1,8}(?![\w-])"
+)
 _PHONE_RE = re.compile(r"(?<![\w+])(?:\+?55[\s-]?)?\(?[1-9]\d\)?[\s-]?9?\d{4}[\s-]?\d{4}(?![\w-])")
 
 

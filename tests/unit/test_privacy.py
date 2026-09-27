@@ -1,3 +1,5 @@
+import time
+
 import pytest
 
 from base_legal.privacy.redact import is_valid_cnpj, is_valid_cpf, redact
@@ -59,3 +61,22 @@ def test_legal_questions_are_left_untouched(text: str) -> None:
 def test_placeholders_are_numbered_per_type() -> None:
     result = redact(f"{VALID_CPF} e 52998224725")
     assert result.text == "[CPF_1] e [CPF_2]"
+
+
+@pytest.mark.parametrize(
+    "payload",
+    ["+" * 20_000, "a+" * 10_000, "a" * 19_000 + "@", "x@" + "a." * 9_000, " +" * 10_000],
+)
+def test_redaction_is_fast_on_pathological_input(payload: str) -> None:
+    # Regression for CodeQL py/polynomial-redos on the e-mail pattern: bounded
+    # quantifiers keep redaction linear on the (hard-capped) API input.
+    started = time.perf_counter()
+    redact(payload)
+    assert time.perf_counter() - started < 0.5
+
+
+def test_email_limits_follow_rfc_5321() -> None:
+    assert redact("escreva para " + "a" * 64 + "@example.com").counts == {"EMAIL": 1}
+    assert redact("fale com joao.silva+lgpd@sub.example.com.br agora").text == (
+        "fale com [EMAIL_1] agora"
+    )
