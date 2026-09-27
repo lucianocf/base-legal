@@ -190,7 +190,7 @@ Status on 2026-09-27 (see `docs/progress/2026-09-27-overnight.md`):
       target; `main` turns green when the author merges.*
 - [x] Evals in CI with a badge: recall@5 and MRR gated at the recorded
       baseline (`--min-recall-at-5 0.70` since ADR 0015), 100 % of emitted citations validated
-      by construction, refusal accuracy gated (`≥ 0.6`), red-team pass rate
+      by construction, refusal accuracy gated (`≥ 0.85` since ADR 0016), red-team pass rate
       gated at 100 %. *The badge renders once Pages is enabled.*
 - [ ] Fresh clone → `docker compose up` → `base-legal ingest` → `base-legal ask`
       in under 10 minutes with only an Anthropic key. *Validated up to `ask`

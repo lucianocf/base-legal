@@ -64,7 +64,7 @@ jobs:
         run: >-
           uv run base-legal eval retrieval --split all --label ci
           --badge reports/badges/recall-at-5.json
-          --min-recall-at-5 0.70 --min-refusal-accuracy 0.6
+          --min-recall-at-5 0.70 --min-refusal-accuracy 0.85
       - name: Red-team eval (deterministic checks, gate 100 %)
         run: >-
           uv run base-legal eval redteam --seed ${{ github.run_id }}

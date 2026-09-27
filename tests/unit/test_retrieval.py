@@ -7,8 +7,8 @@ from base_legal.corpus.models import Provision, ProvisionKind
 from base_legal.embeddings.base import Vectors
 from base_legal.embeddings.providers import HashingEmbedder
 from base_legal.retrieval.fusion import blend, propagate_to_ancestors, reciprocal_rank_fusion
-from base_legal.retrieval.refs import candidate_ids, find_references
-from base_legal.retrieval.search import Retriever, SearchMode, Tuning
+from base_legal.retrieval.refs import candidate_ids, find_references, other_acts
+from base_legal.retrieval.search import RefusalReason, Retriever, SearchMode, Tuning
 from base_legal.store.db import Ranked
 
 
@@ -236,3 +236,27 @@ def test_reranker_reorders_the_head_and_keeps_explicit_references_first() -> Non
     explicit = retriever.search("O que diz o art. 5º?", k=5)
     assert explicit.hits[0].provision.id == "lgpd:art5"
     assert explicit.hits[0].explicit
+
+
+@pytest.mark.parametrize(
+    ("question", "acts"),
+    [
+        ("Qual o valor máximo de multa previsto no GDPR?", ["GDPR"]),
+        ("Qual é a pena para o crime de furto no Código Penal?", ["Código Penal"]),
+        ("O que diz o art. 5º da Constituição Federal?", ["Constituição Federal"]),
+        ("Como a LGPD se compara ao GDPR?", []),  # names an act of the corpus too
+        ("A LAI e o Marco Civil da Internet se aplicam juntos?", []),
+        ("O que é dado pessoal sensível?", []),
+    ],
+)
+def test_other_acts(question: str, acts: list[str]) -> None:
+    assert other_acts(question) == acts
+
+
+def test_questions_about_other_acts_are_out_of_scope() -> None:
+    backend = _Backend()
+    result = Retriever(backend, HashingEmbedder()).search("O que diz o art. 5º da Constituição?")
+    assert not any(hit.explicit for hit in result.hits)  # not the LGPD's art. 5º
+    assert result.refusal(threshold=None) is RefusalReason.OUT_OF_SCOPE
+    lgpd = Retriever(backend, HashingEmbedder()).search("A LGPD difere do GDPR?")
+    assert lgpd.refusal(threshold=None) is None

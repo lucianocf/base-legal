@@ -64,6 +64,7 @@ nav:
       - 0013 Nano for documents: adr/0013-voyage-4-nano-for-documents-by-default.md
       - 0014 Point in time: adr/0014-point-in-time-wordings.md
       - 0015 Local reranker: adr/0015-local-cross-encoder-reranker.md
+      - 0016 Other acts: adr/0016-refuse-questions-about-other-acts.md
   - Plan: PLAN.md
   - Contributing: contributing.md
 

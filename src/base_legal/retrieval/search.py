@@ -14,7 +14,7 @@ from base_legal.retrieval.fusion import (
     propagate_to_ancestors,
     reciprocal_rank_fusion,
 )
-from base_legal.retrieval.refs import candidate_ids, find_references
+from base_legal.retrieval.refs import candidate_ids, find_references, other_acts
 from base_legal.retrieval.rerank import Reranker
 from base_legal.store.db import Ranked
 
@@ -56,6 +56,7 @@ class SearchMode(StrEnum):
 
 class RefusalReason(StrEnum):
     NONEXISTENT_PROVISION = "nonexistent_provision"
+    OUT_OF_SCOPE = "out_of_scope"  # names only acts outside the corpus (GDPR, Código Penal…)
     LOW_SCORE = "low_score"
 
 
@@ -64,6 +65,7 @@ class SearchResult:
     hits: tuple[Hit, ...]
     best_similarity: float | None
     missing_references: tuple[str, ...] = field(default=())
+    other_acts: tuple[str, ...] = field(default=())
 
     def refusal(self, threshold: float | None) -> RefusalReason | None:
         """Why retrieval alone says "no support in the corpus", or ``None`` (ADR 0005).
@@ -77,6 +79,8 @@ class SearchResult:
             return None
         if self.missing_references:
             return RefusalReason.NONEXISTENT_PROVISION
+        if self.other_acts:
+            return RefusalReason.OUT_OF_SCOPE
         if threshold is not None and (
             self.best_similarity is None or self.best_similarity < threshold
         ):
@@ -108,7 +112,10 @@ class Retriever:
 
     def search(self, question: str, k: int = 8) -> SearchResult:
         """``question`` must already be redacted by :mod:`base_legal.privacy`."""
-        candidates = [candidate_ids(r) for r in find_references(question)]
+        foreign = other_acts(question)
+        # "art. 5º da Constituição" must not resolve to the LGPD's art. 5º
+        references = [] if foreign else find_references(question)
+        candidates = [candidate_ids(r) for r in references]
         found = self.backend.provisions([c for group in candidates for c in group])
         explicit: list[str] = []
         missing: list[str] = []
@@ -159,7 +166,12 @@ class Retriever:
             if pid in provisions
         )
         best = max((r.score for r in dense), default=None)
-        return SearchResult(hits=hits, best_similarity=best, missing_references=tuple(missing))
+        return SearchResult(
+            hits=hits,
+            best_similarity=best,
+            missing_references=tuple(missing),
+            other_acts=tuple(foreign),
+        )
 
     def _rerank(
         self, question: str, ranked: list[tuple[str, float, bool]]

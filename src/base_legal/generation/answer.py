@@ -47,6 +47,7 @@ class Status(StrEnum):
 
 class RefusalCause(StrEnum):
     NONEXISTENT_PROVISION = "nonexistent_provision"  # "art. 99 da LGPD"
+    OUT_OF_SCOPE = "out_of_scope"  # names only acts outside the corpus ("Código Penal")
     LOW_SCORE = "low_score"  # retrieval found nothing close enough
     MODEL_NO_SUPPORT = "model_no_support"  # the model said the documents do not answer
     UNGROUNDED = "ungrounded"  # the validator rejected the answer
@@ -56,6 +57,10 @@ class RefusalCause(StrEnum):
 
 REFUSAL_MESSAGES = {
     RefusalCause.NONEXISTENT_PROVISION: "O dispositivo citado não existe no corpus.",
+    RefusalCause.OUT_OF_SCOPE: (
+        "A pergunta trata de norma que não faz parte do corpus "
+        "(LGPD, Lei de Acesso à Informação e resoluções da ANPD)."
+    ),
     RefusalCause.LOW_SCORE: "Nenhum dispositivo do corpus trata do assunto.",
     RefusalCause.MODEL_NO_SUPPORT: "Os dispositivos encontrados não respondem à pergunta.",
     RefusalCause.UNGROUNDED: "A resposta gerada não pôde ser verificada no corpus.",

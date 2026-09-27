@@ -22,5 +22,6 @@ decision, add a new ADR that supersedes the old one and mark the old one as
 | [0013](0013-voyage-4-nano-for-documents-by-default.md) | voyage-4-nano for documents by default (embedding gate result) | Proposed |
 | [0014](0014-point-in-time-wordings.md) | Point-in-time wordings from the compiled texts | Proposed |
 | [0015](0015-local-cross-encoder-reranker.md) | A local cross-encoder reranker, blended with hybrid retrieval | Proposed |
+| [0016](0016-refuse-questions-about-other-acts.md) | Refuse questions that name only acts outside the corpus | Proposed |
 
 Template: [`0000-template.md`](0000-template.md).
