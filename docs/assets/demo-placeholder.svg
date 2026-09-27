@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="300" viewBox="0 0 760 300" role="img" aria-label="Base Legal demo placeholder">
+  <rect width="760" height="300" rx="12" fill="#0d1117"/>
+  <text x="32" y="52" fill="#8b949e" font-family="ui-monospace, monospace" font-size="15">$ base-legal ask "Qual o prazo para comunicar um incidente à ANPD?"</text>
+  <text x="32" y="96" fill="#e6edf3" font-family="ui-monospace, monospace" font-size="15">A comunicação à ANPD deve ser feita pelo controlador no prazo</text>
+  <text x="32" y="118" fill="#e6edf3" font-family="ui-monospace, monospace" font-size="15">de três dias úteis [1].</text>
+  <text x="32" y="160" fill="#7ee787" font-family="ui-monospace, monospace" font-size="15">Fontes (texto oficial):</text>
+  <text x="32" y="182" fill="#79c0ff" font-family="ui-monospace, monospace" font-size="15">[1] res-anpd-15-2024:anx1:art6 — Regulamento de Comunicação de Incidente</text>
+  <text x="32" y="232" fill="#d29922" font-family="ui-monospace, monospace" font-size="15">$ base-legal ask "O que diz o art. 99 da LGPD?"</text>
+  <text x="32" y="254" fill="#d29922" font-family="ui-monospace, monospace" font-size="15">Sem base no corpus: O dispositivo citado não existe no corpus.</text>
+  <text x="560" y="288" fill="#484f58" font-family="system-ui, sans-serif" font-size="12">illustration — GIF to come</text>
+</svg>
