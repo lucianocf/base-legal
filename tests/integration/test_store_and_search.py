@@ -1,5 +1,9 @@
+import uuid
+from collections.abc import Callable
 from pathlib import Path
+from typing import Any
 
+import psycopg
 import pytest
 
 from base_legal.chunking.chunker import chunk_document
@@ -186,6 +190,27 @@ def test_tests_run_in_an_isolated_schema(store: Store) -> None:
     row = store.conn.execute("SELECT current_schema() AS s").fetchone()
     assert row is not None
     assert str(row["s"]).startswith("test_")
+
+
+def test_dropping_test_tables_never_reaches_other_schemas(
+    database_url: str, drop_tables: Callable[[psycopg.Connection[Any]], None]
+) -> None:
+    # Regression: the fixtures' unqualified DROP TABLE resolved through
+    # search_path and dropped the developer's index in `public`.
+    other = f"other_{uuid.uuid4().hex[:8]}"
+    with psycopg.connect(database_url, autocommit=True) as conn:
+        conn.execute(f"CREATE SCHEMA {other}".encode())
+        try:
+            conn.execute(f"CREATE TABLE {other}.chunks (id int)".encode())
+            schema = str(conn.execute("SELECT current_schema()").fetchone()[0])  # type: ignore[index]
+            conn.execute(f"SET search_path TO {schema}, {other}, public".encode())
+            conn.execute(f"DROP TABLE IF EXISTS {schema}.chunks CASCADE".encode())
+            drop_tables(conn)
+            survivor = conn.execute(f"SELECT to_regclass('{other}.chunks')".encode()).fetchone()
+            assert survivor is not None
+            assert survivor[0] is not None
+        finally:
+            conn.execute(f"DROP SCHEMA {other} CASCADE".encode())
 
 
 def test_auto_mode_uses_locally_generated_sidecar_vectors(
