@@ -405,3 +405,11 @@ def test_a_sole_paragraph_inside_quoted_amendment_text_is_not_split() -> None:
     provisions = {p.id: p for p in StructureParser("r").parse(html_to_lines(html))}
     assert "Parágrafo único. Outro texto." in provisions["r:art2"].text
     assert "r:art2:paru" not in provisions
+
+
+def test_a_doubled_period_after_an_article_label_is_not_text() -> None:
+    # Regression: the LAI page prints "Art. 8º-B.. Os conselhos …"; the text
+    # began with a stray period.
+    html = "<body><p>Art. 8º-B.. Os conselhos devem divulgar.</p><p>Art. 9º Seguinte.</p></body>"
+    provisions = {p.id: p for p in StructureParser("r").parse(html_to_lines(html))}
+    assert provisions["r:art8B"].text == "Os conselhos devem divulgar."

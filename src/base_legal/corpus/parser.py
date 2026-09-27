@@ -44,7 +44,7 @@ _ROMAN = r"(?=[IVXLCDM])M{0,3}(?:CM|CD|D?C{0,3})(?:XC|XL|L?X{0,3})(?:IX|IV|V?I{0
 _ORD = r"\s*(?:º|°|o(?=\W|$))?"
 
 ART_RE = re.compile(
-    rf"^Art\.\s*(?P<num>\d+(?:\s+\d+)*(?=\s*(?:º|°|o\b|\.|-|\s[A-ZÀ-Ú(]))){_ORD}(?:\s*-\s*(?P<suf>[A-Z])\b)?\s*\.?\s*(?P<rest>.*)$"
+    rf"^Art\.\s*(?P<num>\d+(?:\s+\d+)*(?=\s*(?:º|°|o\b|\.|-|\s[A-ZÀ-Ú(]))){_ORD}(?:\s*-\s*(?P<suf>[A-Z])\b)?\s*\.{{0,2}}\s*(?P<rest>.*)$"
 )
 PAR_RE = re.compile(rf"^§\s*(?P<num>\d+){_ORD}\s*\.?\s*(?P<rest>.*)$")
 UNICO_RE = re.compile(r"^Par[áa]grafo\s+[úu]nico\s*[.:\-–—]?\s*(?P<rest>.*)$", re.IGNORECASE)
