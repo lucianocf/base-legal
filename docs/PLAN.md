@@ -193,8 +193,10 @@ Status on 2026-09-27 (see `docs/progress/2026-09-27-overnight.md`):
       gated at 100 %. *The badge renders once Pages is enabled.*
 - [ ] Fresh clone → `docker compose up` → `base-legal ingest` → `base-legal ask`
       in under 10 minutes with only an Anthropic key. *Validated up to `ask`
-      (no Anthropic key in the build environment); local-mode ingest takes
-      several minutes on CPU, see the report.*
+      (no Anthropic key in the build environment): with the image built,
+      `up` → healthy in about 20 s and the default local-mode ingest in
+      4 min 51 s on CPU; the image build itself (CPU torch + weights) adds
+      several minutes on a fresh machine.*
 - [x] Embedding validation gate run, with results published in the docs
       (`docs/evals/embedding-gate.md`).
 - [x] A test proves the query path makes no network call to Voyage
