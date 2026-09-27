@@ -58,13 +58,13 @@ Setup fixes:
 | M1 Law vectors (voyage-4-large) | ✅ done (vectors **not** committed) | 435 LGPD vectors generated. Voyage ToS (2026-05-27) is silent on outputs → not redistributed ([ADR 0009](../adr/0009-no-redistribution-of-voyage-vectors-yet.md)); vectors stay local with a git-ignored sidecar. Free tier (3 RPM / 10K TPM) forced token-budgeted batching + backoff. |
 | M2 CD/ANPD resolutions | ✅ done | 6 resolutions (846 provisions) confirmed against the ANPD index of regulations; numbers, dates, ementas and amendments verified (Res. 1/2021 ← Res. 4/2023; Res. 2/2022 ← Res. 15/2024; Res. 19/2024 ← DOU correction of 18/08/2025, Annex II only). New `dou` and `govbr` layouts, annex IDs ([ADR 0010](../adr/0010-annex-segment-in-provision-ids.md)). Output reviewed: every provision text is verbatim in its official page (3 exceptions, all "(...)" spacing in quoted amendments, checked by hand); article numbering has no gaps. Res. 19/2024 Annex II (standard clauses) is a follow-up. |
 | M3 Golden set + retrieval eval | ✅ done | `evals/golden.yaml` (45 answerable + 8 must-refuse, all `unverified`) and `evals/redteam.yaml` (10 cases with deterministic checks). All draft IDs exist; ⚠ rows resolved to the regulations' annex articles; g15/g16 narrowed to the exact alíneas. Stratified dev/holdout (31+5 / 14+3). `base-legal eval retrieval` → JSON + Markdown. |
-| M4 Embedding gate + tuning | pending | |
+| M4 Embedding gate + tuning | ✅ done | Retrieval tuned on dev, confirmed on holdout (below). Gate B0–B4 run on the full corpus ([embedding-gate.md](../evals/embedding-gate.md)): **B2 (nano for documents and questions) is first** on hybrid recall@5 (67.8 %), ahead of B3 Qwen3 (65.6 %), B1 voyage-4-large + nano (58.9 %) and B4 BGE-M3 (58.9 %); still first when each model is tuned on its own. The literal ADR 0003 rule fired against B1 (B3 +6.7 points), but B1 was not the best Voyage option → [ADR 0013](../adr/0013-voyage-4-nano-for-documents-by-default.md): `local` is the default ingest mode; Voyage leaves the default data flow. B3's tuned MRR (0.582 vs 0.449) is an open question for a larger, validated golden set. |
 | M5 Grounded generation | ✅ done (live test blocked) | `base_legal.generation` + `base-legal ask`. Citations on `claude-haiku-4-5` confirmed in the docs ("all active models support citations"); one custom-content document per provision ([ADR 0011](../adr/0011-one-cited-document-per-provision.md)). PII redaction first; retrieval refusals never call the model; validator + strict refusal. **Live test not run: no Anthropic credential in the environment** (cost not measured). |
 | M6 API + UI | ✅ done | FastAPI `/ask`, `/search`, `/provisions/{id}`, `/health`; length/k limits, rate limit, optional API key, strict CSP + security headers, disclaimer in every body, 422s never echo input, content-free request log (log-capture tests). Static UI renders with `textContent`. Smoke-tested live with `base-legal serve`. |
 | M7 MCP server | ✅ done | Official MCP SDK **2.x** (`MCPServer`); 3 read-only tools; stdio end-to-end test in a subprocess where constructing an Anthropic client aborts. Host config in `docs/MCP.md` (not yet tried inside Claude Desktop/Code). |
 | M8 Evals in CI + badge | ✅ done (CI run pending the PR) | `.github/workflows/evals.yml`: secret-free, nano cached by lockfile hash and re-verified, `local` ingest, gates recall@5 ≥ 0.65 / refusal ≥ 0.6 / red-team 100 %; `base-legal eval redteam` (13 deterministic checks, all passing locally); shields.io badge JSON. actionlint + zizmor clean. |
 | M9 Docker image + compose | 🟡 in progress | Multi-stage non-root image (uid 10001), base images by digest, nano fetched and SHA-256-verified at build time, offline runtime, read-only rootfs + `cap_drop: ALL` in compose, app and DB on 127.0.0.1. Running the stack found two real bugs (fixed, regression tests): `serve` crashed on a fresh DB; empty `VOYAGE_API_KEY` from compose made `ingest` pick the API. Image 3.3 GB (CPU torch + weights). Final end-to-end rerun pending after the transformers 5 upgrade. |
-| M10 Publish-ready docs | ✅ done (gate page pending) | README EN/PT-BR, LEGAL_NOTICE (art. 8º, IV of Lei 9.610/1998 verified at planalto.gov.br), CONTRIBUTING, MkDocs Material + Pages workflow with eval report and badges, THREAT_MODEL (control → test map), PRIVACY, ARCHITECTURE (settings table), PLAN §9 checklist, CLAUDE.md. |
+| M10 Publish-ready docs | ✅ done | README EN/PT-BR, LEGAL_NOTICE (art. 8º, IV of Lei 9.610/1998 verified at planalto.gov.br), CONTRIBUTING, MkDocs Material + Pages workflow with eval report and badges, THREAT_MODEL (control → test map), PRIVACY, ARCHITECTURE (settings table), PLAN §9 checklist, CLAUDE.md. |
 | M11 Draft PR + green CI | 🟡 in progress | Draft PR [lucianocf/base-legal#1](https://github.com/lucianocf/base-legal/pull/1). First CI run found: pip-audit could not audit `torch+cpu` and then **real transformers 4.x CVEs** → nano now loads without remote code on transformers 5.17 ([ADR 0012](../adr/0012-load-voyage-4-nano-without-remote-code.md), identical embeddings); gitleaks false positive on lock digests; **3 CodeQL high alerts** (case-sensitive `<script>` checks, polynomial e-mail regex) fixed and re-verified with a local CodeQL 2.27.1 run (0 results); mypy without extras. |
 
 ## Metrics (before → after)
@@ -109,6 +109,10 @@ outra empresa") miss.
   custom-content document per provision (Citations on Haiku 4.5 confirmed).
 - [ADR 0012](../adr/0012-load-voyage-4-nano-without-remote-code.md): nano
   without remote code, on transformers 5.x (closes the transformers 4.x CVEs).
+- [ADR 0013](../adr/0013-voyage-4-nano-for-documents-by-default.md): the
+  embedding gate put nano-for-documents (B2) first, so `local` is the default
+  ingest mode and a default deployment never calls Voyage. Qwen3 (B3) not
+  adopted: −2.2 points recall@5, 4× slower per query, extra 1.2 GB model.
 - Retrieval defaults tuned on dev and confirmed on holdout
   ([retrieval-tuning.md](../evals/retrieval-tuning.md)); a tighter refusal
   threshold was rejected for overfitting.
@@ -145,11 +149,14 @@ Lei 9.610/1998 art. 8º, IV (LEGAL_NOTICE).
 5. **Employer separation:** run the prohibited-terms grep with your own term
    list and review; commit identities are the GitHub noreply address and the
    Claude session identity.
-6. **Voyage:** optionally ask `legal@voyageai.com` in writing whether
-   embeddings of public-domain text may be redistributed (ADR 0009); a yes
-   enables the zero-key B1 quickstart.
+6. **Voyage:** no longer needed for a key-free quickstart (`local` mode is
+   the default, ADR 0013). Asking Voyage about redistribution (ADR 0009)
+   only matters if `api` mode ever wins a future gate.
 7. **README:** demo GIF and author section; release notes and the `v0.1.0`
    tag after merging (not done by design: no merge, no release).
 8. **Legal text review:** spot-check the parsed resolutions against the DOU
    (the automated verbatim check passed; three quoted-amendment differences
    are elision spacing only).
+9. **Embedding gate re-run** after the golden set is validated and grows:
+   B2 and B3 are within noise on recall@5, and B3's tuned MRR is clearly
+   better (`benchmarks/embedding_gate.py`, `tune_retrieval.py --query-model`).
