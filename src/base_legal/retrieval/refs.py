@@ -26,11 +26,18 @@ _RESOLUTION_RE = re.compile(
     r"\s*(?:/|,?\s+de\s+(?:\d{1,2}\s+de\s+\w+\s+de\s+)?)(?P<year>\d{4})"
 )
 
+_LAI_RE = re.compile(
+    r"\bLAI\b|(?i:lei\s+de\s+acesso\s+[àa]\s+informa[çc][ãa]o)"
+    r"|(?i:lei)\s+(?i:n)?[º°o.]*\s*12\.?527\b"
+)
+
 
 def _doc_for(question: str) -> str:
     match = _RESOLUTION_RE.search(question)
     if match:
         return f"res-anpd-{int(match['num'])}-{match['year']}"
+    if _LAI_RE.search(question):
+        return "lai"
     return DEFAULT_DOC
 
 

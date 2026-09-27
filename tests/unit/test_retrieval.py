@@ -47,6 +47,10 @@ def test_rrf_rejects_bad_k() -> None:
             ["res-anpd-18-2024:art3"],
         ),
         ("Quais são os direitos do titular?", []),
+        ("O que diz o art. 31 da LAI?", ["lai:art31"]),
+        ("art. 31, § 1º, da Lei de Acesso à Informação", ["lai:art31:par1"]),
+        ("Lei nº 12.527/2011, art. 4º, IV", ["lai:art4:incIV"]),
+        ("art. 23 da lei 12527", ["lai:art23"]),
     ],
 )
 def test_find_references(question: str, expected: list[str]) -> None:
