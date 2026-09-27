@@ -59,9 +59,9 @@ Setup fixes:
 | M2 CD/ANPD resolutions | ✅ done | 6 resolutions (846 provisions) confirmed against the ANPD index of regulations; numbers, dates, ementas and amendments verified (Res. 1/2021 ← Res. 4/2023; Res. 2/2022 ← Res. 15/2024; Res. 19/2024 ← DOU correction of 18/08/2025, Annex II only). New `dou` and `govbr` layouts, annex IDs ([ADR 0010](../adr/0010-annex-segment-in-provision-ids.md)). Output reviewed: every provision text is verbatim in its official page (3 exceptions, all "(...)" spacing in quoted amendments, checked by hand); article numbering has no gaps. Res. 19/2024 Annex II (standard clauses) is a follow-up. |
 | M3 Golden set + retrieval eval | ✅ done | `evals/golden.yaml` (45 answerable + 8 must-refuse, all `unverified`) and `evals/redteam.yaml` (10 cases with deterministic checks). All draft IDs exist; ⚠ rows resolved to the regulations' annex articles; g15/g16 narrowed to the exact alíneas. Stratified dev/holdout (31+5 / 14+3). `base-legal eval retrieval` → JSON + Markdown. |
 | M4 Embedding gate + tuning | pending | |
-| M5 Grounded generation | pending | |
-| M6 API + UI | pending | |
-| M7 MCP server | pending | |
+| M5 Grounded generation | ✅ done (live test blocked) | `base_legal.generation` + `base-legal ask`. Citations on `claude-haiku-4-5` confirmed in the docs ("all active models support citations"); one custom-content document per provision ([ADR 0011](../adr/0011-one-cited-document-per-provision.md)). PII redaction first; retrieval refusals never call the model; validator + strict refusal. **Live test not run: no Anthropic credential in the environment** (cost not measured). |
+| M6 API + UI | ✅ done | FastAPI `/ask`, `/search`, `/provisions/{id}`, `/health`; length/k limits, rate limit, optional API key, strict CSP + security headers, disclaimer in every body, 422s never echo input, content-free request log (log-capture tests). Static UI renders with `textContent`. Smoke-tested live with `base-legal serve`. |
+| M7 MCP server | ✅ done | Official MCP SDK **2.x** (`MCPServer`); 3 read-only tools; stdio end-to-end test in a subprocess where constructing an Anthropic client aborts. Host config in `docs/MCP.md` (not yet tried inside Claude Desktop/Code). |
 | M8 Evals in CI + badge | pending | |
 | M9 Docker image + compose | pending | |
 | M10 Publish-ready docs | pending | |
@@ -78,7 +78,22 @@ threshold. Golden set of 2026-09-27.
 | dev (31 + 5) | 19.4 % | 33.9 % | 50.0 % | 0.292 | 40.0 % | 0.0 % | 148 / 177 ms |
 | holdout (14 + 3) | 21.4 % | 42.9 % | 67.9 % | 0.326 | 33.3 % | 0.0 % | 146 / 198 ms |
 
-Main failure pattern: children crowd out the parent the question is about
+After tuning on dev (M4; confirmed on holdout):
+
+| Split | recall@1 | recall@5 | recall@10 | MRR | Refusal acc. | False refusals |
+|---|---|---|---|---|---|---|
+| dev (31 + 5) | 27.4 % | 67.7 % | 79.0 % | 0.474 | 60.0 % | 0.0 % |
+| holdout (14 + 3) | 17.9 % | 67.9 % | 82.1 % | 0.393 | 66.7 % | 0.0 % |
+
+Knobs (all chosen on dev): `ts_rank_cd` normalization 4 (the long-chunk bias
+was the biggest single problem: normalization alone took dev recall@5 from
+33.9 % to 62.9 %), lexical weight 0.5 in RRF, 0.2 of each hit's score
+propagated to its ancestors, refusal threshold 0.40. A tighter threshold
+(0.47, the dev optimum) was **rejected** on holdout (14 % false refusals).
+Holdout recall@1 fell slightly (21.4 % → 17.9 %). g43 (vazamento) is fixed
+(rank 2); g44 (portabilidade) improved to rank 8 but is still outside the top 5.
+
+Main baseline failure pattern: children crowd out the parent the question is about
 (art. 7 → art. 7 § 7; art. 18 → §§ 1–3; Res. 15 art. 6 → § 1), and the two
 known failures (g43 "vazamento… avisar a ANPD", g44 "levar meus dados para
 outra empresa") miss.
