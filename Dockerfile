@@ -57,6 +57,7 @@ WORKDIR /app
 COPY --from=build /app/.venv /app/.venv
 COPY --from=model /models /app/models
 COPY corpus/manifest.yaml corpus/*.json /app/corpus/
+COPY corpus/history /app/corpus/history/
 COPY evals /app/evals
 ENV PATH=/app/.venv/bin:$PATH \
     PYTHONUNBUFFERED=1 \
