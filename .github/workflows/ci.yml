@@ -68,9 +68,13 @@ jobs:
           persist-credentials: false
       - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
       - name: pip-audit on the locked dependency set
+        # The export is the complete pinned set (--no-deps). CPU-only torch comes
+        # from the PyTorch index as "X.Y.Z+cpu", which PyPI does not know; its
+        # advisories are keyed by the upstream version, so audit it as X.Y.Z.
         run: |
-          uv export --locked --all-extras --no-emit-project --format requirements-txt > requirements.txt
-          uvx pip-audit==2.10.1 --strict --disable-pip -r requirements.txt
+          uv export --locked --all-extras --no-emit-project --no-hashes --format requirements-txt \
+            | sed -E 's/^(torch==[0-9.]+)\+cpu\b/\1/' > requirements.txt
+          uvx pip-audit==2.10.1 --strict --disable-pip --no-deps -r requirements.txt
 
   secrets:
     name: Secret scan
