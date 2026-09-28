@@ -95,3 +95,14 @@ documents:
   retrieved_at: '2026-09-27'
   source_sha256: 8bfb90f1b8c15697f64e93f4252378cf3cfd0ff401f33f5af87926a221dfaa14
   embeddings: []
+- id: lai
+  title: Lei nº 12.527, de 18 de novembro de 2011 — Lei de Acesso à Informação (LAI)
+  short_name: LAI
+  kind: law
+  source_url: https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2011/lei/l12527.htm
+  layout: planalto
+  notes: Compiled text kept by the Presidency (amendment notes and struck text inline).
+  redistribution_basis: 'Lei nº 9.610/1998, art. 8º, IV: official acts are not protected by copyright'
+  retrieved_at: '2026-09-27'
+  source_sha256: 2a9f14d24dc05740fd2bcc4f8edb0614f24c5eb280241ef4f56e12ca2c633a5c
+  embeddings: []

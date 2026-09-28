@@ -1,5 +1,7 @@
+import datetime as dt
 import json
 import sys
+from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
 
@@ -8,7 +10,9 @@ import pytest
 from mcp import Client
 
 from base_legal.config import Settings
+from base_legal.corpus.history import ProvisionHistory, Version
 from base_legal.corpus.models import Provision, ProvisionKind
+from base_legal.corpus.xrefs import CrossReference, find_candidates, resolve
 from base_legal.mcp_server.server import build_server
 from base_legal.retrieval.search import Hit, SearchResult
 
@@ -36,6 +40,29 @@ REVOKED = Provision(
 )
 
 
+ART52 = Provision(
+    id="lgpd:art52:par1:incVIII",
+    document_id="lgpd",
+    parent_id=None,
+    kind=ProvisionKind.INCISO,
+    label="VIII",
+    path=("Art. 52", "§ 1º", "VIII"),
+    ordinal=2,
+    text="a pronta adoção de medidas corretivas, observado o art. 48 desta Lei;",
+)
+
+
+HISTORIES = {
+    ART48.id: ProvisionHistory(
+        provision_id=ART48.id,
+        versions=(
+            Version(text="Redação original.", introduced_by=None, valid_to=dt.date(2019, 7, 9)),
+            Version(text=ART48.text, introduced_by="Lei A", valid_from=dt.date(2019, 7, 9)),
+        ),
+    )
+}
+
+
 class _Backend:
     def __init__(self) -> None:
         self.questions: list[str] = []
@@ -48,7 +75,14 @@ class _Backend:
         )
 
     def provision(self, provision_id: str) -> Provision | None:
-        return {p.id: p for p in (ART48, REVOKED)}.get(provision_id)
+        return {p.id: p for p in (ART48, ART52, REVOKED)}.get(provision_id)
+
+    def history(self, provision_id: str) -> ProvisionHistory | None:
+        return HISTORIES.get(provision_id)
+
+    def references(self, texts: Mapping[str, str]) -> dict[str, tuple[CrossReference, ...]]:
+        existing = {ART48.id}
+        return {pid: resolve(pid, find_candidates(pid, t), existing) for pid, t in texts.items()}
 
 
 def _call(backend: _Backend, tool: str, args: dict[str, Any]) -> Any:
@@ -66,14 +100,19 @@ def _structured(result: Any) -> dict[str, Any]:
     return dict(json.loads(result.content[0].text))
 
 
-def test_exactly_three_read_only_tools() -> None:
+def test_exactly_these_read_only_tools() -> None:
     # OWASP LLM06: no tool with side effects; the MCP server is read-only.
     async def go() -> Any:
         async with Client(build_server(_Backend(), Settings())) as client:
             return await client.list_tools()
 
     tools = anyio.run(go).tools
-    assert {t.name for t in tools} == {"search_provisions", "get_provision", "verify_citation"}
+    assert {t.name for t in tools} == {
+        "search_provisions",
+        "get_provision",
+        "get_provision_history",
+        "verify_citation",
+    }
     for tool in tools:
         assert tool.annotations is not None
         assert tool.annotations.read_only_hint is True
@@ -133,6 +172,14 @@ def test_get_provision() -> None:
     assert _call(backend, "get_provision", {"provision_id": "Art. 48"}).is_error
 
 
+def test_get_provision_lists_its_cross_references() -> None:
+    args = {"provision_id": "lgpd:art52:par1:incVIII"}
+    provision = _structured(_call(_Backend(), "get_provision", args))["provision"]
+    [reference] = provision["references"]
+    assert reference["target"] == "lgpd:art48"
+    assert provision["text"][reference["start"] : reference["end"]] == "art. 48 desta Lei"
+
+
 @pytest.mark.parametrize(
     ("provision_id", "quote", "issue"),
     [
@@ -158,3 +205,14 @@ def test_server_module_never_imports_the_anthropic_sdk() -> None:
     assert "anthropic" not in source
     assert "generation.answer import DISCLAIMER, ProvisionView" in source  # data only
     assert "base_legal.mcp_server.server" in sys.modules
+
+
+def test_point_in_time_tools() -> None:
+    backend = _Backend()
+    args = {"provision_id": "lgpd:art48", "at": "2019-01-15"}
+    old = _structured(_call(backend, "get_provision", args))
+    assert old["provision"]["text"] == "Redação original."
+    assert old["as_of"]["valid_to"] == "2019-07-09"
+    history = _structured(_call(backend, "get_provision_history", {"provision_id": "lgpd:art48"}))
+    assert [v["introduced_by"] for v in history["versions"]] == [None, "Lei A"]
+    assert _call(backend, "get_provision", {"provision_id": "lgpd:art48", "at": "ontem"}).is_error

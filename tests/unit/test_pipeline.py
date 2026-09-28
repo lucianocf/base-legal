@@ -105,3 +105,19 @@ def test_committed_corpus_matches_the_manifest() -> None:
     incident = documents["res-anpd-15-2024"].by_id()["res-anpd-15-2024:anx1:art6"]
     assert "três dias úteis" in incident.text
     assert documents["lgpd"].by_id()["lgpd:art7:incIX"].is_normative
+
+
+def test_committed_history_matches_the_manifest() -> None:
+    from base_legal.corpus.history import DocumentHistory
+    from base_legal.corpus.pipeline import history_path
+
+    root = Path(__file__).parents[2] / "corpus"
+    manifest = Manifest.load(root / "manifest.yaml")
+    found = 0
+    for entry in manifest.documents:
+        path = history_path(root, entry.id)
+        if path.exists():
+            history = DocumentHistory.model_validate_json(path.read_text(encoding="utf-8"))
+            assert history.source_sha256 == entry.source_sha256
+            found += 1
+    assert found >= 1

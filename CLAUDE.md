@@ -1,17 +1,22 @@
 # CLAUDE.md — Project conventions for Base Legal
 
-Base Legal is a citation-first RAG over Brazilian data protection law (LGPD +
-CD/ANPD resolutions). Read `docs/PLAN.md` and `docs/ARCHITECTURE.md` before
+Base Legal is a citation-first RAG over Brazilian data protection law (LGPD,
+the LAI and CD/ANPD resolutions). Read `docs/PLAN.md` and `docs/ARCHITECTURE.md` before
 changing anything structural. Decisions live in `docs/adr/`.
 
 ## Current phase
 v0.1.0 is implemented (see `docs/PLAN.md` §9 for what remains before
-publishing): corpus (LGPD + six CD/ANPD resolutions, parsed from the Planalto,
-DOU and gov.br layouts), hybrid retrieval tuned on the golden dev split,
-grounded generation with Claude Citations, API + web UI, read-only MCP server,
-evals in CI, Docker image. Pending with the author: golden-set validation by a
-DPO, GitHub settings (Pages, private vulnerability reporting, public repo),
-running `ask` and the MCP server with real hosts and keys.
+publishing): corpus (LGPD, LAI and six CD/ANPD resolutions, parsed from the
+Planalto, DOU and gov.br layouts), hybrid retrieval tuned on the golden dev
+split, grounded generation with Claude Citations, API + web UI, read-only MCP
+server, evals in CI, Docker image. Phases 2 and 3 (`docs/PLAN.md` §5 status,
+`docs/progress/2026-09-27-phases-2-3.md`) added resolved cross-references, a
+local reranker, the other-acts refusal rule, the change watcher, the corpus
+explorer, the release supply chain and point-in-time wordings. Pending with
+the author: golden-set validation by a DPO, GitHub settings (Pages, private
+vulnerability reporting, public repo, Actions allowed to open PRs), running
+`ask`, `eval generation` and the MCP server with real hosts and keys, the
+first release tag, and the blocked items in `docs/PLAN.md` §5.
 For local integration tests without Docker, `.pgserver/` (git-ignored) can run
 PostgreSQL + pgvector via the `pgserver` package; tests use a throwaway schema.
 

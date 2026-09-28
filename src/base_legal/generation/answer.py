@@ -26,6 +26,7 @@ from typing import Any, Protocol
 from pydantic import BaseModel, ConfigDict
 
 from base_legal.corpus.models import Provision
+from base_legal.corpus.xrefs import CrossReference
 from base_legal.generation.prompt import NO_SUPPORT, build_messages, system_blocks
 from base_legal.grounding.validator import AnswerBlock, Citation, judge
 from base_legal.privacy.redact import redact
@@ -46,6 +47,7 @@ class Status(StrEnum):
 
 class RefusalCause(StrEnum):
     NONEXISTENT_PROVISION = "nonexistent_provision"  # "art. 99 da LGPD"
+    OUT_OF_SCOPE = "out_of_scope"  # names only acts outside the corpus ("Código Penal")
     LOW_SCORE = "low_score"  # retrieval found nothing close enough
     MODEL_NO_SUPPORT = "model_no_support"  # the model said the documents do not answer
     UNGROUNDED = "ungrounded"  # the validator rejected the answer
@@ -55,12 +57,26 @@ class RefusalCause(StrEnum):
 
 REFUSAL_MESSAGES = {
     RefusalCause.NONEXISTENT_PROVISION: "O dispositivo citado não existe no corpus.",
+    RefusalCause.OUT_OF_SCOPE: (
+        "A pergunta trata de norma que não faz parte do corpus "
+        "(LGPD, Lei de Acesso à Informação e resoluções da ANPD)."
+    ),
     RefusalCause.LOW_SCORE: "Nenhum dispositivo do corpus trata do assunto.",
     RefusalCause.MODEL_NO_SUPPORT: "Os dispositivos encontrados não respondem à pergunta.",
     RefusalCause.UNGROUNDED: "A resposta gerada não pôde ser verificada no corpus.",
     RefusalCause.MODEL_REFUSAL: "O modelo recusou a pergunta.",
     RefusalCause.TRUNCATED: "A resposta excedeu o limite de tamanho.",
 }
+
+
+class ReferenceView(BaseModel):
+    """``text[start:end]`` of a provision cites the provision ``target``."""
+
+    model_config = ConfigDict(frozen=True)
+
+    start: int
+    end: int
+    target: str
 
 
 class ProvisionView(BaseModel):
@@ -71,10 +87,16 @@ class ProvisionView(BaseModel):
     id: str
     path: str
     text: str
+    references: tuple[ReferenceView, ...] = ()
 
     @classmethod
     def of(cls, provision: Provision) -> ProvisionView:
         return cls(id=provision.id, path=" > ".join(provision.path), text=provision.text)
+
+    def linked(self, references: Sequence[CrossReference]) -> ProvisionView:
+        """This view with its cross-references to other provisions of the corpus."""
+        views = tuple(ReferenceView(start=r.start, end=r.end, target=r.target) for r in references)
+        return self.model_copy(update={"references": views})
 
 
 class CitedQuote(BaseModel):

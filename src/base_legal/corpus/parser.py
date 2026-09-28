@@ -44,7 +44,7 @@ _ROMAN = r"(?=[IVXLCDM])M{0,3}(?:CM|CD|D?C{0,3})(?:XC|XL|L?X{0,3})(?:IX|IV|V?I{0
 _ORD = r"\s*(?:º|°|o(?=\W|$))?"
 
 ART_RE = re.compile(
-    rf"^Art\.\s*(?P<num>\d+(?:\s+\d+)*(?=\s*(?:º|°|o\b|\.|-|\s[A-ZÀ-Ú(]))){_ORD}(?:\s*-\s*(?P<suf>[A-Z])\b)?\s*\.?\s*(?P<rest>.*)$"
+    rf"^Art\.\s*(?P<num>\d+(?:\s+\d+)*(?=\s*(?:º|°|o\b|\.|-|\s[A-ZÀ-Ú(]))){_ORD}(?:\s*-\s*(?P<suf>[A-Z])\b)?\s*\.{{0,2}}\s*(?P<rest>.*)$"
 )
 PAR_RE = re.compile(rf"^§\s*(?P<num>\d+){_ORD}\s*\.?\s*(?P<rest>.*)$")
 UNICO_RE = re.compile(r"^Par[áa]grafo\s+[úu]nico\s*[.:\-–—]?\s*(?P<rest>.*)$", re.IGNORECASE)
@@ -97,6 +97,24 @@ def normalize_text(text: str) -> str:
     """NFC, non-breaking spaces to spaces, collapsed whitespace."""
     text = unicodedata.normalize("NFC", text).replace("\xa0", " ")
     return re.sub(r"\s+", " ", text).strip()
+
+
+# gov.br sometimes prints a sole paragraph in the same block as its article:
+# "Art. 9º … de forma simplificada. Parágrafo único. A ANPD fornecerá …"
+_INLINE_SOLE_PARAGRAPH = re.compile(r"(?<=[.;:])\s+(?=Par[áa]grafo\s+[úu]nico\s*[.:–-])")
+
+
+def split_inline_paragraphs(line: str) -> list[str]:
+    """Split a sole paragraph printed inline after its article, outside quoted text."""
+    parts: list[str] = []
+    start = 0
+    for match in _INLINE_SOLE_PARAGRAPH.finditer(line):
+        if any(quote in line[: match.start()] for quote in '“"‘'):
+            break  # quoted amendment text belongs to the provision that quotes it
+        parts.append(line[start : match.start()])
+        start = match.end()
+    parts.append(line[start:])
+    return parts
 
 
 def _fold(text: str) -> str:
@@ -161,8 +179,11 @@ class StructureParser:
 
     def __init__(self, document_id: str) -> None:
         self.document_id = document_id
+        # 1-based index, in the input lines, of the line each provision starts on
+        self.start_lines: dict[str, int] = {}
 
     def parse(self, lines: Iterable[str]) -> list[Provision]:
+        self.start_lines = {}
         state = _State()
         nodes: list[_Node] = []
         seen: set[str] = set()
@@ -171,12 +192,17 @@ class StructureParser:
             if node.id in seen:
                 raise ParseError(line_no, line, f"duplicate provision {node.id}")
             seen.add(node.id)
+            self.start_lines[node.id] = line_no
             nodes.append(node)
             state.last = node
             return node
 
-        numbered = [(n, normalize_text(raw)) for n, raw in enumerate(lines, start=1)]
-        numbered = [(n, line) for n, line in numbered if line]
+        numbered = [
+            (n, part)
+            for n, raw in enumerate(lines, start=1)
+            for part in split_inline_paragraphs(normalize_text(raw))
+            if part
+        ]
         for index, (line_no, line) in enumerate(numbered):
             if state.ended:
                 break

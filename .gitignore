@@ -33,7 +33,7 @@ corpus/raw/
 corpus/embeddings/
 
 # Local model weights (fetched and hash-verified by `base-legal model fetch`)
-models/
+/models/
 
 # Local eval reports (published ones live under docs/evals/)
 reports/

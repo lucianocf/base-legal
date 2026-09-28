@@ -19,7 +19,7 @@ flowchart LR
         API[FastAPI adapter]
         MCP[MCP server adapter]
         PRIV[privacy<br/>PII redaction]
-        RET[retrieval<br/>FTS + vector + RRF]
+        RET[retrieval<br/>FTS + vector + RRF<br/>+ local reranker]
         NANO[embedder<br/>voyage-4-nano, local]
         GEN[generation<br/>Claude + citations]
         GRD[grounding<br/>validator + refusal]
@@ -243,13 +243,13 @@ erDiagram
 | `chunking` | One chunk per provision, with the hierarchy path prefixed | Deterministic "contextual retrieval" without an LLM |
 | `embeddings` | `Embedder` protocol; `voyage-4-nano` (local: questions, and documents by default); optional `voyage-4-large` (API, documents); shared-space guard | Weights pinned by revision + SHA-256, baked into the image (ADR 0003, 0012, 0013) |
 | `store` | Schema, migrations, upserts, queries (psycopg 3) | No ORM magic in the query path |
-| `retrieval` | FTS rank + vector kNN, RRF fusion (k = 60), score threshold | Postgres FTS is not true BM25 (ParadeDB/pg_search is an option) |
+| `retrieval` | FTS rank + vector kNN, RRF fusion (k = 60), ancestor propagation, local cross-encoder blended into the top 10 (ADR 0015), score threshold | Postgres FTS is not true BM25 (ParadeDB/pg_search is an option) |
 | `privacy` | PII detection and redaction (CPF/CNPJ with check digits, e-mail, phone), log policy | Placeholders like `[CPF_1]`; original values never stored |
 | `generation` | Prompt assembly, Claude call, model selection | `claude-haiku-4-5` default, `claude-sonnet-5` via env |
 | `grounding` | Validate citations, enforce strict refusal | Pure functions, heavily unit-tested |
 | `api` | FastAPI app, input limits, security headers, serves the UI | OpenAPI documented |
 | `mcp_server` | Tools `search_provisions`, `get_provision`, `verify_citation` | Read-only; stdio transport |
-| `cli` | `corpus fetch/build/embed`, `ingest`, `search`, `ask`, `eval` | Typer |
+| `cli` | `corpus fetch/build/check/embed`, `ingest`, `search`, `ask`, `eval` | Typer |
 | `evals` | Golden set and red-team runners, metrics, report + badge JSON | Deterministic in CI (local query embedder) |
 
 ## 7. Evaluation
@@ -277,7 +277,7 @@ base-legal/
 │   ├── chunking/
 │   ├── embeddings/      # Embedder protocol, local nano, optional Voyage API (law only), model locks
 │   ├── store/           # schema, queries
-│   ├── retrieval/       # explicit refs, FTS + vector, weighted RRF, ancestor propagation
+│   ├── retrieval/       # explicit refs, FTS + vector, weighted RRF, ancestor propagation, reranker
 │   ├── privacy/
 │   ├── generation/      # prompt assembly, Claude + Citations, strict refusal
 │   ├── grounding/

@@ -2,8 +2,8 @@
 
 **Every claim cites an inciso — and a machine checks it.**
 
-Grounded, verifiable Q&A over Brazilian data protection law (LGPD + CD/ANPD
-resolutions). Answers cite the exact article, paragraph and inciso; each
+Grounded, verifiable Q&A over Brazilian data protection law (LGPD, the Access
+to Information Act and CD/ANPD resolutions). Answers cite the exact article, paragraph and inciso; each
 citation is checked verbatim against the official text before it reaches
 you, and when nothing in the corpus supports an answer, Base Legal says so.
 Privacy by design, threat-modeled, eval-gated. MCP server included.
@@ -37,6 +37,16 @@ Privacy by design, threat-modeled, eval-gated. MCP server included.
   ([THREAT_MODEL.md](docs/THREAT_MODEL.md)); retrieval and red-team evals run
   on every pull request with no secrets; model weights and GitHub Actions
   pinned by hash.
+- **The law as a web, and as it was.** References such as "nos termos do
+  art. 11" are resolved to links in answers, the API and a static
+  [corpus explorer](https://lucianocf.github.io/base-legal/explorer/). Earlier
+  wordings come straight from the struck text of the compiled law and can be
+  queried by date. Every date comes from the amending act's own page, and a
+  date that can't be established is flagged as uncertain, never guessed
+  ([ADR 0014](docs/adr/0014-point-in-time-wordings.md)).
+- **Kept current, shipped verifiably.** A weekly watcher opens a draft PR
+  when an official text changes. Releases ship an SBOM, build provenance and
+  a keyless-signed container image.
 
 ## Quickstart
 
@@ -53,7 +63,9 @@ docker compose exec app base-legal ask "Qual o prazo para comunicar um incidente
 ```
 
 Then open <http://127.0.0.1:8000> for the local web UI, or use the API
-(`POST /ask`, `POST /search`, `GET /provisions/{id}`, docs at `/docs`).
+(`POST /ask`, `POST /search`, `GET /provisions/{id}`, `GET /provisions/{id}?at=AAAA-MM-DD`
+for the wording in force on a past date, `GET /provisions/{id}/history`, docs
+at `/docs`).
 
 Without Docker: `uv sync --extra local`, `uv run base-legal model fetch`,
 point `DATABASE_URL` at a PostgreSQL with pgvector, then the same
@@ -61,8 +73,9 @@ point `DATABASE_URL` at a PostgreSQL with pgvector, then the same
 
 ### MCP (Claude Desktop, Claude Code)
 
-A read-only MCP server exposes `search_provisions`, `get_provision` and
-`verify_citation`; your MCP host's model writes the answer and Base Legal
+A read-only MCP server exposes `search_provisions`, `get_provision`,
+`get_provision_history` and `verify_citation`; your MCP host's model writes
+the answer and Base Legal
 never calls any third party:
 
 ```bash
@@ -77,7 +90,7 @@ Claude Desktop configuration: [docs/MCP.md](docs/MCP.md).
 
 ```
 question ─▶ PII redaction ─▶ local embedding (voyage-4-nano) ─┐
-                           └▶ PostgreSQL full-text ────────────┼▶ RRF fusion ─▶ top-k provisions
+                           └▶ PostgreSQL full-text ────────────┼▶ RRF fusion ─▶ local reranker ─▶ top-k provisions
                                                                │   (+ explicit "art. 7º, IX" lookups)
 top-k ─▶ Claude (one cited document per provision) ─▶ citation validator ─▶ answer or refusal
 ```
@@ -89,6 +102,10 @@ top-k ─▶ Claude (one cited document per provision) ─▶ citation validator
 - **Hybrid retrieval** in PostgreSQL: length-normalized full-text search and
   pgvector, fused with Reciprocal Rank Fusion, with a share of each hit's
   score propagated to its parent article ([ADR 0004](docs/adr/0004-postgres-hybrid-search-rrf.md)).
+  The top 10 are reranked by a small local cross-encoder, and its ranking is
+  blended with the hybrid one ([ADR 0015](docs/adr/0015-local-cross-encoder-reranker.md)).
+  Questions that name only acts outside the corpus (GDPR, Código Penal…) are
+  refused before any model call ([ADR 0016](docs/adr/0016-refuse-questions-about-other-acts.md)).
 - **Grounded generation** with Claude Citations, one custom-content document
   per provision, so every citation maps to a canonical ID
   ([ADR 0005](docs/adr/0005-strict-grounding-verified-citations.md),
@@ -99,22 +116,27 @@ Details: [ARCHITECTURE.md](docs/ARCHITECTURE.md) and the [ADRs](docs/adr/).
 
 ## Evaluation
 
-Golden set: 45 synthetic answerable questions and 8 that must be refused
+Golden set: 59 synthetic answerable questions and 9 that must be refused
 (`evals/golden.yaml`, pending DPO review), split into dev (used for tuning)
 and holdout (used only to confirm). Retrieval in `local` mode (voyage-4-nano
-for documents and questions), as run in CI:
+for documents and questions, local reranker), as run in CI:
 
 | Split | recall@5 | recall@10 | MRR | Refusal accuracy | False refusals |
 |---|---|---|---|---|---|
-| dev (31 + 5) | 67.7 % | 79.0 % | 0.474 | 60.0 % | 0.0 % |
-| holdout (14 + 3) | 67.9 % | 82.1 % | 0.393 | 66.7 % | 0.0 % |
+| dev (41 + 5) | 75.6 % | 79.3 % | 0.591 | 100.0 % | 0.0 % |
+| holdout (18 + 4) | 66.7 % | 69.4 % | 0.500 | 100.0 % | 0.0 % |
 
-Before tuning, holdout recall@5 was 42.9 %. The red-team set (prompt
-injection, PII, fake citations, XSS, oversized input) passes all 13
-deterministic checks. The embedding validation gate compared five
-configurations, and embedding the law with the same local model came first,
-ahead of `voyage-4-large` documents
+Adding the LAI made retrieval harder (holdout recall@5 fell from 67.9 % to
+58.3 %); the local reranker brought it back up. The refusal rule for other
+acts was written after reading the holdout's must-refuse questions, so its
+100 % there is not a blind result ([ADR 0016](docs/adr/0016-refuse-questions-about-other-acts.md)).
+The red-team set (prompt injection, PII, fake citations, XSS, oversized
+input) passes all 13 deterministic checks. The embedding validation gate
+compared five configurations, and embedding the law with the same local model
+came first, ahead of `voyage-4-large` documents
 ([results](docs/evals/embedding-gate.md), [ADR 0013](docs/adr/0013-voyage-4-nano-for-documents-by-default.md)).
+`base-legal eval generation` scores generated answers (citation recall and
+refusals); it calls the Anthropic API, so it runs only on request, never in CI.
 Full reports: [docs/evals/](docs/evals/).
 
 ## Security and privacy
@@ -128,7 +150,8 @@ Full reports: [docs/evals/](docs/evals/).
 
 ## Corpus and legal notice
 
-LGPD (Lei nº 13.709/2018, compiled text) and Resoluções CD/ANPD nº 1/2021,
+LGPD (Lei nº 13.709/2018, compiled text), LAI (Lei nº 12.527/2011, compiled
+text) and Resoluções CD/ANPD nº 1/2021,
 2/2022, 4/2023, 15/2024, 18/2024 and 19/2024 (Annex I), from planalto.gov.br,
 gov.br/anpd and the Diário Oficial da União. Official acts are not protected
 by copyright (Lei nº 9.610/1998, art. 8º, IV); provenance and hashes are in
@@ -136,14 +159,18 @@ by copyright (Lei nº 9.610/1998, art. 8º, IV); provenance and hashes are in
 
 ## Roadmap
 
-- **Next: LAI × LGPD.** Lei nº 12.527/2011 (Access to Information Act) and the
-  tension between transparency and data protection in the public sector.
-- Resolved cross-references ("nos termos do art. 11" becomes a link).
-- Res. CD/ANPD nº 19/2024 Annex II (standard contractual clauses).
-- A static corpus explorer on GitHub Pages; a local reranker if evals show a gain.
-- Point-in-time queries across the historical versions of the LGPD.
+Done in Phases 2 and 3: the LAI, resolved cross-references, the local
+reranker, the change watcher, the corpus explorer, the release supply chain
+and point-in-time wordings. Next:
 
-Full plan: [PLAN.md](docs/PLAN.md). Contributions: [CONTRIBUTING.md](CONTRIBUTING.md).
+- An eval post comparing `claude-haiku-4-5` and `claude-sonnet-5` on the
+  golden set (the harness is ready).
+- Res. CD/ANPD nº 19/2024 Annex II (standard contractual clauses).
+- ANPD guides, once their licence is settled ([ADR 0017](docs/adr/0017-anpd-guides-blocked-on-licence.md)).
+- A hosted demo with its own privacy notice and RIPD, and a human-curated
+  LGPD ↔ GDPR mapping.
+
+Full plan and status: [PLAN.md](docs/PLAN.md). Contributions: [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Author
 

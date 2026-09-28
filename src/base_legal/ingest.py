@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 import logging
+from collections.abc import Mapping
 from dataclasses import dataclass
 from pathlib import Path
 
 from base_legal.chunking.chunker import Chunk, chunk_document
 from base_legal.config import IngestMode
+from base_legal.corpus.history import DocumentHistory
 from base_legal.corpus.manifest import Manifest
 from base_legal.corpus.models import Document
 from base_legal.embeddings.base import Embedder, Vectors, model_family
@@ -47,6 +49,18 @@ def _load_precomputed(
     )
 
 
+def _load_history(
+    store: Store, document: Document, histories: Mapping[str, DocumentHistory] | None
+) -> None:
+    history = (histories or {}).get(document.id)
+    if history is None:
+        return
+    if history.source_sha256 != document.source_sha256:
+        log.warning("%s: history is stale (different source hash); not loaded", document.id)
+        return
+    store.replace_versions(history)
+
+
 def ingest_documents(
     store: Store,
     documents: list[Document],
@@ -56,12 +70,16 @@ def ingest_documents(
     mode: IngestMode,
     precomputed_model: str,
     document_embedder: Embedder | None,
+    histories: Mapping[str, DocumentHistory] | None = None,
 ) -> list[IngestReport]:
     """Ingest each document once per (source hash, embedding model).
 
     * ``precomputed``: vectors from ``embeddings_dir`` or fail.
     * ``api`` / ``local``: always embed with ``document_embedder``.
     * ``auto``: precomputed when valid, else ``document_embedder``.
+
+    Earlier wordings (``histories``, ADR 0014) are reloaded every time: they are
+    cheap and may be added after a document was first ingested.
     """
     reports: list[IngestReport] = []
     for document in documents:
@@ -90,6 +108,7 @@ def ingest_documents(
             raise RuntimeError(f"{document.id}: no precomputed vectors and no document embedder")
 
         if store.is_current(document, model):
+            _load_history(store, document, histories)
             reports.append(IngestReport(document.id, len(chunks), model, vectors is not None, True))
             continue
         precomputed = vectors is not None
@@ -99,5 +118,6 @@ def ingest_documents(
             raise RuntimeError("no vectors")
         store.ensure_space(model_family(model), int(vectors.shape[1]))
         store.replace_document(document, chunks, vectors, model)
+        _load_history(store, document, histories)
         reports.append(IngestReport(document.id, len(chunks), model, precomputed, False))
     return reports

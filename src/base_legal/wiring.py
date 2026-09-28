@@ -3,14 +3,17 @@
 from __future__ import annotations
 
 import threading
+from collections.abc import Mapping
 from typing import Any
 
 from base_legal.config import Settings
+from base_legal.corpus.history import ProvisionHistory
 from base_legal.corpus.models import Provision
+from base_legal.corpus.xrefs import CrossReference, find_candidates, regulation_index, resolve
 from base_legal.embeddings.base import Embedder, check_compatible
-from base_legal.embeddings.factory import make_query_embedder
+from base_legal.embeddings.factory import make_query_embedder, make_reranker
 from base_legal.generation.answer import Answer, Answerer
-from base_legal.retrieval.search import Retriever, SearchResult
+from base_legal.retrieval.search import Retriever, SearchMode, SearchResult
 from base_legal.store.db import Store
 
 
@@ -26,13 +29,25 @@ def open_store(settings: Settings) -> Store:
     return store
 
 
-def make_retriever(settings: Settings, store: Store, embedder: Embedder | None = None) -> Retriever:
-    embedder = embedder or make_query_embedder(settings)
-    meta = store.get_meta()
-    if meta:  # shared-space guard (ADR 0003): refuse to mix embedding spaces
-        check_compatible(meta["embedding_family"], int(meta["embedding_dim"]), embedder)
+def make_retriever(
+    settings: Settings,
+    store: Store,
+    embedder: Embedder | None = None,
+    mode: SearchMode = SearchMode.HYBRID,
+) -> Retriever:
+    if mode is not SearchMode.LEXICAL:
+        embedder = embedder or make_query_embedder(settings)
+        meta = store.get_meta()
+        if meta:  # shared-space guard (ADR 0003): refuse to mix embedding spaces
+            check_compatible(meta["embedding_family"], int(meta["embedding_dim"]), embedder)
     return Retriever(
-        store, embedder, candidate_pool=settings.candidate_pool, tuning=settings.tuning()
+        store,
+        embedder if mode is not SearchMode.LEXICAL else None,
+        candidate_pool=settings.candidate_pool,
+        mode=mode,
+        tuning=settings.tuning(),
+        reranker=make_reranker(settings),
+        rerank_depth=settings.rerank_depth,
     )
 
 
@@ -84,6 +99,7 @@ class DatabaseBackend:
             make_answerer(settings, self.store, self.retriever) if with_generation else None
         )
         self._lock = threading.Lock()
+        self._regulations: dict[str, tuple[str, str]] | None = None
 
     def search(self, question: str, k: int) -> SearchResult:
         """``question`` must already be redacted."""
@@ -99,6 +115,22 @@ class DatabaseBackend:
     def provision(self, provision_id: str) -> Provision | None:
         with self._lock:
             return self.store.provisions([provision_id]).get(provision_id)
+
+    def history(self, provision_id: str) -> ProvisionHistory | None:
+        with self._lock:
+            return self.store.history(provision_id)
+
+    def references(self, texts: Mapping[str, str]) -> dict[str, tuple[CrossReference, ...]]:
+        """Cross-references in each provision's text (id -> text) that resolve in the index."""
+        with self._lock:
+            if self._regulations is None:
+                self._regulations = regulation_index(self.store.annex_titles())
+            candidates = {
+                pid: find_candidates(pid, text, self._regulations) for pid, text in texts.items()
+            }
+            wanted = {t for found in candidates.values() for c in found for t in c.targets}
+            existing = self.store.normative_ids(sorted(wanted))
+        return {pid: resolve(pid, found, existing) for pid, found in candidates.items()}
 
     def health(self) -> dict[str, str]:
         with self._lock:

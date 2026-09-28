@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import dataclasses
+import datetime as dt
 import importlib.util
 import logging
 from pathlib import Path
@@ -13,13 +14,29 @@ import typer
 
 from base_legal.chunking.chunker import chunk_document
 from base_legal.config import IngestMode, Settings
+from base_legal.corpus.history import date_history
+from base_legal.corpus.html import decode_html
 from base_legal.corpus.manifest import Manifest
-from base_legal.corpus.pipeline import build, fetch, load_documents, write_document
-from base_legal.embeddings.base import Embedder, check_compatible
+from base_legal.corpus.models import Document, SourceLayout
+from base_legal.corpus.pipeline import (
+    build,
+    build_history,
+    document_path,
+    download,
+    fetch,
+    load_acts,
+    load_documents,
+    load_histories,
+    parse_source,
+    raw_path,
+    write_document,
+    write_history,
+)
+from base_legal.corpus.watch import DocumentDiff, diff_documents, render_report
+from base_legal.embeddings.base import Embedder
 from base_legal.embeddings.factory import (
     make_api_document_embedder,
     make_local_document_embedder,
-    make_query_embedder,
 )
 from base_legal.embeddings.model_store import fetch_model, load_lock
 from base_legal.embeddings.precomputed import artifact_filename, save_vectors, write_sidecar
@@ -31,7 +48,7 @@ from base_legal.evals.retrieval import evaluate, to_markdown
 from base_legal.generation.answer import Answer, Status
 from base_legal.ingest import ingest_documents
 from base_legal.privacy.redact import redact
-from base_legal.retrieval.search import Retriever, SearchMode
+from base_legal.retrieval.search import SearchMode
 from base_legal.store.db import Store
 from base_legal.wiring import (
     GenerationUnavailableError,
@@ -86,14 +103,122 @@ def corpus_fetch(doc: DocOption = None) -> None:
     manifest.dump(_manifest_path(settings))
 
 
+@corpus_app.command("check")
+def corpus_check(
+    doc: DocOption = None,
+    apply: Annotated[
+        bool, typer.Option(help="Write changed acts (raw file, manifest entry and JSON).")
+    ] = False,
+    report: Annotated[
+        Path | None, typer.Option(help="Write a Markdown report of the changes here.")
+    ] = None,
+) -> None:
+    """Compare the official sources with the committed corpus, provision by provision.
+
+    Raw hashes alone are ignored (official pages change bytes without changing
+    the law); only a change in the parsed provisions counts.
+    """
+    settings = _settings()
+    manifest = Manifest.load(_manifest_path(settings))
+    today = dt.date.today()
+    diffs: list[DocumentDiff] = []
+    selected = _selected(manifest, doc)
+    with httpx.Client(timeout=60, follow_redirects=True) as client:
+        for doc_id in selected:
+            updated, data = download(manifest.get(doc_id), client, today)
+            document = parse_source(updated, data)
+            path = document_path(settings.corpus_dir, doc_id)
+            old = (
+                Document.model_validate_json(path.read_text(encoding="utf-8"))
+                if path.exists()
+                else None
+            )
+            diff = diff_documents(old, document)
+            diffs.append(diff)
+            if not diff.changed:
+                typer.echo(f"{doc_id}: no normative change")
+                continue
+            typer.echo(f"{doc_id}: {len(diff.changes)} provision change(s)")
+            if apply:
+                raw = raw_path(settings.raw_dir, doc_id)
+                raw.parent.mkdir(parents=True, exist_ok=True)
+                raw.write_bytes(data)
+                index = next(i for i, e in enumerate(manifest.documents) if e.id == doc_id)
+                manifest.documents[index] = updated
+                write_document(document, settings.corpus_dir)
+    if apply and any(d.changed for d in diffs):
+        manifest.dump(_manifest_path(settings))
+    if report is not None:
+        report.write_text(render_report(diffs, selected, today.isoformat()), encoding="utf-8")
+
+
+@corpus_app.command("acts")
+def corpus_acts(
+    refresh: Annotated[bool, typer.Option(help="Fetch again acts already recorded.")] = False,
+) -> None:
+    """Record when each amending act came into force, from its own official page."""
+    from base_legal.corpus.acts import act_links, describe, merge
+    from base_legal.corpus.pipeline import USER_AGENT, dump_acts, load_acts
+
+    settings = _settings()
+    manifest = Manifest.load(_manifest_path(settings))
+    known = load_acts(settings.corpus_dir)
+    recorded = known.by_name()
+    wanted: dict[str, str] = {}
+    for entry in manifest.documents:
+        path = raw_path(settings.raw_dir, entry.id)
+        if entry.layout is SourceLayout.PLANALTO and path.exists():
+            html = decode_html(path.read_bytes())
+            wanted |= act_links(html, str(entry.source_url))
+    today = dt.date.today()
+    fetched = []
+    with httpx.Client(timeout=60, follow_redirects=True) as client:
+        for name, url in sorted(wanted.items()):
+            if name in recorded and not refresh:
+                continue
+            response = client.get(url, headers={"User-Agent": USER_AGENT})
+            response.raise_for_status()
+            act = describe(
+                name, str(response.url), decode_html(response.content), response.content, today
+            )
+            fetched.append(act)
+            when = act.in_force_from or f"undated ({act.review})"
+            typer.echo(f"{name}: {when}")
+    dump_acts(merge(known.acts, fetched), settings.corpus_dir)
+
+
+@corpus_app.command("explorer")
+def corpus_explorer(
+    out: Annotated[Path, typer.Option(help="Directory for the static site.")] = Path(
+        "site/explorer"
+    ),
+) -> None:
+    """Build the static corpus explorer (one page per act, anchors, links, search)."""
+    from base_legal.explorer.site import build_site
+
+    settings = _settings()
+    documents = load_documents(settings.corpus_dir, Manifest.load(_manifest_path(settings)))
+    histories = load_histories(settings.corpus_dir, [d.id for d in documents])
+    out.mkdir(parents=True, exist_ok=True)
+    for name, content in build_site(documents, histories).items():
+        (out / name).write_text(content, encoding="utf-8")
+    typer.echo(f"{len(documents)} act(s) -> {out}")
+
+
 @corpus_app.command("build")
 def corpus_build(doc: DocOption = None) -> None:
     """Parse raw sources into normalized JSON under the corpus directory."""
     settings = _settings()
     manifest = Manifest.load(_manifest_path(settings))
     for doc_id in _selected(manifest, doc):
-        document = build(manifest.get(doc_id), settings.raw_dir)
+        entry = manifest.get(doc_id)
+        document = build(entry, settings.raw_dir)
         path = write_document(document, settings.corpus_dir)
+        if entry.layout is SourceLayout.PLANALTO:
+            acts = {a.name: a.in_force_from for a in load_acts(settings.corpus_dir).acts}
+            history = date_history(build_history(entry, settings.raw_dir, document), acts)
+            write_history(history, settings.corpus_dir)
+            typer.echo(f"{doc_id}: earlier wordings of {len(history.provisions)} provision(s)")
         in_force = len(document.in_force())
         typer.echo(
             f"{doc_id}: {len(document.provisions)} provisions ({in_force} in force) -> {path}"
@@ -143,13 +268,17 @@ def corpus_embed(
 
 @model_app.command("fetch")
 def model_fetch() -> None:
-    """Download the local query model at its pinned revision, verifying every SHA-256."""
+    """Download the local models (query embedder, reranker) at their pinned revisions,
+    verifying every SHA-256."""
     settings = _settings()
-    lock = load_lock(settings.query_embedder)
-    directory = settings.models_dir / settings.query_embedder
+    names = [settings.query_embedder, *([settings.reranker] if settings.reranker else [])]
     with httpx.Client(timeout=httpx.Timeout(60, read=600)) as client:
-        fetched = fetch_model(lock, directory, client)
-    typer.echo(f"{lock.repo}@{lock.revision[:12]}: {len(fetched)} file(s) fetched, all verified")
+        for name in names:
+            lock = load_lock(name)
+            fetched = fetch_model(lock, settings.models_dir / name, client)
+            typer.echo(
+                f"{lock.repo}@{lock.revision[:12]}: {len(fetched)} file(s) fetched, all verified"
+            )
 
 
 @app.command()
@@ -198,6 +327,7 @@ def ingest(
             mode=mode,
             precomputed_model=settings.document_embedder,
             document_embedder=fallback,
+            histories=load_histories(settings.corpus_dir, [d.id for d in documents]),
         )
     finally:
         store.close()
@@ -223,20 +353,17 @@ def search(
     redacted = redact(question)
     if redacted.total:
         typer.echo(f"[privacy] redacted {redacted.counts} before search", err=True)
-    embedder = make_query_embedder(settings)
     store = open_store(settings)
     try:
         _require_index(store)
-        meta = store.get_meta()
-        if meta:
-            check_compatible(meta["embedding_family"], int(meta["embedding_dim"]), embedder)
-        result = Retriever(
-            store, embedder, candidate_pool=settings.candidate_pool, tuning=settings.tuning()
-        ).search(redacted.text, k=k)
+        result = make_retriever(settings, store).search(redacted.text, k=k)
     finally:
         store.close()
     for ref in result.missing_references:
         typer.echo(f"! {ref} does not exist in the corpus")
+    refusal = result.refusal(settings.refusal_threshold)
+    if refusal is not None:
+        typer.echo(f"! no support in the corpus ({refusal.value}); nearest provisions:")
     for n, hit in enumerate(result.hits, start=1):
         p = hit.provision
         marker = "=" if hit.explicit else " "
@@ -316,6 +443,54 @@ def mcp_server() -> None:
     run_mcp()
 
 
+@eval_app.command("generation")
+def eval_generation(
+    golden_path: Annotated[Path, typer.Option("--golden")] = Path("evals/golden.yaml"),
+    split: Annotated[Split, typer.Option()] = Split.DEV,
+    limit: Annotated[
+        int | None, typer.Option(min=1, help="Evaluate the first N items only.")
+    ] = None,
+    out_dir: Annotated[Path, typer.Option()] = Path("reports"),
+    label: Annotated[str | None, typer.Option(help="Default: the model ID.")] = None,
+    yes: Annotated[
+        bool, typer.Option("--yes", help="Confirm: this calls the Claude API and costs money.")
+    ] = False,
+) -> None:
+    """Answer the golden questions with Claude (paid, never in CI) -> JSON + Markdown."""
+    if not yes:
+        typer.echo("This calls the Claude API for every item; re-run with --yes.", err=True)
+        raise typer.Exit(2)
+    from base_legal.evals.generation import evaluate_generation
+    from base_legal.evals.generation import to_markdown as generation_markdown
+
+    settings = _settings()
+    golden = GoldenSet.load(golden_path)
+    store = open_store(settings)
+    try:
+        _require_index(store)
+        answerer = make_answerer(settings, store)
+        try:
+            report = evaluate_generation(
+                answerer,
+                golden,
+                split=split,
+                model=settings.model,
+                label=label or settings.model,
+                limit=limit,
+            )
+        except GenerationUnavailableError as error:
+            typer.echo(f"Claude API unavailable: {error}", err=True)
+            raise typer.Exit(2) from None
+    finally:
+        store.close()
+    out_dir.mkdir(parents=True, exist_ok=True)
+    stem = out_dir / f"generation-{report.label}-{split.value}"
+    stem.with_suffix(".json").write_text(report.model_dump_json(indent=2) + "\n", "utf-8")
+    markdown = generation_markdown(report)
+    stem.with_suffix(".md").write_text(markdown, "utf-8")
+    typer.echo(markdown)
+
+
 @eval_app.command("retrieval")
 def eval_retrieval(
     golden_path: Annotated[Path, typer.Option("--golden")] = Path("evals/golden.yaml"),
@@ -340,24 +515,15 @@ def eval_retrieval(
     settings = _settings()
     golden = GoldenSet.load(golden_path)
     threshold = settings.refusal_threshold if threshold is None else threshold
-    embedder = None if mode is SearchMode.LEXICAL else make_query_embedder(settings)
     store = open_store(settings)
     try:
         _require_index(store)
-        meta = store.get_meta()
-        if embedder is not None and meta:
-            check_compatible(meta["embedding_family"], int(meta["embedding_dim"]), embedder)
         expected = sorted({pid for item in golden.answerable for pid in item.expected})
         unknown = golden.unknown_ids(store.provisions(expected))
         if unknown:
             raise typer.BadParameter(f"golden set cites provisions not in the index: {unknown}")
-        retriever = Retriever(
-            store,
-            embedder,
-            candidate_pool=settings.candidate_pool,
-            mode=mode,
-            tuning=settings.tuning(),
-        )
+        retriever = make_retriever(settings, store, mode=mode)
+        embedder = retriever.embedder
         report = evaluate(
             retriever,
             golden,
@@ -368,6 +534,9 @@ def eval_retrieval(
                 "mode": mode.value,
                 "query_embedder": embedder.model if embedder else "none",
                 "document_embedder": store.document_embedding_models() or "none",
+                "reranker": f"{settings.reranker} (depth {settings.rerank_depth})"
+                if settings.reranker and retriever.reranker is not None
+                else "none",
                 **{k: str(v) for k, v in dataclasses.asdict(settings.tuning()).items()},
             },
         )

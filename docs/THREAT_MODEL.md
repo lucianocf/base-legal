@@ -61,13 +61,14 @@ flowchart LR
 | S4 | TB1 | **Information disclosure** | A user pastes a CPF or someone's health data into the question | PII redaction before TB3; nothing persisted; logs exclude question text | Unit tests with valid and invalid CPFs; log-capture test |
 | S5 | TB3 | **Information disclosure** | A processor retains or trains on user data | Questions embedded locally (Voyage never receives them); only redacted text goes to Anthropic; documented in PRIVACY.md | Test asserting the query path makes no network call to Voyage |
 | S6 | TB1 | **Denial of service / financial** | A flood of long questions burns API credit | Max question length; max k; rate limit on the API; `max_tokens` cap; spend limits in the provider consoles | API tests for limits |
-| S7 | TB5 | **Tampering / EoP** | Malicious dependency or GitHub Action | Lockfile (`uv.lock`); pip-audit; Dependabot; actions pinned by SHA; minimal `permissions:` on workflows; OpenSSF Scorecard | CI jobs |
+| S7 | TB5 | **Tampering / EoP** | Malicious dependency or GitHub Action; a tampered release | Lockfile (`uv.lock`); pip-audit; Dependabot; actions pinned by SHA; minimal `permissions:` on workflows; OpenSSF Scorecard; releases ship a CycloneDX SBOM, SLSA build provenance (Sigstore-signed attestations) and a cosign keyless signature on the image | CI jobs; `release.yml` |
 | S8 | TB5 | **Information disclosure** | Secrets leak into the repo or CI logs | gitleaks (pre-commit + CI); no secrets on `pull_request` from forks; `.env` git-ignored | CI job |
 | S9 | TB1 | **Spoofing** | Someone misuses the self-hosted API | API binds to localhost by default; optional API-key auth; documented reverse-proxy setup | Config test |
 | S10 | TB1 | **Repudiation** | Hard to investigate abuse without logs | Structured logs with request ID, timings, token counts and redaction counts, but **no content** | Log-schema test |
 | S11 | UI | **Tampering (XSS)** | Model output or corpus text renders HTML/JS in the UI | Output rendered as text (no `innerHTML`); strict CSP; no third-party scripts | CSP header test |
 | S12 | TB5 | **Tampering / EoP** | Malicious or swapped model weights; `trust_remote_code` runs arbitrary code | Pin the Hugging Face revision + file SHA-256; safetensors only; no `trust_remote_code` unless reviewed and pinned; weights baked into the image at build time | Build-time hash check |
 | S13 | TB5 | **Tampering** | Poisoned precomputed vectors in `corpus/embeddings/` | SHA-256 in `manifest.yaml`, checked on load; regenerated only by the maintainer command, reviewed in PR | Hash check test; CODEOWNERS |
+| S14 | TB4 | **Tampering / EoP** | The scheduled corpus watcher (`watch.yml`) turns untrusted official-page content into a pull request with a write-scoped token | Job-level `contents`/`pull-requests: write` only, no other secrets; the page text only ever reaches git and the PR body as files (never interpolated into shell or expressions); the PR is a draft that a maintainer must review against the official page; nothing merges automatically | zizmor and actionlint in CI; `tests/unit/test_watch.py` (fenced, truncated report) |
 
 ### Where each control is verified (v0.1.0)
 
@@ -84,8 +85,9 @@ flowchart LR
 | S9 | `base-legal serve` binds 127.0.0.1; compose publishes on 127.0.0.1; optional `BASE_LEGAL_API_KEY` (`tests/unit/test_api.py::test_optional_api_key`) |
 | S10 | Content-free request log (method, path, status, timing; no body, no query string, no client IP; uvicorn's access log disabled) |
 | S11 | `tests/unit/test_api.py::test_ui_renders_text_only_and_has_no_inline_code` and `test_health_has_disclaimer_and_security_headers`; `evals/redteam.yaml` t09 |
-| S12 | No remote code is executed: voyage-4-nano runs on transformers' own Qwen3 (ADR 0012, `tests/integration/test_nano.py` checks it against the vendor code); `tests/unit/test_model_store.py`; `Dockerfile` fetches and verifies every file's SHA-256 at build time; the runtime is offline (`HF_HUB_OFFLINE=1`) and re-verifies on load; benchmark-only models pinned the same way (`benchmarks/models/`) |
+| S12 | No remote code is executed: voyage-4-nano runs on transformers' own Qwen3 (ADR 0012, `tests/integration/test_nano.py` checks it against the vendor code) and the reranker is a standard sequence-classification model (ADR 0015, `tests/integration/test_reranker.py`); `tests/unit/test_model_store.py`; `Dockerfile` fetches and verifies every file's SHA-256 at build time; the runtime is offline (`HF_HUB_OFFLINE=1`) and re-verifies on load; benchmark-only models pinned the same way (`benchmarks/models/`) |
 | S13 | `tests/unit/test_embeddings.py` and `tests/integration/test_store_and_search.py::test_precomputed_tampering_is_rejected`; vectors are not redistributed (ADR 0009) |
+| S14 | `.github/workflows/watch.yml` (minimal permissions, report passed as a file); `tests/unit/test_watch.py::test_report_fences_untrusted_text`; `tests/unit/test_cli_corpus.py` (byte-only changes are ignored) |
 
 ## 5. OWASP Top 10 for LLM Applications (2025)
 
@@ -93,7 +95,7 @@ flowchart LR
 |---|---|---|---|---|
 | LLM01:2025 | Prompt Injection | **High** | S2, S3; no tools; strict grounding; refusal as the safe default | `redteam.yaml` direct + indirect cases |
 | LLM02:2025 | Sensitive Information Disclosure | **High** | S4, S5; no storage of questions; nothing personal in the corpus | PII redaction tests; log-capture test |
-| LLM03:2025 | Supply Chain | Medium | S7, S12; official SDKs only; no RAG framework (ADR 0001); pinned model weights; SBOM + signing in Phase 2 | CI security jobs; build-time hash check |
+| LLM03:2025 | Supply Chain | Medium | S7, S12; official SDKs only; no RAG framework (ADR 0001); pinned model weights; SBOM, SLSA provenance and cosign signatures on releases | CI security jobs; build-time hash check; `gh attestation verify` / `cosign verify` |
 | LLM04:2025 | Data and Model Poisoning | Medium | S1, S3; corpus from official sources, hashed and reviewed | Hash + poisoned-fixture tests |
 | LLM05:2025 | Improper Output Handling | Medium | S11; output treated as untrusted text; citations validated before display | UI/CSP tests; validator tests |
 | LLM06:2025 | Excessive Agency | Low (by design) | No tools with side effects; MCP server is read-only | Assertion that the MCP tool list is read-only |

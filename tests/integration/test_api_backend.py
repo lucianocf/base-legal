@@ -1,3 +1,5 @@
+import datetime as dt
+from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
@@ -7,9 +9,11 @@ import pytest
 from fastapi.testclient import TestClient
 
 from base_legal.api.app import create_app
+from base_legal.chunking.chunker import chunk_document
 from base_legal.config import IngestMode, Settings
+from base_legal.corpus.history import DocumentHistory, ProvisionHistory, Version
 from base_legal.corpus.manifest import Manifest
-from base_legal.corpus.models import Document
+from base_legal.corpus.models import Document, DocumentKind, Provision, ProvisionKind
 from base_legal.embeddings.providers import HashingEmbedder
 from base_legal.ingest import ingest_documents
 from base_legal.store.db import Store
@@ -104,12 +108,14 @@ def test_database_backend_behind_the_api(
 
 
 def test_backend_starts_on_a_fresh_database(
-    database_url: str, monkeypatch: pytest.MonkeyPatch
+    database_url: str,
+    drop_tables: Callable[[psycopg.Connection[Any]], None],
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     # Regression: `serve` crashed with "relation index_meta does not exist" when
     # started before the first `ingest` (the README quickstart order).
     with psycopg.connect(database_url, autocommit=True) as conn:
-        conn.execute(b"DROP TABLE IF EXISTS chunks, provisions, documents, index_meta CASCADE")
+        drop_tables(conn)
     monkeypatch.setattr(anthropic, "Anthropic", _Echo)
     settings = Settings(database_url=database_url, query_embedder="test-hashing")
     backend = DatabaseBackend(settings)
@@ -120,3 +126,126 @@ def test_backend_starts_on_a_fresh_database(
         assert answer["status"] == "refused"
     finally:
         backend.close()
+
+
+def test_cross_references_resolve_against_the_index(
+    store: Store,
+    database_url: str,
+    document: Document,
+    manifest: Manifest,
+    tmp_path: Path,
+) -> None:
+    ingest_documents(
+        store,
+        [document],
+        manifest,
+        embeddings_dir=tmp_path,
+        mode=IngestMode.LOCAL,
+        precomputed_model="voyage-4-large",
+        document_embedder=HashingEmbedder(),
+    )
+    assert store.annex_titles() == []
+    assert store.normative_ids(["lgpd:art55A", "lgpd:art52", "lgpd:art65:incI"]) == {
+        "lgpd:art55A",
+        "lgpd:art65:incI",
+    }
+    settings = Settings(database_url=database_url, query_embedder="test-hashing")
+    backend = DatabaseBackend(settings, with_generation=False)
+    try:
+        inciso = document.by_id()["lgpd:art65:incI"]
+        [link] = backend.references({inciso.id: inciso.text})[inciso.id]
+    finally:
+        backend.close()
+    # "arts. 55-A, 55-B e 55-C": only art. 55-A is in this fixture
+    assert link.target == "lgpd:art55A"
+    assert inciso.text[link.start : link.end] == "arts. 55-A"
+
+
+def test_annex_titles_name_each_regulation(store: Store) -> None:
+    title = "Anexo — REGULAMENTO DE TESTE SINTÉTICO"
+    article = Provision(
+        id="res-anpd-9-2099:anx1:art1",
+        document_id="res-anpd-9-2099",
+        parent_id=None,
+        kind=ProvisionKind.ARTICLE,
+        label="Art. 1º",
+        text="Este Regulamento é um exemplo.",
+        path=(title, "Art. 1º"),
+        ordinal=0,
+    )
+    document = Document(
+        id="res-anpd-9-2099",
+        title="Resolução sintética",
+        kind=DocumentKind.RESOLUTION,
+        source_url="https://example.org/res",
+        source_sha256="b" * 64,
+        retrieved_at="2026-09-27",  # type: ignore[arg-type]
+        redistribution_basis="test",
+        provisions=(article,),
+    )
+    chunks = chunk_document(document, "Res. sintética")
+    vectors = HashingEmbedder().embed_documents([c.content for c in chunks])
+    store.replace_document(document, chunks, vectors, "test-hashing")
+    assert store.annex_titles() == [("res-anpd-9-2099", "1", title)]
+
+
+def test_earlier_wordings_are_stored_and_served(
+    store: Store,
+    database_url: str,
+    document: Document,
+    manifest: Manifest,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    target = document.in_force()[0]
+    history = DocumentHistory(
+        document_id=document.id,
+        source_sha256=document.source_sha256,
+        provisions=(
+            ProvisionHistory(
+                provision_id=target.id,
+                versions=(
+                    Version(
+                        text="Redação antiga.", introduced_by=None, valid_to=dt.date(2019, 7, 9)
+                    ),
+                    Version(
+                        text=target.text, introduced_by="Lei A", valid_from=dt.date(2019, 7, 9)
+                    ),
+                ),
+            ),
+        ),
+    )
+
+    def ingest(histories: dict[str, DocumentHistory]) -> None:
+        ingest_documents(
+            store,
+            [document],
+            manifest,
+            embeddings_dir=tmp_path,
+            mode=IngestMode.LOCAL,
+            precomputed_model="voyage-4-large",
+            document_embedder=HashingEmbedder(),
+            histories=histories,
+        )
+
+    ingest({})
+    assert store.history(target.id) is None
+    ingest({document.id: history})  # unchanged document: the history is still loaded
+    stored = store.history(target.id)
+    assert stored is not None
+    assert [v.text for v in stored.versions] == ["Redação antiga.", target.text]
+    stale = history.model_copy(update={"source_sha256": "f" * 64})
+    ingest({document.id: stale})  # a stale history is refused, the stored one kept
+    assert store.history(target.id) == stored
+
+    monkeypatch.setattr(anthropic, "Anthropic", _Echo)
+    settings = Settings(database_url=database_url, query_embedder="test-hashing")
+    backend = DatabaseBackend(settings, with_generation=False)
+    try:
+        client = TestClient(create_app(backend, settings))
+        old = client.get(f"/provisions/{target.id}", params={"at": "2019-01-01"}).json()
+        versions = client.get(f"/provisions/{target.id}/history").json()["versions"]
+    finally:
+        backend.close()
+    assert old["provision"]["text"] == "Redação antiga."
+    assert len(versions) == 2

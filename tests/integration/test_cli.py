@@ -69,6 +69,13 @@ def test_build_ingest_search_end_to_end(
 
     result = runner.invoke(app, ["search", "O que diz o art. 99?"])
     assert "lgpd:art99 does not exist" in result.output
+    assert "no support in the corpus (nonexistent_provision)" in result.output
+
+    # Regression: `search` listed hits for out-of-scope questions without
+    # saying that `ask` and the API refuse them (ADR 0016).
+    result = runner.invoke(app, ["search", "Qual é a pena de furto no Código Penal?"])
+    assert result.exit_code == 0, result.output
+    assert "no support in the corpus (out_of_scope)" in result.output
 
 
 def test_unknown_doc_is_rejected(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:

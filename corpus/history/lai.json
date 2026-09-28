@@ -1,0 +1,121 @@
+{
+  "document_id": "lai",
+  "source_sha256": "2a9f14d24dc05740fd2bcc4f8edb0614f24c5eb280241ef4f56e12ca2c633a5c",
+  "provisions": [
+    {
+      "provision_id": "lai:art8A",
+      "versions": [
+        {
+          "text": "As entidades com personalidade jurídica de direito privado, constituídas sob a forma de serviço social autônomo, que sejam destinatárias de contribuições ou de recursos públicos federais decorrentes de contrato de gestão deverão divulgar as seguintes informações relativas aos respectivos empregados:",
+          "introduced_by": "Lei nº 15.141, de 2025",
+          "valid_from": "2025-06-03",
+          "valid_to": null,
+          "review": null
+        }
+      ]
+    },
+    {
+      "provision_id": "lai:art8A:incI",
+      "versions": [
+        {
+          "text": "o plano de cargos e salários, inclusive com a divulgação dos critérios para a evolução na carreira e para a fixação da política salarial;",
+          "introduced_by": "Lei nº 15.141, de 2025",
+          "valid_from": "2025-06-03",
+          "valid_to": null,
+          "review": null
+        }
+      ]
+    },
+    {
+      "provision_id": "lai:art8A:incII",
+      "versions": [
+        {
+          "text": "o quantitativo total de empregados da entidade, discriminado por cargo e por faixas salariais, acompanhado do nome do empregado e do cargo por ele ocupado;",
+          "introduced_by": "Lei nº 15.141, de 2025",
+          "valid_from": "2025-06-03",
+          "valid_to": null,
+          "review": null
+        }
+      ]
+    },
+    {
+      "provision_id": "lai:art8A:incIII",
+      "versions": [
+        {
+          "text": "lista, discriminada por faixas salariais, das parcelas remuneratórias e indenizatórias, ainda que eventuais, incluídos os auxílios, as ajudas de custo, as gratificações, os jetons e quaisquer outras vantagens pecuniárias, que os empregados possam receber em virtude de condições específicas; e",
+          "introduced_by": "Lei nº 15.141, de 2025",
+          "valid_from": "2025-06-03",
+          "valid_to": null,
+          "review": null
+        }
+      ]
+    },
+    {
+      "provision_id": "lai:art8A:incIV",
+      "versions": [
+        {
+          "text": "o quantitativo de funções gratificadas, os critérios para sua ocupação e o rol dos empregados que ocupam cada espécie de função gratificada.",
+          "introduced_by": "Lei nº 15.141, de 2025",
+          "valid_from": "2025-06-03",
+          "valid_to": null,
+          "review": null
+        }
+      ]
+    },
+    {
+      "provision_id": "lai:art8B",
+      "versions": [
+        {
+          "text": "Os conselhos de fiscalização profissional devem divulgar, de forma nominal e individualizada, lista das parcelas remuneratórias e indenizatórias, ainda que eventuais, incluídos os auxílios, as ajudas de custo, as gratificações, os jetons e quaisquer outras vantagens pecuniárias, que os empregados possam receber em virtude de condições específicas.",
+          "introduced_by": "Lei nº 15.141, de 2025",
+          "valid_from": "2025-06-03",
+          "valid_to": null,
+          "review": null
+        }
+      ]
+    },
+    {
+      "provision_id": "lai:art12",
+      "versions": [
+        {
+          "text": "O serviço de busca e fornecimento da informação é gratuito, salvo nas hipóteses de reprodução de documentos pelo órgão ou entidade pública consultada, situação em que poderá ser cobrado exclusivamente o valor necessário ao ressarcimento do custo dos serviços e dos materiais utilizados.",
+          "introduced_by": null,
+          "valid_from": null,
+          "valid_to": null,
+          "review": "original wording: in force as provided by the act's own vigência clause"
+        },
+        {
+          "text": "O serviço de busca e de fornecimento de informação é gratuito.",
+          "introduced_by": "Lei nº 14.129, de 2021",
+          "valid_from": null,
+          "valid_to": null,
+          "review": "no in-force date for Lei nº 14.129, de 2021"
+        }
+      ]
+    },
+    {
+      "provision_id": "lai:art12:par1",
+      "versions": [
+        {
+          "text": "O órgão ou a entidade poderá cobrar exclusivamente o valor necessário ao ressarcimento dos custos dos serviços e dos materiais utilizados, quando o serviço de busca e de fornecimento da informação exigir reprodução de documentos pelo órgão ou pela entidade pública consultada.",
+          "introduced_by": "Lei nº 14.129, de 2021",
+          "valid_from": null,
+          "valid_to": null,
+          "review": "no in-force date for Lei nº 14.129, de 2021"
+        }
+      ]
+    },
+    {
+      "provision_id": "lai:art12:par2",
+      "versions": [
+        {
+          "text": "Estará isento de ressarcir os custos previstos no § 1º deste artigo aquele cuja situação econômica não lhe permita fazê-lo sem prejuízo do sustento próprio ou da família, declarada nos termos da Lei nº 7.115, de 29 de agosto de 1983.",
+          "introduced_by": "Lei nº 14.129, de 2021",
+          "valid_from": null,
+          "valid_to": null,
+          "review": "no in-force date for Lei nº 14.129, de 2021"
+        }
+      ]
+    }
+  ]
+}

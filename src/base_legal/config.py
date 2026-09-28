@@ -34,6 +34,9 @@ class Settings(BaseSettings):
     ingest_mode: IngestMode = IngestMode.LOCAL  # ADR 0013
     document_embedder: str = "voyage-4-large"
     query_embedder: str = "voyage-4-nano"
+    # Local cross-encoder blended into the top of the ranking (ADR 0015); "none" disables it.
+    reranker: str | None = "mmarco-mminilmv2"
+    rerank_depth: int = Field(default=10, ge=0, le=50)
     # Local model weights, pinned by revision + SHA-256 (src/base_legal/embeddings/*.lock.json).
     models_dir: Path = Path("models")
 
@@ -65,6 +68,13 @@ class Settings(BaseSettings):
     def _empty_secret_is_unset(cls, value: object) -> object:
         # Compose and CI pass unset variables as "" (`${VAR:-}`); that is not a key.
         if value is None or (isinstance(value, str) and not value.strip()):
+            return None
+        return value
+
+    @field_validator("reranker", mode="before")
+    @classmethod
+    def _no_reranker(cls, value: object) -> object:
+        if value is None or (isinstance(value, str) and value.strip().lower() in {"", "none"}):
             return None
         return value
 

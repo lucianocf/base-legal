@@ -28,6 +28,7 @@ as metadata):
 | Act | Source |
 |---|---|
 | Lei nº 13.709/2018 (LGPD), compiled text | planalto.gov.br |
+| Lei nº 12.527/2011 (LAI), compiled text | planalto.gov.br |
 | Resoluções CD/ANPD nº 1/2021 and nº 2/2022, compiled text | gov.br/anpd |
 | Resoluções CD/ANPD nº 4/2023, nº 15/2024 and nº 18/2024 | Diário Oficial da União (in.gov.br) |
 | Resolução CD/ANPD nº 19/2024 (Annex I), compiled text | gov.br/anpd |

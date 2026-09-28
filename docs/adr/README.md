@@ -20,5 +20,9 @@ decision, add a new ADR that supersedes the old one and mark the old one as
 | [0011](0011-one-cited-document-per-provision.md) | Generation: one cited document per provision | Proposed |
 | [0012](0012-load-voyage-4-nano-without-remote-code.md) | Load voyage-4-nano without remote code, on transformers 5.x | Proposed |
 | [0013](0013-voyage-4-nano-for-documents-by-default.md) | voyage-4-nano for documents by default (embedding gate result) | Proposed |
+| [0014](0014-point-in-time-wordings.md) | Point-in-time wordings from the compiled texts | Proposed |
+| [0015](0015-local-cross-encoder-reranker.md) | A local cross-encoder reranker, blended with hybrid retrieval | Proposed |
+| [0016](0016-refuse-questions-about-other-acts.md) | Refuse questions that name only acts outside the corpus | Proposed |
+| [0017](0017-anpd-guides-blocked-on-licence.md) | ANPD guides: not added until their licence is settled | Proposed |
 
 Template: [`0000-template.md`](0000-template.md).

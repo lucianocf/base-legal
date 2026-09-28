@@ -379,3 +379,37 @@ def test_a_continuation_line_before_an_article_is_not_a_rubric() -> None:
     lines = ["Art. 1º Caput que continua", "na linha seguinte;", "Art. 2º Outro."]
     provisions = {p.id: p for p in StructureParser("x").parse(lines)}
     assert provisions["x:art1"].text == "Caput que continua na linha seguinte;"
+
+
+def test_a_sole_paragraph_printed_inline_is_its_own_provision() -> None:
+    # Regression: gov.br prints Res. 2/2022 annex art. 9's sole paragraph in the
+    # same block as the caput; it was glued to the article's text.
+    html = (
+        "<body><p>Art. 9º Os agentes podem manter o registro de forma simplificada. "
+        "Parágrafo único. A ANPD fornecerá modelo para o registro simplificado.</p>"
+        "<p>Art. 10. Seguinte.</p></body>"
+    )
+    provisions = {p.id: p for p in StructureParser("r").parse(html_to_lines(html))}
+    assert provisions["r:art9"].text == (
+        "Os agentes podem manter o registro de forma simplificada."
+    )
+    assert provisions["r:art9:paru"].text == "A ANPD fornecerá modelo para o registro simplificado."
+
+
+def test_a_sole_paragraph_inside_quoted_amendment_text_is_not_split() -> None:
+    html = (
+        "<body><p>Art. 2º O art. 5º passa a vigorar com a seguinte redação: "
+        "“Art. 5º Texto novo. Parágrafo único. Outro texto.” (NR)</p>"
+        "<p>Art. 3º Seguinte.</p></body>"
+    )
+    provisions = {p.id: p for p in StructureParser("r").parse(html_to_lines(html))}
+    assert "Parágrafo único. Outro texto." in provisions["r:art2"].text
+    assert "r:art2:paru" not in provisions
+
+
+def test_a_doubled_period_after_an_article_label_is_not_text() -> None:
+    # Regression: the LAI page prints "Art. 8º-B.. Os conselhos …"; the text
+    # began with a stray period.
+    html = "<body><p>Art. 8º-B.. Os conselhos devem divulgar.</p><p>Art. 9º Seguinte.</p></body>"
+    provisions = {p.id: p for p in StructureParser("r").parse(html_to_lines(html))}
+    assert provisions["r:art8B"].text == "Os conselhos devem divulgar."

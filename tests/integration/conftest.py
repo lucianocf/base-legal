@@ -1,7 +1,8 @@
 import os
 import uuid
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator
 from pathlib import Path
+from typing import Any
 
 import psycopg
 import pytest
@@ -38,13 +39,34 @@ def database_url() -> Iterator[str]:
             conn.execute(f"DROP SCHEMA {schema} CASCADE".encode())
 
 
+INDEX_TABLES = ("chunks", "provisions", "documents", "index_meta")
+
+
+def drop_index_tables(conn: psycopg.Connection[Any]) -> None:
+    """Drop the index tables of the *test* schema only.
+
+    Regression: an unqualified ``DROP TABLE IF EXISTS chunks, …`` resolves
+    through ``search_path`` (``test_…, public``), so when the test schema had no
+    tables yet it dropped the developer's index in ``public``.
+    """
+    row = conn.execute("SELECT current_schema() AS s").fetchone()
+    schema = str(row["s"] if isinstance(row, dict) else row[0]) if row else ""
+    if not schema.startswith("test_"):
+        raise RuntimeError(f"refusing to drop tables outside a test schema: {schema!r}")
+    tables = ", ".join(f"{schema}.{name}" for name in INDEX_TABLES)
+    conn.execute(f"DROP TABLE IF EXISTS {tables} CASCADE".encode())
+
+
+@pytest.fixture
+def drop_tables() -> Callable[[psycopg.Connection[Any]], None]:
+    return drop_index_tables
+
+
 @pytest.fixture
 def store(database_url: str) -> Iterator[Store]:
     store = Store.connect(database_url)
     with store.conn.transaction():
-        store.conn.execute(
-            b"DROP TABLE IF EXISTS chunks, provisions, documents, index_meta CASCADE"
-        )
+        drop_index_tables(store.conn)
     store.init_schema()
     yield store
     store.close()

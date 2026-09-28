@@ -309,3 +309,14 @@ def test_ancestor_ids() -> None:
         "res-anpd-15-2024:anx1:art6",
         "res-anpd-15-2024:anx1:art6:par2",
     ]
+
+
+def test_out_of_scope_questions_never_call_the_model() -> None:
+    client = _Client()  # asserts if the model is called
+    answerer, _ = _answerer(client, other_acts=("GDPR",))
+    answer = answerer.answer("Qual a multa máxima do GDPR?")
+    assert answer.status is Status.REFUSED
+    assert answer.refusal is RefusalCause.OUT_OF_SCOPE
+    assert answer.message is not None
+    assert "não faz parte do corpus" in answer.message
+    assert client.messages.calls == []

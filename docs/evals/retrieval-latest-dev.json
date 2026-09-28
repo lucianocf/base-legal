@@ -6,23 +6,24 @@
     "mode": "hybrid",
     "query_embedder": "voyage-4-nano",
     "document_embedder": "voyage-4-nano",
+    "reranker": "mmarco-mminilmv2 (depth 10)",
     "fts_normalization": "4",
     "lexical_weight": "0.5",
     "dense_weight": "1.0",
     "parent_weight": "0.2"
   },
   "metrics": {
-    "answerable": 31,
+    "answerable": 41,
     "refuse": 5,
-    "recall_at_1": 0.2742,
-    "recall_at_5": 0.6774,
-    "recall_at_10": 0.7903,
-    "hit_at_5": 0.7419,
-    "mrr": 0.4739,
-    "refusal_accuracy": 0.6,
+    "recall_at_1": 0.4268,
+    "recall_at_5": 0.7561,
+    "recall_at_10": 0.7927,
+    "hit_at_5": 0.7805,
+    "mrr": 0.5907,
+    "refusal_accuracy": 1.0,
     "false_refusal_rate": 0.0,
-    "latency_p50_ms": 137.11,
-    "latency_p95_ms": 192.18
+    "latency_p50_ms": 312.67,
+    "latency_p95_ms": 437.95
   },
   "answerable": [
     {
@@ -31,21 +32,21 @@
         "lgpd:art5:incIII"
       ],
       "ranked": [
-        "lgpd:art12",
-        "res-anpd-15-2024:anx1:art3",
         "lgpd:art5:incIII",
+        "lgpd:art12",
         "lgpd:art12:par2",
         "lgpd:art12:par3",
+        "lgpd:art5:incXI",
         "lgpd:art12:par1",
+        "res-anpd-15-2024:anx1:art3",
         "res-anpd-18-2024:anx1:art2",
         "lgpd:art5",
-        "lgpd:art2",
-        "lgpd:art5:incXI"
+        "lgpd:art13"
       ],
-      "first_rank": 3,
+      "first_rank": 1,
       "refused": null,
       "best_similarity": 0.5903960114481452,
-      "latency_ms": 139.74
+      "latency_ms": 291.14
     },
     {
       "id": "g04",
@@ -54,21 +55,21 @@
         "lgpd:art5:incVII"
       ],
       "ranked": [
-        "lgpd:art41:par2",
         "lgpd:art50:par2:incI",
-        "lgpd:art41",
         "lgpd:art50:par2",
-        "lgpd:art18",
         "lgpd:art50",
-        "lgpd:art41:par2:incI",
+        "lgpd:art41:par2",
+        "res-anpd-18-2024:anx1:art2:incVI",
+        "lgpd:art41",
         "lgpd:art41:par2:incII",
-        "lgpd:art41:par2:incIII",
-        "lgpd:art41:par3"
+        "lgpd:art41:par2:incI",
+        "lgpd:art18",
+        "lgpd:art41:par2:incIII"
       ],
       "first_rank": null,
       "refused": null,
       "best_similarity": 0.4806424665833998,
-      "latency_ms": 134.53
+      "latency_ms": 304.79
     },
     {
       "id": "g05",
@@ -77,21 +78,21 @@
         "lgpd:art41:par2"
       ],
       "ranked": [
-        "res-anpd-18-2024:anx1:art15",
         "res-anpd-18-2024:anx1:art15:paru",
-        "res-anpd-18-2024:anx1:art16",
-        "lgpd:art41:par2",
+        "res-anpd-18-2024:anx1:art15",
         "res-anpd-18-2024:anx1:art15:paru:incI",
-        "res-anpd-18-2024:anx1:art15:paru:incIII",
+        "res-anpd-18-2024:anx1:art16",
         "res-anpd-18-2024:anx1:art15:paru:incII",
+        "lgpd:art41:par2",
+        "res-anpd-18-2024:anx1:art15:paru:incIII",
         "res-anpd-18-2024:anx1:art12",
         "res-anpd-18-2024:anx1:art3",
-        "res-anpd-18-2024:anx1:art15:incII"
+        "lai:art23"
       ],
-      "first_rank": 4,
+      "first_rank": 6,
       "refused": null,
       "best_similarity": 0.5416539311409035,
-      "latency_ms": 135.48
+      "latency_ms": 363.09
     },
     {
       "id": "g06",
@@ -99,21 +100,21 @@
         "lgpd:art7"
       ],
       "ranked": [
+        "lgpd:art7:incIX",
         "lgpd:art7",
         "lgpd:art11:incII",
-        "lgpd:art11",
-        "lgpd:art10",
         "lgpd:art7:par7",
-        "lgpd:art7:incIX",
-        "lgpd:art7:par3",
         "lgpd:art11:incII:alig",
+        "lgpd:art11",
         "lgpd:art11:incII:alid",
+        "lgpd:art7:par3",
+        "lgpd:art10",
         "lgpd:art44"
       ],
-      "first_rank": 1,
+      "first_rank": 2,
       "refused": null,
       "best_similarity": 0.6457451966849098,
-      "latency_ms": 176.87
+      "latency_ms": 299.96
     },
     {
       "id": "g07",
@@ -123,20 +124,20 @@
       ],
       "ranked": [
         "lgpd:art10",
-        "res-anpd-1-2021:anx1:art39",
-        "lgpd:art10:par2",
         "lgpd:art10:par3",
-        "lgpd:art10:incI",
-        "lgpd:art10:par1",
+        "lgpd:art10:par2",
         "lgpd:art10:incII",
-        "lgpd:art37",
-        "lgpd:art7",
-        "res-anpd-1-2021:anx1:art13"
+        "res-anpd-1-2021:anx1:art39",
+        "lgpd:art10:par1",
+        "lgpd:art10:incI",
+        "lai:art10",
+        "lai:art10:par1",
+        "lai:art10:par3"
       ],
       "first_rank": 1,
       "refused": null,
       "best_similarity": 0.4981022477149999,
-      "latency_ms": 161.16
+      "latency_ms": 279.21
     },
     {
       "id": "g08",
@@ -145,21 +146,21 @@
         "lgpd:art8"
       ],
       "ranked": [
-        "lgpd:art8",
-        "lgpd:art11:incII",
-        "lgpd:art19",
         "lgpd:art8:par2",
-        "lgpd:art8:par4",
+        "lgpd:art8",
         "lgpd:art8:par1",
+        "lgpd:art8:par4",
+        "lai:art31:par3",
+        "lgpd:art19",
         "lgpd:art8:par5",
+        "lgpd:art11:incII",
         "lgpd:art8:par3",
-        "lgpd:art14:par1",
-        "lgpd:art8:par6"
+        "lgpd:art14:par1"
       ],
-      "first_rank": 1,
+      "first_rank": 2,
       "refused": null,
       "best_similarity": 0.5959317443330147,
-      "latency_ms": 128.47
+      "latency_ms": 259.12
     },
     {
       "id": "g09",
@@ -168,21 +169,21 @@
         "lgpd:art18:incIX"
       ],
       "ranked": [
-        "lgpd:art18",
-        "lgpd:art8",
-        "lgpd:art11:incII",
-        "lgpd:art18:par4",
         "lgpd:art8:par5",
-        "lgpd:art9:par2",
+        "lgpd:art18",
         "lgpd:art18:incIX",
+        "lgpd:art8",
         "lgpd:art18:par2",
-        "lgpd:art18:incVI",
-        "lgpd:art18:incVIII"
+        "lgpd:art18:par4",
+        "lgpd:art9:par2",
+        "lgpd:art11:incII",
+        "lgpd:art18:incVIII",
+        "lgpd:art18:incVI"
       ],
-      "first_rank": 5,
+      "first_rank": 1,
       "refused": null,
       "best_similarity": 0.5975094793742596,
-      "latency_ms": 154.26
+      "latency_ms": 296.95
     },
     {
       "id": "g10",
@@ -190,21 +191,21 @@
         "lgpd:art11:incII"
       ],
       "ranked": [
-        "lgpd:art11",
-        "lgpd:art11:incII",
-        "lgpd:art7",
-        "lgpd:art11:par4",
         "lgpd:art11:incII:alic",
-        "lgpd:art13",
-        "lgpd:art11:incII:alie",
+        "lgpd:art11:incII",
+        "lgpd:art11",
         "lgpd:art11:incII:alig",
+        "lgpd:art11:par4",
         "lgpd:art11:incII:alif",
-        "lgpd:art11:incII:alib"
+        "lgpd:art11:incII:alie",
+        "lgpd:art7",
+        "lgpd:art11:incII:alib",
+        "lai:art31:par3"
       ],
       "first_rank": 2,
       "refused": null,
       "best_similarity": 0.6586743586070288,
-      "latency_ms": 192.18
+      "latency_ms": 272.59
     },
     {
       "id": "g12",
@@ -214,20 +215,20 @@
       ],
       "ranked": [
         "lgpd:art14",
-        "lgpd:art11",
-        "lgpd:art7",
-        "lgpd:art14:par1",
-        "lgpd:art6",
         "lgpd:art14:par6",
         "lgpd:art14:par2",
-        "lgpd:art11:par4",
+        "lgpd:art14:par1",
+        "lgpd:art11",
+        "lgpd:art7",
         "lgpd:art14:par5",
-        "lgpd:art14:par3"
+        "lgpd:art6",
+        "lgpd:art14:par3",
+        "lgpd:art11:par4"
       ],
       "first_rank": 1,
       "refused": null,
       "best_similarity": 0.6534434970088651,
-      "latency_ms": 134.71
+      "latency_ms": 285.93
     },
     {
       "id": "g13",
@@ -236,20 +237,20 @@
       ],
       "ranked": [
         "lgpd:art6",
-        "lgpd:art50:par2:incI",
         "lgpd:art1",
+        "lgpd:art6:incV",
+        "lgpd:art50:par2:incI",
+        "lgpd:art6:incIV",
         "lgpd:art50:par2",
-        "lgpd:art11",
+        "lgpd:art6:incIII",
+        "lai:art23",
         "lgpd:art26",
-        "lgpd:art10:incII",
-        "lgpd:art10",
-        "lgpd:art11:incII",
-        "lgpd:art6:incV"
+        "lgpd:art10:incII"
       ],
       "first_rank": 1,
       "refused": null,
       "best_similarity": 0.6835977450249566,
-      "latency_ms": 142.62
+      "latency_ms": 304.83
     },
     {
       "id": "g15",
@@ -257,21 +258,21 @@
         "lgpd:art4:incII:alia"
       ],
       "ranked": [
+        "lgpd:art4:incII:alia",
+        "lgpd:art4:incII",
         "lgpd:art4:incIII",
         "lgpd:art4",
-        "lgpd:art7",
-        "lgpd:art4:incII",
-        "lgpd:art4:incII:alia",
-        "lgpd:art4:incIII:alib",
-        "lgpd:art4:incIII:alia",
         "lgpd:art4:incII:alib",
-        "lgpd:art18",
+        "lgpd:art4:incIII:alia",
+        "lgpd:art4:incIII:alib",
+        "lgpd:art7",
+        "lgpd:art4:incIII:alic",
         "lgpd:art4:incIII:alid"
       ],
-      "first_rank": 5,
+      "first_rank": 1,
       "refused": null,
       "best_similarity": 0.6700698733329821,
-      "latency_ms": 134.65
+      "latency_ms": 204.45
     },
     {
       "id": "g16",
@@ -280,20 +281,20 @@
       ],
       "ranked": [
         "lgpd:art4",
-        "lgpd:art26",
-        "lgpd:art4:incIII",
         "lgpd:art4:incIII:alia",
         "lgpd:art3",
-        "lgpd:art23",
+        "lgpd:art4:incIII",
+        "lgpd:art26",
         "lgpd:art26:par1:incV",
+        "lgpd:art23",
         "res-anpd-2-2022:anx1:art1:paru",
         "res-anpd-2-2022:anx1:art13",
-        "lgpd:art26:par1:incIII"
+        "res-anpd-2-2022:anx1:art12:paru"
       ],
-      "first_rank": 4,
+      "first_rank": 2,
       "refused": null,
-      "best_similarity": 0.6943866221423933,
-      "latency_ms": 135.58
+      "best_similarity": 0.6943855078701552,
+      "latency_ms": 473.72
     },
     {
       "id": "g17",
@@ -301,21 +302,21 @@
         "lgpd:art3"
       ],
       "ranked": [
-        "res-anpd-19-2024:anx1:art27",
         "lgpd:art34",
-        "lgpd:art3",
         "lgpd:art61",
+        "lgpd:art3",
+        "res-anpd-19-2024:anx1:art27",
         "lgpd:art35",
-        "lgpd:art11",
-        "lgpd:art11:incII",
-        "res-anpd-19-2024:anx1:art27:par1",
         "res-anpd-19-2024:anx1:art27:incVIII",
+        "lgpd:art11",
+        "res-anpd-19-2024:anx1:art27:par1",
+        "lgpd:art11:incII",
         "res-anpd-19-2024:anx1:art27:incII"
       ],
       "first_rank": 3,
       "refused": null,
       "best_similarity": 0.6136838563492223,
-      "latency_ms": 124.39
+      "latency_ms": 332.88
     },
     {
       "id": "g18",
@@ -324,20 +325,20 @@
       ],
       "ranked": [
         "lgpd:art18",
-        "lgpd:art9",
         "lgpd:art18:par4",
-        "lgpd:art18:par1",
-        "lgpd:art18:par3",
-        "lgpd:art18:par8",
         "lgpd:art18:par2",
+        "lgpd:art18:par8",
+        "lgpd:art18:par3",
+        "lgpd:art9",
         "lgpd:art9:incVII",
-        "lgpd:art20",
-        "lgpd:art18:incII"
+        "lgpd:art18:par1",
+        "lgpd:art18:par5",
+        "lgpd:art9:par3"
       ],
       "first_rank": 1,
       "refused": null,
       "best_similarity": 0.5009493230641731,
-      "latency_ms": 122.25
+      "latency_ms": 280.57
     },
     {
       "id": "g19",
@@ -345,21 +346,21 @@
         "lgpd:art18:incV"
       ],
       "ranked": [
-        "lgpd:art18",
-        "lgpd:art18:par4",
         "lgpd:art18:incV",
         "lgpd:art18:par7",
-        "lgpd:art18:par1",
-        "lgpd:art18:par2",
+        "lgpd:art18:par4",
+        "lgpd:art18",
         "lgpd:art18:par3",
-        "lgpd:art18:incII",
+        "lgpd:art18:par2",
         "lgpd:art18:par8",
+        "lgpd:art18:par1",
+        "lgpd:art18:incII",
         "lgpd:art18:incVII"
       ],
-      "first_rank": 3,
+      "first_rank": 1,
       "refused": null,
       "best_similarity": 0.6968762459232772,
-      "latency_ms": 124.31
+      "latency_ms": 213.17
     },
     {
       "id": "g20",
@@ -367,21 +368,21 @@
         "lgpd:art19:incII"
       ],
       "ranked": [
-        "lgpd:art9",
-        "lgpd:art19",
         "lgpd:art19:incII",
-        "res-anpd-15-2024:anx1:art9",
+        "lai:art11:par1",
+        "lai:art16",
         "res-anpd-2-2022:anx1:art14:incIII",
-        "lgpd:art19:par2",
-        "res-anpd-19-2024:anx1:art34",
-        "lgpd:art18",
-        "lgpd:art2",
-        "res-anpd-19-2024:anx1:art17:par1"
+        "lai:art11:par1:incI",
+        "lai:art15",
+        "lgpd:art9",
+        "lai:art11",
+        "lgpd:art19",
+        "lgpd:art19:par2"
       ],
-      "first_rank": 3,
+      "first_rank": 1,
       "refused": null,
       "best_similarity": 0.6006532549468734,
-      "latency_ms": 176.42
+      "latency_ms": 244.48
     },
     {
       "id": "g22",
@@ -389,21 +390,21 @@
         "lgpd:art37"
       ],
       "ranked": [
-        "res-anpd-15-2024:anx1:art10:par1",
-        "res-anpd-15-2024:anx1:art10",
         "lgpd:art37",
-        "res-anpd-15-2024:anx1:art10:par1:incI",
-        "res-anpd-15-2024:anx1:art10:par1:incIV",
-        "res-anpd-15-2024:anx1:art10:par1:incIII",
-        "res-anpd-15-2024:anx1:art10:par1:incVI",
-        "res-anpd-15-2024:anx1:art10:par1:incII",
+        "res-anpd-15-2024:anx1:art10",
         "res-anpd-2-2022:anx1:art9",
-        "res-anpd-15-2024:anx1:art10:par1:incVII"
+        "res-anpd-15-2024:anx1:art10:par1",
+        "res-anpd-15-2024:anx1:art10:par1:incI",
+        "res-anpd-2-2022:anx1:art9:paru",
+        "res-anpd-15-2024:anx1:art10:par1:incIV",
+        "res-anpd-15-2024:anx1:art10:par1:incII",
+        "res-anpd-15-2024:anx1:art10:par1:incVI",
+        "res-anpd-15-2024:anx1:art10:par1:incIII"
       ],
-      "first_rank": 3,
+      "first_rank": 1,
       "refused": null,
       "best_similarity": 0.51476693329417,
-      "latency_ms": 155.52
+      "latency_ms": 346.94
     },
     {
       "id": "g23",
@@ -412,20 +413,20 @@
       ],
       "ranked": [
         "res-anpd-15-2024:anx1:art8",
-        "res-anpd-1-2021:anx1:art20:par1",
-        "res-anpd-1-2021:anx1:art35",
-        "res-anpd-1-2021:anx1:art33",
-        "res-anpd-1-2021:anx1:art20",
-        "res-anpd-1-2021:anx1:art33:paru",
         "res-anpd-15-2024:anx1:art16:par1",
+        "res-anpd-1-2021:anx1:art35",
+        "res-anpd-1-2021:anx1:art20:par1",
         "lgpd:art32",
+        "res-anpd-1-2021:anx1:art20",
+        "res-anpd-1-2021:anx1:art33",
+        "res-anpd-15-2024:anx1:art16:par2",
         "res-anpd-15-2024:anx1:art5:par3",
-        "res-anpd-15-2024:anx1:art16:par2"
+        "res-anpd-1-2021:anx1:art33:paru"
       ],
       "first_rank": null,
       "refused": null,
       "best_similarity": 0.5013277977309307,
-      "latency_ms": 144.93
+      "latency_ms": 333.14
     },
     {
       "id": "g24",
@@ -434,20 +435,20 @@
       ],
       "ranked": [
         "res-anpd-15-2024:anx1:art6:par2",
+        "res-anpd-15-2024:anx1:art6:par2:incXI",
+        "res-anpd-15-2024:anx1:art6:par2:incIV",
         "res-anpd-15-2024:anx1:art9",
         "res-anpd-15-2024:anx1:art5",
-        "res-anpd-15-2024:anx1:art6",
-        "res-anpd-15-2024:anx1:art9:par1",
-        "res-anpd-15-2024:anx1:art6:par2:incIV",
-        "res-anpd-15-2024:anx1:art6:par2:incXI",
         "res-anpd-15-2024:anx1:art6:par2:incVI",
-        "res-anpd-15-2024:anx1:art6:par2:incI",
-        "res-anpd-15-2024:anx1:art6:par2:incVII"
+        "res-anpd-15-2024:anx1:art9:par1",
+        "res-anpd-15-2024:anx1:art6:par2:incVII",
+        "res-anpd-15-2024:anx1:art6",
+        "res-anpd-15-2024:anx1:art6:par2:incI"
       ],
       "first_rank": null,
       "refused": null,
       "best_similarity": 0.6581791843069098,
-      "latency_ms": 130.52
+      "latency_ms": 272.36
     },
     {
       "id": "g25",
@@ -455,21 +456,21 @@
         "res-anpd-15-2024:anx1:art6"
       ],
       "ranked": [
-        "res-anpd-15-2024:anx1:art6:par2",
         "res-anpd-15-2024:anx1:art6",
+        "res-anpd-15-2024:anx1:art6:par2",
+        "res-anpd-15-2024:anx1:art6:par1",
+        "res-anpd-15-2024:anx1:art6:par3",
+        "res-anpd-15-2024:anx1:art6:par7",
         "res-anpd-15-2024:anx1:art10:par1",
         "res-anpd-15-2024:anx1:art9",
-        "res-anpd-15-2024:anx1:art10",
-        "res-anpd-15-2024:anx1:art6:par1",
-        "res-anpd-15-2024:anx1:art6:par7",
         "res-anpd-15-2024:anx1:art6:par6",
-        "res-anpd-15-2024:anx1:art6:par2:incXII",
-        "res-anpd-15-2024:anx1:art6:par3"
+        "res-anpd-15-2024:anx1:art10",
+        "res-anpd-15-2024:anx1:art6:par2:incXII"
       ],
-      "first_rank": 2,
+      "first_rank": 1,
       "refused": null,
       "best_similarity": 0.7219505525216628,
-      "latency_ms": 136.39
+      "latency_ms": 256.6
     },
     {
       "id": "g27",
@@ -477,21 +478,21 @@
         "lgpd:art52:incII"
       ],
       "ranked": [
-        "res-anpd-4-2023:anx1:art11",
         "res-anpd-4-2023:anx1:art12",
         "res-anpd-4-2023:anx1:art13",
+        "res-anpd-4-2023:anx1:art11",
         "res-anpd-4-2023:anx1:art11:par1:incIV",
-        "res-anpd-4-2023:anx1:art11:par1",
-        "res-anpd-4-2023:anx1:art11:par3",
-        "res-anpd-4-2023:anx1:art11:par4",
-        "res-anpd-4-2023:anx1:art13:incI",
+        "res-anpd-4-2023:anx1:art11:par1:incIV:alie",
         "res-anpd-4-2023:anx1:art11:par2",
-        "res-anpd-4-2023:anx1:art11:par1:incIV:alie"
+        "res-anpd-4-2023:anx1:art13:incI",
+        "res-anpd-4-2023:anx1:art11:par1",
+        "res-anpd-4-2023:anx1:art11:par4",
+        "res-anpd-4-2023:anx1:art11:par3"
       ],
       "first_rank": null,
       "refused": null,
       "best_similarity": 0.6544618606567383,
-      "latency_ms": 123.67
+      "latency_ms": 422.21
     },
     {
       "id": "g29",
@@ -499,21 +500,21 @@
         "lgpd:art26"
       ],
       "ranked": [
-        "lgpd:art23",
         "lgpd:art26:par1",
-        "lgpd:art27",
         "lgpd:art26",
-        "lgpd:art26:par1:incIII",
         "lgpd:art26:par1:incI",
+        "lgpd:art26:par1:incIII",
+        "lgpd:art23",
+        "lgpd:art27",
         "lgpd:art26:par1:incV",
+        "lgpd:art26:par2",
         "lgpd:art26:par1:incIV",
-        "lgpd:art27:incII",
-        "lgpd:art26:par2"
+        "lgpd:art27:incII"
       ],
-      "first_rank": 4,
+      "first_rank": 2,
       "refused": null,
       "best_similarity": 0.6835251043125937,
-      "latency_ms": 160.88
+      "latency_ms": 352.78
     },
     {
       "id": "g30",
@@ -522,20 +523,20 @@
       ],
       "ranked": [
         "lgpd:art33",
-        "res-anpd-19-2024:anx1:art9",
-        "res-anpd-19-2024:anx1:art9:incII",
-        "res-anpd-19-2024:anx1:art7",
         "lgpd:art33:incII",
+        "res-anpd-19-2024:anx1:art9",
         "res-anpd-19-2024:anx1:art9:incII:alic",
+        "res-anpd-19-2024:anx1:art9:incII",
         "res-anpd-19-2024:anx1:art9:incI",
+        "res-anpd-19-2024:anx1:art7",
         "res-anpd-19-2024:anx1:art9:incII:alia",
-        "res-anpd-19-2024:anx1:art6",
-        "res-anpd-19-2024:anx1:art9:incII:alib"
+        "res-anpd-19-2024:anx1:art9:incII:alib",
+        "res-anpd-19-2024:anx1:art6"
       ],
       "first_rank": 1,
       "refused": null,
       "best_similarity": 0.6796114635699128,
-      "latency_ms": 180.98
+      "latency_ms": 365.36
     },
     {
       "id": "g31",
@@ -545,19 +546,19 @@
       "ranked": [
         "res-anpd-19-2024:anx1:art18",
         "res-anpd-19-2024:anx1:art16",
-        "res-anpd-19-2024:anx1:art18:par1",
-        "res-anpd-19-2024:anx1:art17:par2",
-        "lgpd:art35",
-        "res-anpd-19-2024:anx1:art18:par4",
-        "res-anpd-19-2024:anx1:art16:par1",
         "res-anpd-19-2024:anx1:art15",
+        "lgpd:art35",
+        "res-anpd-19-2024:anx1:art18:par1",
+        "res-anpd-19-2024:anx1:art16:par1:incI",
         "res-anpd-19-2024:anx1:art16:par1:incII",
-        "res-anpd-19-2024:anx1:art16:par1:incI"
+        "res-anpd-19-2024:anx1:art16:par1",
+        "res-anpd-19-2024:anx1:art17:par2",
+        "res-anpd-19-2024:anx1:art18:par4"
       ],
-      "first_rank": 8,
+      "first_rank": 3,
       "refused": null,
       "best_similarity": 0.6849678346533886,
-      "latency_ms": 150.27
+      "latency_ms": 345.66
     },
     {
       "id": "g32",
@@ -566,20 +567,20 @@
       ],
       "ranked": [
         "res-anpd-2-2022:anx1:art11",
-        "res-anpd-2-2022:anx1:art7",
-        "res-anpd-18-2024:anx1:art5",
-        "res-anpd-18-2024:anx1:art3",
-        "res-anpd-2-2022:anx1:art3",
         "res-anpd-2-2022:anx1:art11:par1",
-        "res-anpd-18-2024:anx1:art3:par3",
+        "res-anpd-18-2024:anx1:art3",
         "res-anpd-2-2022:anx1:art11:par2",
-        "lgpd:art41:par2",
-        "res-anpd-2-2022:anx1:art8"
+        "res-anpd-2-2022:anx1:art7",
+        "res-anpd-2-2022:anx1:art9",
+        "res-anpd-18-2024:anx1:art3:par3",
+        "res-anpd-2-2022:anx1:art3",
+        "res-anpd-18-2024:anx1:art5",
+        "lgpd:art41:par2"
       ],
       "first_rank": 1,
       "refused": null,
       "best_similarity": 0.5809167796646592,
-      "latency_ms": 133.19
+      "latency_ms": 414.41
     },
     {
       "id": "g35",
@@ -587,21 +588,21 @@
         "lgpd:art42:par1:incI"
       ],
       "ranked": [
-        "lgpd:art48",
-        "lgpd:art43",
-        "lgpd:art44",
-        "lgpd:art42",
-        "lgpd:art48:par1",
-        "lgpd:art48:par2",
-        "lgpd:art42:par1",
         "lgpd:art42:par1:incI",
+        "lgpd:art48",
+        "lgpd:art42",
+        "lgpd:art42:par1",
+        "lgpd:art43",
         "lgpd:art42:par1:incII",
-        "lgpd:art43:incII"
+        "lgpd:art48:par2",
+        "lgpd:art44",
+        "lgpd:art43:incII",
+        "lgpd:art43:incI"
       ],
-      "first_rank": 8,
+      "first_rank": 1,
       "refused": null,
       "best_similarity": 0.5735819085587219,
-      "latency_ms": 135.61
+      "latency_ms": 336.79
     },
     {
       "id": "g37",
@@ -610,20 +611,20 @@
       ],
       "ranked": [
         "lgpd:art46",
-        "res-anpd-15-2024:anx1:art19",
-        "res-anpd-15-2024:anx1:art6:par2",
         "lgpd:art46:par2",
         "res-anpd-2-2022:anx1:art12",
+        "res-anpd-2-2022:anx1:art12:paru",
         "lgpd:art46:par1",
-        "res-anpd-15-2024:anx1:art6:par2:incIX",
-        "res-anpd-15-2024:anx1:art6:par2:incIII",
+        "res-anpd-15-2024:anx1:art6:par2",
+        "res-anpd-15-2024:anx1:art19",
         "res-anpd-2-2022:anx1:art13",
-        "res-anpd-15-2024:anx1:art3:incXIV"
+        "res-anpd-15-2024:anx1:art6:par2:incIII",
+        "res-anpd-15-2024:anx1:art6:par2:incIX"
       ],
       "first_rank": 1,
       "refused": null,
-      "best_similarity": 0.5215880274772681,
-      "latency_ms": 188.25
+      "best_similarity": 0.5123511843472023,
+      "latency_ms": 437.95
     },
     {
       "id": "g41",
@@ -631,21 +632,21 @@
         "lgpd:art65:incI-A"
       ],
       "ranked": [
-        "lgpd:art52",
         "lgpd:art52:par1",
-        "res-anpd-1-2021:anx1:art37",
         "lgpd:art52:par3",
-        "res-anpd-4-2023:anx1:art26",
-        "res-anpd-4-2023:anx1:art25:par1",
-        "lgpd:art55K",
+        "lgpd:art52",
+        "res-anpd-4-2023:anx1:art5:par1",
+        "res-anpd-1-2021:anx1:art37",
         "lgpd:art52:par6",
-        "res-anpd-1-2021:anx1:art37:incII",
-        "res-anpd-4-2023:anx1:art5:par1"
+        "lgpd:art55K",
+        "res-anpd-4-2023:anx1:art25:par1",
+        "res-anpd-4-2023:anx1:art26",
+        "res-anpd-1-2021:anx1:art37:incII"
       ],
       "first_rank": null,
       "refused": null,
       "best_similarity": 0.6051944674609445,
-      "latency_ms": 139.6
+      "latency_ms": 374.81
     },
     {
       "id": "g42",
@@ -655,19 +656,19 @@
       "ranked": [
         "lgpd:art7:incIX",
         "lgpd:art7",
-        "lgpd:art8",
-        "res-anpd-2-2022:anx1:art7",
-        "lgpd:art55J",
         "lgpd:art7:par7",
+        "lgpd:art55J",
+        "lgpd:art8",
+        "lgpd:art60",
+        "res-anpd-2-2022:anx1:art7",
         "lgpd:art7:incVII",
         "lgpd:art7:incVI",
-        "lgpd:art7:incII",
         "lgpd:art9"
       ],
       "first_rank": 1,
       "refused": null,
       "best_similarity": 0.6460673405548141,
-      "latency_ms": 142.49
+      "latency_ms": 443.91
     },
     {
       "id": "g43",
@@ -675,21 +676,21 @@
         "lgpd:art48"
       ],
       "ranked": [
-        "lgpd:art48:par1",
-        "lgpd:art48",
         "res-anpd-15-2024:anx1:art9",
-        "lgpd:art48:par2",
-        "lgpd:art48:par2:incI",
-        "lgpd:art48:par1:incII",
-        "lgpd:art48:par1:incVI",
-        "res-anpd-15-2024:anx1:art8",
         "res-anpd-15-2024:anx1:art7",
-        "res-anpd-15-2024:anx1:art9:incII"
+        "res-anpd-15-2024:anx1:art8",
+        "lgpd:art48",
+        "lgpd:art55J:incII",
+        "lgpd:art48:par1",
+        "lgpd:art48:par1:incII",
+        "res-anpd-15-2024:anx1:art9:incII",
+        "res-anpd-1-2021:anx1:art5:par2",
+        "res-anpd-1-2021:anx1:art33"
       ],
-      "first_rank": 2,
+      "first_rank": 4,
       "refused": null,
       "best_similarity": 0.5578120780643224,
-      "latency_ms": 145.31
+      "latency_ms": 317.1
     },
     {
       "id": "g44",
@@ -699,19 +700,239 @@
       "ranked": [
         "lgpd:art33",
         "res-anpd-19-2024:anx1:art9",
-        "res-anpd-19-2024:anx1:art9:incII",
-        "lgpd:art27",
         "lgpd:art33:incII",
-        "lgpd:art26:par1",
-        "lgpd:art2",
         "lgpd:art18:incV",
+        "res-anpd-19-2024:anx1:art9:incII",
+        "lgpd:art26:par1",
+        "lgpd:art27",
         "lgpd:art33:paru",
-        "lgpd:art33:incVI"
+        "lai:art7",
+        "lai:art23"
       ],
-      "first_rank": 8,
+      "first_rank": 4,
       "refused": null,
       "best_similarity": 0.5785625325776667,
-      "latency_ms": 131.57
+      "latency_ms": 286.65
+    },
+    {
+      "id": "g46",
+      "expected": [
+        "lai:art4:incIV"
+      ],
+      "ranked": [
+        "lai:art31",
+        "lgpd:art23",
+        "lai:art31:par1",
+        "lai:art31:par3",
+        "lai:art4:incIV",
+        "lai:art31:par5",
+        "lgpd:art5:incI",
+        "lgpd:art9",
+        "lgpd:art23:par2",
+        "lgpd:art23:incI"
+      ],
+      "first_rank": 5,
+      "refused": null,
+      "best_similarity": 0.6654404601192212,
+      "latency_ms": 359.62
+    },
+    {
+      "id": "g47",
+      "expected": [
+        "lai:art11:par1"
+      ],
+      "ranked": [
+        "lai:art11:par1",
+        "lai:art16",
+        "lai:art11:par1:incIII",
+        "lai:art11",
+        "lai:art11:par1:incI",
+        "lai:art24:par1",
+        "lai:art11:par2",
+        "lai:art10",
+        "lai:art11:par1:incII",
+        "lai:art24"
+      ],
+      "first_rank": 1,
+      "refused": null,
+      "best_similarity": 0.722910804922034,
+      "latency_ms": 286.01
+    },
+    {
+      "id": "g49",
+      "expected": [
+        "lai:art31:par3"
+      ],
+      "ranked": [
+        "lai:art31:par3",
+        "lai:art31:par3:incII",
+        "lai:art31",
+        "lai:art31:par3:incIV",
+        "lgpd:art11:incII",
+        "lai:art31:par1",
+        "lai:art31:par3:incV",
+        "lai:art31:par3:incIII",
+        "lai:art31:par1:incII",
+        "lgpd:art27"
+      ],
+      "first_rank": 1,
+      "refused": null,
+      "best_similarity": 0.6288994142085143,
+      "latency_ms": 318.16
+    },
+    {
+      "id": "g50",
+      "expected": [
+        "lai:art10:par3"
+      ],
+      "ranked": [
+        "lai:art8",
+        "lai:art11:par6",
+        "lai:art8:par1",
+        "lai:art8:par3",
+        "lai:art11:par1:incIII",
+        "lai:art11",
+        "lai:art3",
+        "lai:art10",
+        "lai:art5",
+        "lai:art9:incI"
+      ],
+      "first_rank": null,
+      "refused": null,
+      "best_similarity": 0.5383979678153992,
+      "latency_ms": 315.97
+    },
+    {
+      "id": "g51",
+      "expected": [
+        "lai:art12"
+      ],
+      "ranked": [
+        "lai:art12:par1",
+        "lai:art8",
+        "lai:art8:par1",
+        "lai:art11:par6",
+        "lai:art8:par3",
+        "lai:art11",
+        "lai:art9:incI",
+        "lgpd:art23",
+        "lai:art10",
+        "lai:art12"
+      ],
+      "first_rank": 10,
+      "refused": null,
+      "best_similarity": 0.6192180741299358,
+      "latency_ms": 301.55
+    },
+    {
+      "id": "g52",
+      "expected": [
+        "lai:art24:par1"
+      ],
+      "ranked": [
+        "lai:art24:par1",
+        "lai:art39",
+        "lai:art24:par1:incII",
+        "lai:art24:par1:incIII",
+        "lai:art24:par1:incI",
+        "lai:art24",
+        "lai:art23",
+        "lai:art28",
+        "lai:art29:par3",
+        "lai:art29"
+      ],
+      "first_rank": 1,
+      "refused": null,
+      "best_similarity": 0.6391392946243286,
+      "latency_ms": 274.65
+    },
+    {
+      "id": "g54",
+      "expected": [
+        "lai:art15"
+      ],
+      "ranked": [
+        "lai:art16",
+        "lai:art16:incI",
+        "lai:art16:incII",
+        "lai:art11",
+        "lai:art16:par3",
+        "lai:art10",
+        "lai:art21",
+        "lai:art7",
+        "lai:art11:par1",
+        "lai:art16:incIV"
+      ],
+      "first_rank": null,
+      "refused": null,
+      "best_similarity": 0.6192797649336013,
+      "latency_ms": 243.73
+    },
+    {
+      "id": "g55",
+      "expected": [
+        "lai:art8:par1"
+      ],
+      "ranked": [
+        "lai:art8",
+        "lai:art8:par3",
+        "lai:art8:par1",
+        "lai:art8:par2",
+        "lai:art8:par4",
+        "lai:art30",
+        "lai:art8:par1:incV",
+        "lai:art9:incI",
+        "lai:art9",
+        "lai:art11"
+      ],
+      "first_rank": 3,
+      "refused": null,
+      "best_similarity": 0.7153129577636719,
+      "latency_ms": 320.15
+    },
+    {
+      "id": "g56",
+      "expected": [
+        "lai:art2"
+      ],
+      "ranked": [
+        "lai:art11",
+        "lai:art7:incVI",
+        "lai:art7",
+        "lai:art2",
+        "lai:art3",
+        "lai:art2:paru",
+        "lai:art19:par2",
+        "lai:art8:par1",
+        "lgpd:art23",
+        "lgpd:art23:par2"
+      ],
+      "first_rank": 4,
+      "refused": null,
+      "best_similarity": 0.6068806413936997,
+      "latency_ms": 312.67
+    },
+    {
+      "id": "g59",
+      "expected": [
+        "lai:art23"
+      ],
+      "ranked": [
+        "lai:art24",
+        "lai:art23",
+        "lai:art24:par5:incI",
+        "lai:art24:par5",
+        "lai:art24:par2",
+        "lai:art24:par1",
+        "lai:art25",
+        "lai:art24:par5:incII",
+        "lai:art24:par3",
+        "lai:art27:incI"
+      ],
+      "first_rank": 2,
+      "refused": null,
+      "best_similarity": 0.6435618825481124,
+      "latency_ms": 317.82
     }
   ],
   "refuse": [
@@ -722,58 +943,58 @@
       "top": [
         "lgpd:art9",
         "lgpd:art55J",
-        "lgpd:art4"
+        "lgpd:art58B"
       ],
-      "best_similarity": 0.588840400507475,
-      "latency_ms": 130.05
+      "best_similarity": 0.5888352745077188,
+      "latency_ms": 227.46
     },
     {
       "id": "r05",
       "reason": "out_of_corpus",
-      "refused": null,
+      "refused": "out_of_scope",
       "top": [
+        "lai:art33",
         "res-anpd-4-2023:anx1:art3",
-        "res-anpd-4-2023:anx1:art8",
-        "res-anpd-4-2023:anx1:art8:par3:incI"
+        "lai:art33:incII"
       ],
-      "best_similarity": 0.4226957903685702,
-      "latency_ms": 121.43
+      "best_similarity": 0.42637601494789124,
+      "latency_ms": 282.13
     },
     {
       "id": "r06",
       "reason": "off_topic",
       "refused": "low_score",
       "top": [
-        "lgpd:art14",
-        "lgpd:art7",
-        "res-anpd-1-2021:anx1:art55"
+        "lgpd:art39",
+        "lgpd:art14:par6",
+        "lgpd:art14"
       ],
       "best_similarity": 0.20414559543132926,
-      "latency_ms": 264.47
+      "latency_ms": 357.8
     },
     {
       "id": "r07",
       "reason": "nonexistent_provision",
       "refused": "nonexistent_provision",
       "top": [
-        "res-anpd-1-2021:anx1:art29",
-        "res-anpd-15-2024:art3",
-        "res-anpd-4-2023:art3:incII"
+        "res-anpd-4-2023:art3",
+        "res-anpd-4-2023:art3:incII",
+        "res-anpd-15-2024:art3"
       ],
       "best_similarity": 0.5268442316744198,
-      "latency_ms": 146.54
+      "latency_ms": 377.35
     },
     {
       "id": "r08",
       "reason": "out_of_corpus",
-      "refused": null,
+      "refused": "out_of_scope",
       "top": [
-        "lgpd:art18",
         "lgpd:art9",
-        "lgpd:art2:incVI"
+        "lai:art23",
+        "lgpd:art18:par8"
       ],
       "best_similarity": 0.4635805945521434,
-      "latency_ms": 137.11
+      "latency_ms": 374.59
     }
   ]
 }

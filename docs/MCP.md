@@ -8,10 +8,11 @@ third party, and questions are embedded locally ([ADR 0003](adr/0003-asymmetric-
 | Tool | What it does |
 |---|---|
 | `search_provisions(question, k=8)` | The provisions most relevant to a question in Portuguese (k ≤ 20), with canonical IDs and official text; `no_support` when nothing in the corpus supports it |
-| `get_provision(provision_id)` | One provision by canonical ID (`lgpd:art7:incIX`, `res-anpd-15-2024:anx1:art6`), with its amendment notes and whether it is in force |
+| `get_provision(provision_id, at=None)` | One provision by canonical ID (`lgpd:art7:incIX`, `lai:art31`, `res-anpd-15-2024:anx1:art6`), with its amendment notes, whether it is in force and the other provisions its text cites; `at="AAAA-MM-DD"` returns the wording in force on that date, with the act that introduced it and whether the date is certain (ADR 0014) |
+| `get_provision_history(provision_id)` | Every recorded wording of a provision, oldest first, with the act that introduced each one and when it was in force (empty if never amended) |
 | `verify_citation(provision_id, quote)` | Whether the provision exists, is in force and contains the quote verbatim |
 
-All three are annotated read-only, non-destructive, idempotent and
+All four are annotated read-only, non-destructive, idempotent and
 closed-world; `tests/unit/test_mcp_server.py` asserts it, and
 `tests/integration/test_mcp_stdio.py` runs the stdio server as a subprocess in
 which constructing an Anthropic client aborts the process.

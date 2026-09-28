@@ -1,0 +1,4785 @@
+{
+  "id": "lai",
+  "title": "Lei nº 12.527, de 18 de novembro de 2011 — Lei de Acesso à Informação (LAI)",
+  "kind": "law",
+  "source_url": "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2011/lei/l12527.htm",
+  "source_sha256": "2a9f14d24dc05740fd2bcc4f8edb0614f24c5eb280241ef4f56e12ca2c633a5c",
+  "retrieved_at": "2026-09-27",
+  "redistribution_basis": "Lei nº 9.610/1998, art. 8º, IV: official acts are not protected by copyright",
+  "provisions": [
+    {
+      "id": "lai:art1",
+      "document_id": "lai",
+      "parent_id": null,
+      "kind": "article",
+      "label": "Art. 1º",
+      "text": "Esta Lei dispõe sobre os procedimentos a serem observados pela União, Estados, Distrito Federal e Municípios, com o fim de garantir o acesso a informações previsto no inciso XXXIII do art. 5º, no inciso II do § 3º do art. 37 e no § 2º do art. 216 da Constituição Federal.",
+      "path": [
+        "CAPÍTULO I — DISPOSIÇÕES GERAIS",
+        "Art. 1º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 0,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art1:paru",
+      "document_id": "lai",
+      "parent_id": "lai:art1",
+      "kind": "paragraph",
+      "label": "Parágrafo único",
+      "text": "Subordinam-se ao regime desta Lei:",
+      "path": [
+        "CAPÍTULO I — DISPOSIÇÕES GERAIS",
+        "Art. 1º",
+        "Parágrafo único"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 1,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art1:paru:incI",
+      "document_id": "lai",
+      "parent_id": "lai:art1:paru",
+      "kind": "inciso",
+      "label": "I",
+      "text": "os órgãos públicos integrantes da administração direta dos Poderes Executivo, Legislativo, incluindo as Cortes de Contas, e Judiciário e do Ministério Público;",
+      "path": [
+        "CAPÍTULO I — DISPOSIÇÕES GERAIS",
+        "Art. 1º",
+        "Parágrafo único",
+        "I"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 2,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art1:paru:incII",
+      "document_id": "lai",
+      "parent_id": "lai:art1:paru",
+      "kind": "inciso",
+      "label": "II",
+      "text": "as autarquias, as fundações públicas, as empresas públicas, as sociedades de economia mista e demais entidades controladas direta ou indiretamente pela União, Estados, Distrito Federal e Municípios.",
+      "path": [
+        "CAPÍTULO I — DISPOSIÇÕES GERAIS",
+        "Art. 1º",
+        "Parágrafo único",
+        "II"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 3,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art2",
+      "document_id": "lai",
+      "parent_id": null,
+      "kind": "article",
+      "label": "Art. 2º",
+      "text": "Aplicam-se as disposições desta Lei, no que couber, às entidades privadas sem fins lucrativos que recebam, para realização de ações de interesse público, recursos públicos diretamente do orçamento ou mediante subvenções sociais, contrato de gestão, termo de parceria, convênios, acordo, ajustes ou outros instrumentos congêneres.",
+      "path": [
+        "CAPÍTULO I — DISPOSIÇÕES GERAIS",
+        "Art. 2º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 4,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art2:paru",
+      "document_id": "lai",
+      "parent_id": "lai:art2",
+      "kind": "paragraph",
+      "label": "Parágrafo único",
+      "text": "A publicidade a que estão submetidas as entidades citadas no caput refere-se à parcela dos recursos públicos recebidos e à sua destinação, sem prejuízo das prestações de contas a que estejam legalmente obrigadas.",
+      "path": [
+        "CAPÍTULO I — DISPOSIÇÕES GERAIS",
+        "Art. 2º",
+        "Parágrafo único"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 5,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art3",
+      "document_id": "lai",
+      "parent_id": null,
+      "kind": "article",
+      "label": "Art. 3º",
+      "text": "Os procedimentos previstos nesta Lei destinam-se a assegurar o direito fundamental de acesso à informação e devem ser executados em conformidade com os princípios básicos da administração pública e com as seguintes diretrizes:",
+      "path": [
+        "CAPÍTULO I — DISPOSIÇÕES GERAIS",
+        "Art. 3º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 6,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art3:incI",
+      "document_id": "lai",
+      "parent_id": "lai:art3",
+      "kind": "inciso",
+      "label": "I",
+      "text": "observância da publicidade como preceito geral e do sigilo como exceção;",
+      "path": [
+        "CAPÍTULO I — DISPOSIÇÕES GERAIS",
+        "Art. 3º",
+        "I"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 7,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art3:incII",
+      "document_id": "lai",
+      "parent_id": "lai:art3",
+      "kind": "inciso",
+      "label": "II",
+      "text": "divulgação de informações de interesse público, independentemente de solicitações;",
+      "path": [
+        "CAPÍTULO I — DISPOSIÇÕES GERAIS",
+        "Art. 3º",
+        "II"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 8,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art3:incIII",
+      "document_id": "lai",
+      "parent_id": "lai:art3",
+      "kind": "inciso",
+      "label": "III",
+      "text": "utilização de meios de comunicação viabilizados pela tecnologia da informação;",
+      "path": [
+        "CAPÍTULO I — DISPOSIÇÕES GERAIS",
+        "Art. 3º",
+        "III"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 9,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art3:incIV",
+      "document_id": "lai",
+      "parent_id": "lai:art3",
+      "kind": "inciso",
+      "label": "IV",
+      "text": "fomento ao desenvolvimento da cultura de transparência na administração pública;",
+      "path": [
+        "CAPÍTULO I — DISPOSIÇÕES GERAIS",
+        "Art. 3º",
+        "IV"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 10,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art3:incV",
+      "document_id": "lai",
+      "parent_id": "lai:art3",
+      "kind": "inciso",
+      "label": "V",
+      "text": "desenvolvimento do controle social da administração pública.",
+      "path": [
+        "CAPÍTULO I — DISPOSIÇÕES GERAIS",
+        "Art. 3º",
+        "V"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 11,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art4",
+      "document_id": "lai",
+      "parent_id": null,
+      "kind": "article",
+      "label": "Art. 4º",
+      "text": "Para os efeitos desta Lei, considera-se:",
+      "path": [
+        "CAPÍTULO I — DISPOSIÇÕES GERAIS",
+        "Art. 4º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 12,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art4:incI",
+      "document_id": "lai",
+      "parent_id": "lai:art4",
+      "kind": "inciso",
+      "label": "I",
+      "text": "informação: dados, processados ou não, que podem ser utilizados para produção e transmissão de conhecimento, contidos em qualquer meio, suporte ou formato;",
+      "path": [
+        "CAPÍTULO I — DISPOSIÇÕES GERAIS",
+        "Art. 4º",
+        "I"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 13,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art4:incII",
+      "document_id": "lai",
+      "parent_id": "lai:art4",
+      "kind": "inciso",
+      "label": "II",
+      "text": "documento: unidade de registro de informações, qualquer que seja o suporte ou formato;",
+      "path": [
+        "CAPÍTULO I — DISPOSIÇÕES GERAIS",
+        "Art. 4º",
+        "II"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 14,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art4:incIII",
+      "document_id": "lai",
+      "parent_id": "lai:art4",
+      "kind": "inciso",
+      "label": "III",
+      "text": "informação sigilosa: aquela submetida temporariamente à restrição de acesso público em razão de sua imprescindibilidade para a segurança da sociedade e do Estado;",
+      "path": [
+        "CAPÍTULO I — DISPOSIÇÕES GERAIS",
+        "Art. 4º",
+        "III"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 15,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art4:incIV",
+      "document_id": "lai",
+      "parent_id": "lai:art4",
+      "kind": "inciso",
+      "label": "IV",
+      "text": "informação pessoal: aquela relacionada à pessoa natural identificada ou identificável;",
+      "path": [
+        "CAPÍTULO I — DISPOSIÇÕES GERAIS",
+        "Art. 4º",
+        "IV"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 16,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art4:incV",
+      "document_id": "lai",
+      "parent_id": "lai:art4",
+      "kind": "inciso",
+      "label": "V",
+      "text": "tratamento da informação: conjunto de ações referentes à produção, recepção, classificação, utilização, acesso, reprodução, transporte, transmissão, distribuição, arquivamento, armazenamento, eliminação, avaliação, destinação ou controle da informação;",
+      "path": [
+        "CAPÍTULO I — DISPOSIÇÕES GERAIS",
+        "Art. 4º",
+        "V"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 17,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art4:incVI",
+      "document_id": "lai",
+      "parent_id": "lai:art4",
+      "kind": "inciso",
+      "label": "VI",
+      "text": "disponibilidade: qualidade da informação que pode ser conhecida e utilizada por indivíduos, equipamentos ou sistemas autorizados;",
+      "path": [
+        "CAPÍTULO I — DISPOSIÇÕES GERAIS",
+        "Art. 4º",
+        "VI"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 18,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art4:incVII",
+      "document_id": "lai",
+      "parent_id": "lai:art4",
+      "kind": "inciso",
+      "label": "VII",
+      "text": "autenticidade: qualidade da informação que tenha sido produzida, expedida, recebida ou modificada por determinado indivíduo, equipamento ou sistema;",
+      "path": [
+        "CAPÍTULO I — DISPOSIÇÕES GERAIS",
+        "Art. 4º",
+        "VII"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 19,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art4:incVIII",
+      "document_id": "lai",
+      "parent_id": "lai:art4",
+      "kind": "inciso",
+      "label": "VIII",
+      "text": "integridade: qualidade da informação não modificada, inclusive quanto à origem, trânsito e destino;",
+      "path": [
+        "CAPÍTULO I — DISPOSIÇÕES GERAIS",
+        "Art. 4º",
+        "VIII"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 20,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art4:incIX",
+      "document_id": "lai",
+      "parent_id": "lai:art4",
+      "kind": "inciso",
+      "label": "IX",
+      "text": "primariedade: qualidade da informação coletada na fonte, com o máximo de detalhamento possível, sem modificações.",
+      "path": [
+        "CAPÍTULO I — DISPOSIÇÕES GERAIS",
+        "Art. 4º",
+        "IX"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 21,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art5",
+      "document_id": "lai",
+      "parent_id": null,
+      "kind": "article",
+      "label": "Art. 5º",
+      "text": "É dever do Estado garantir o direito de acesso à informação, que será franqueada, mediante procedimentos objetivos e ágeis, de forma transparente, clara e em linguagem de fácil compreensão.",
+      "path": [
+        "CAPÍTULO I — DISPOSIÇÕES GERAIS",
+        "Art. 5º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 22,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art6",
+      "document_id": "lai",
+      "parent_id": null,
+      "kind": "article",
+      "label": "Art. 6º",
+      "text": "Cabe aos órgãos e entidades do poder público, observadas as normas e procedimentos específicos aplicáveis, assegurar a:",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 6º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 23,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art6:incI",
+      "document_id": "lai",
+      "parent_id": "lai:art6",
+      "kind": "inciso",
+      "label": "I",
+      "text": "gestão transparente da informação, propiciando amplo acesso a ela e sua divulgação;",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 6º",
+        "I"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 24,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art6:incII",
+      "document_id": "lai",
+      "parent_id": "lai:art6",
+      "kind": "inciso",
+      "label": "II",
+      "text": "proteção da informação, garantindo-se sua disponibilidade, autenticidade e integridade; e",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 6º",
+        "II"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 25,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art6:incIII",
+      "document_id": "lai",
+      "parent_id": "lai:art6",
+      "kind": "inciso",
+      "label": "III",
+      "text": "proteção da informação sigilosa e da informação pessoal, observada a sua disponibilidade, autenticidade, integridade e eventual restrição de acesso.",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 6º",
+        "III"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 26,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art7",
+      "document_id": "lai",
+      "parent_id": null,
+      "kind": "article",
+      "label": "Art. 7º",
+      "text": "O acesso à informação de que trata esta Lei compreende, entre outros, os direitos de obter:",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 7º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 27,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art7:incI",
+      "document_id": "lai",
+      "parent_id": "lai:art7",
+      "kind": "inciso",
+      "label": "I",
+      "text": "orientação sobre os procedimentos para a consecução de acesso, bem como sobre o local onde poderá ser encontrada ou obtida a informação almejada;",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 7º",
+        "I"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 28,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art7:incII",
+      "document_id": "lai",
+      "parent_id": "lai:art7",
+      "kind": "inciso",
+      "label": "II",
+      "text": "informação contida em registros ou documentos, produzidos ou acumulados por seus órgãos ou entidades, recolhidos ou não a arquivos públicos;",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 7º",
+        "II"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 29,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art7:incIII",
+      "document_id": "lai",
+      "parent_id": "lai:art7",
+      "kind": "inciso",
+      "label": "III",
+      "text": "informação produzida ou custodiada por pessoa física ou entidade privada decorrente de qualquer vínculo com seus órgãos ou entidades, mesmo que esse vínculo já tenha cessado;",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 7º",
+        "III"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 30,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art7:incIV",
+      "document_id": "lai",
+      "parent_id": "lai:art7",
+      "kind": "inciso",
+      "label": "IV",
+      "text": "informação primária, íntegra, autêntica e atualizada;",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 7º",
+        "IV"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 31,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art7:incV",
+      "document_id": "lai",
+      "parent_id": "lai:art7",
+      "kind": "inciso",
+      "label": "V",
+      "text": "informação sobre atividades exercidas pelos órgãos e entidades, inclusive as relativas à sua política, organização e serviços;",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 7º",
+        "V"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 32,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art7:incVI",
+      "document_id": "lai",
+      "parent_id": "lai:art7",
+      "kind": "inciso",
+      "label": "VI",
+      "text": "informação pertinente à administração do patrimônio público, utilização de recursos públicos, licitação, contratos administrativos; e",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 7º",
+        "VI"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 33,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art7:incVII",
+      "document_id": "lai",
+      "parent_id": "lai:art7",
+      "kind": "inciso",
+      "label": "VII",
+      "text": "informação relativa:",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 7º",
+        "VII"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 34,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art7:incVII:alia",
+      "document_id": "lai",
+      "parent_id": "lai:art7:incVII",
+      "kind": "alinea",
+      "label": "a)",
+      "text": "à implementação, acompanhamento e resultados dos programas, projetos e ações dos órgãos e entidades públicas, bem como metas e indicadores propostos;",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 7º",
+        "VII",
+        "a)"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 35,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art7:incVII:alib",
+      "document_id": "lai",
+      "parent_id": "lai:art7:incVII",
+      "kind": "alinea",
+      "label": "b)",
+      "text": "ao resultado de inspeções, auditorias, prestações e tomadas de contas realizadas pelos órgãos de controle interno e externo, incluindo prestações de contas relativas a exercícios anteriores.",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 7º",
+        "VII",
+        "b)"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 36,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art7:incVIII",
+      "document_id": "lai",
+      "parent_id": "lai:art7",
+      "kind": "inciso",
+      "label": "VIII",
+      "text": "",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 7º",
+        "VIII"
+      ],
+      "amendments": [
+        "(Incluído pela Lei nº 14.345, de 2022)"
+      ],
+      "revoked": false,
+      "vetoed": true,
+      "ordinal": 37,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art7:par1",
+      "document_id": "lai",
+      "parent_id": "lai:art7",
+      "kind": "paragraph",
+      "label": "§ 1º",
+      "text": "O acesso à informação previsto no caput não compreende as informações referentes a projetos de pesquisa e desenvolvimento científicos ou tecnológicos cujo sigilo seja imprescindível à segurança da sociedade e do Estado.",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 7º",
+        "§ 1º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 38,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art7:par2",
+      "document_id": "lai",
+      "parent_id": "lai:art7",
+      "kind": "paragraph",
+      "label": "§ 2º",
+      "text": "Quando não for autorizado acesso integral à informação por ser ela parcialmente sigilosa, é assegurado o acesso à parte não sigilosa por meio de certidão, extrato ou cópia com ocultação da parte sob sigilo.",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 7º",
+        "§ 2º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 39,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art7:par3",
+      "document_id": "lai",
+      "parent_id": "lai:art7",
+      "kind": "paragraph",
+      "label": "§ 3º",
+      "text": "O direito de acesso aos documentos ou às informações neles contidas utilizados como fundamento da tomada de decisão e do ato administrativo será assegurado com a edição do ato decisório respectivo.",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 7º",
+        "§ 3º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 40,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art7:par4",
+      "document_id": "lai",
+      "parent_id": "lai:art7",
+      "kind": "paragraph",
+      "label": "§ 4º",
+      "text": "A negativa de acesso às informações objeto de pedido formulado aos órgãos e entidades referidas no art. 1º, quando não fundamentada, sujeitará o responsável a medidas disciplinares, nos termos do art. 32 desta Lei.",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 7º",
+        "§ 4º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 41,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art7:par5",
+      "document_id": "lai",
+      "parent_id": "lai:art7",
+      "kind": "paragraph",
+      "label": "§ 5º",
+      "text": "Informado do extravio da informação solicitada, poderá o interessado requerer à autoridade competente a imediata abertura de sindicância para apurar o desaparecimento da respectiva documentação.",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 7º",
+        "§ 5º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 42,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art7:par6",
+      "document_id": "lai",
+      "parent_id": "lai:art7",
+      "kind": "paragraph",
+      "label": "§ 6º",
+      "text": "Verificada a hipótese prevista no § 5º deste artigo, o responsável pela guarda da informação extraviada deverá, no prazo de 10 (dez) dias, justificar o fato e indicar testemunhas que comprovem sua alegação.",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 7º",
+        "§ 6º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 43,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art8",
+      "document_id": "lai",
+      "parent_id": null,
+      "kind": "article",
+      "label": "Art. 8º",
+      "text": "É dever dos órgãos e entidades públicas promover, independentemente de requerimentos, a divulgação em local de fácil acesso, no âmbito de suas competências, de informações de interesse coletivo ou geral por eles produzidas ou custodiadas.",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 8º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 44,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art8:par1",
+      "document_id": "lai",
+      "parent_id": "lai:art8",
+      "kind": "paragraph",
+      "label": "§ 1º",
+      "text": "Na divulgação das informações a que se refere o caput, deverão constar, no mínimo:",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 8º",
+        "§ 1º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 45,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art8:par1:incI",
+      "document_id": "lai",
+      "parent_id": "lai:art8:par1",
+      "kind": "inciso",
+      "label": "I",
+      "text": "registro das competências e estrutura organizacional, endereços e telefones das respectivas unidades e horários de atendimento ao público;",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 8º",
+        "§ 1º",
+        "I"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 46,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art8:par1:incII",
+      "document_id": "lai",
+      "parent_id": "lai:art8:par1",
+      "kind": "inciso",
+      "label": "II",
+      "text": "registros de quaisquer repasses ou transferências de recursos financeiros;",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 8º",
+        "§ 1º",
+        "II"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 47,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art8:par1:incIII",
+      "document_id": "lai",
+      "parent_id": "lai:art8:par1",
+      "kind": "inciso",
+      "label": "III",
+      "text": "registros das despesas;",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 8º",
+        "§ 1º",
+        "III"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 48,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art8:par1:incIV",
+      "document_id": "lai",
+      "parent_id": "lai:art8:par1",
+      "kind": "inciso",
+      "label": "IV",
+      "text": "informações concernentes a procedimentos licitatórios, inclusive os respectivos editais e resultados, bem como a todos os contratos celebrados;",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 8º",
+        "§ 1º",
+        "IV"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 49,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art8:par1:incV",
+      "document_id": "lai",
+      "parent_id": "lai:art8:par1",
+      "kind": "inciso",
+      "label": "V",
+      "text": "dados gerais para o acompanhamento de programas, ações, projetos e obras de órgãos e entidades; e",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 8º",
+        "§ 1º",
+        "V"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 50,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art8:par1:incVI",
+      "document_id": "lai",
+      "parent_id": "lai:art8:par1",
+      "kind": "inciso",
+      "label": "VI",
+      "text": "respostas a perguntas mais frequentes da sociedade.",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 8º",
+        "§ 1º",
+        "VI"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 51,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art8:par2",
+      "document_id": "lai",
+      "parent_id": "lai:art8",
+      "kind": "paragraph",
+      "label": "§ 2º",
+      "text": "Para cumprimento do disposto no caput, os órgãos e entidades públicas deverão utilizar todos os meios e instrumentos legítimos de que dispuserem, sendo obrigatória a divulgação em sítios oficiais da rede mundial de computadores (internet).",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 8º",
+        "§ 2º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 52,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art8:par3",
+      "document_id": "lai",
+      "parent_id": "lai:art8",
+      "kind": "paragraph",
+      "label": "§ 3º",
+      "text": "Os sítios de que trata o § 2º deverão, na forma de regulamento, atender, entre outros, aos seguintes requisitos:",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 8º",
+        "§ 3º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 53,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art8:par3:incI",
+      "document_id": "lai",
+      "parent_id": "lai:art8:par3",
+      "kind": "inciso",
+      "label": "I",
+      "text": "conter ferramenta de pesquisa de conteúdo que permita o acesso à informação de forma objetiva, transparente, clara e em linguagem de fácil compreensão;",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 8º",
+        "§ 3º",
+        "I"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 54,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art8:par3:incII",
+      "document_id": "lai",
+      "parent_id": "lai:art8:par3",
+      "kind": "inciso",
+      "label": "II",
+      "text": "possibilitar a gravação de relatórios em diversos formatos eletrônicos, inclusive abertos e não proprietários, tais como planilhas e texto, de modo a facilitar a análise das informações;",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 8º",
+        "§ 3º",
+        "II"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 55,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art8:par3:incIII",
+      "document_id": "lai",
+      "parent_id": "lai:art8:par3",
+      "kind": "inciso",
+      "label": "III",
+      "text": "possibilitar o acesso automatizado por sistemas externos em formatos abertos, estruturados e legíveis por máquina;",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 8º",
+        "§ 3º",
+        "III"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 56,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art8:par3:incIV",
+      "document_id": "lai",
+      "parent_id": "lai:art8:par3",
+      "kind": "inciso",
+      "label": "IV",
+      "text": "divulgar em detalhes os formatos utilizados para estruturação da informação;",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 8º",
+        "§ 3º",
+        "IV"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 57,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art8:par3:incV",
+      "document_id": "lai",
+      "parent_id": "lai:art8:par3",
+      "kind": "inciso",
+      "label": "V",
+      "text": "garantir a autenticidade e a integridade das informações disponíveis para acesso;",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 8º",
+        "§ 3º",
+        "V"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 58,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art8:par3:incVI",
+      "document_id": "lai",
+      "parent_id": "lai:art8:par3",
+      "kind": "inciso",
+      "label": "VI",
+      "text": "manter atualizadas as informações disponíveis para acesso;",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 8º",
+        "§ 3º",
+        "VI"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 59,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art8:par3:incVII",
+      "document_id": "lai",
+      "parent_id": "lai:art8:par3",
+      "kind": "inciso",
+      "label": "VII",
+      "text": "indicar local e instruções que permitam ao interessado comunicar-se, por via eletrônica ou telefônica, com o órgão ou entidade detentora do sítio; e",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 8º",
+        "§ 3º",
+        "VII"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 60,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art8:par3:incVIII",
+      "document_id": "lai",
+      "parent_id": "lai:art8:par3",
+      "kind": "inciso",
+      "label": "VIII",
+      "text": "adotar as medidas necessárias para garantir a acessibilidade de conteúdo para pessoas com deficiência, nos termos do art. 17 da Lei nº 10.098, de 19 de dezembro de 2000, e do art. 9º da Convenção sobre os Direitos das Pessoas com Deficiência, aprovada pelo Decreto Legislativo nº 186, de 9 de julho de 2008.",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 8º",
+        "§ 3º",
+        "VIII"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 61,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art8:par4",
+      "document_id": "lai",
+      "parent_id": "lai:art8",
+      "kind": "paragraph",
+      "label": "§ 4º",
+      "text": "Os Municípios com população de até 10.000 (dez mil) habitantes ficam dispensados da divulgação obrigatória na internet a que se refere o § 2º, mantida a obrigatoriedade de divulgação, em tempo real, de informações relativas à execução orçamentária e financeira, nos critérios e prazos previstos no art. 73-B da Lei Complementar nº 101, de 4 de maio de 2000 (Lei de Responsabilidade Fiscal).",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 8º",
+        "§ 4º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 62,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art8A",
+      "document_id": "lai",
+      "parent_id": null,
+      "kind": "article",
+      "label": "Art. 8º-A",
+      "text": "As entidades com personalidade jurídica de direito privado, constituídas sob a forma de serviço social autônomo, que sejam destinatárias de contribuições ou de recursos públicos federais decorrentes de contrato de gestão deverão divulgar as seguintes informações relativas aos respectivos empregados:",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 8º-A"
+      ],
+      "amendments": [
+        "(Incluído pela Lei nº 15.141, de 2025)"
+      ],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 63,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art8A:incI",
+      "document_id": "lai",
+      "parent_id": "lai:art8A",
+      "kind": "inciso",
+      "label": "I",
+      "text": "o plano de cargos e salários, inclusive com a divulgação dos critérios para a evolução na carreira e para a fixação da política salarial;",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 8º-A",
+        "I"
+      ],
+      "amendments": [
+        "(Incluído pela Lei nº 15.141, de 2025)"
+      ],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 64,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art8A:incII",
+      "document_id": "lai",
+      "parent_id": "lai:art8A",
+      "kind": "inciso",
+      "label": "II",
+      "text": "o quantitativo total de empregados da entidade, discriminado por cargo e por faixas salariais, acompanhado do nome do empregado e do cargo por ele ocupado;",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 8º-A",
+        "II"
+      ],
+      "amendments": [
+        "(Incluído pela Lei nº 15.141, de 2025)"
+      ],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 65,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art8A:incIII",
+      "document_id": "lai",
+      "parent_id": "lai:art8A",
+      "kind": "inciso",
+      "label": "III",
+      "text": "lista, discriminada por faixas salariais, das parcelas remuneratórias e indenizatórias, ainda que eventuais, incluídos os auxílios, as ajudas de custo, as gratificações, os jetons e quaisquer outras vantagens pecuniárias, que os empregados possam receber em virtude de condições específicas; e",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 8º-A",
+        "III"
+      ],
+      "amendments": [
+        "(Incluído pela Lei nº 15.141, de 2025)"
+      ],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 66,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art8A:incIV",
+      "document_id": "lai",
+      "parent_id": "lai:art8A",
+      "kind": "inciso",
+      "label": "IV",
+      "text": "o quantitativo de funções gratificadas, os critérios para sua ocupação e o rol dos empregados que ocupam cada espécie de função gratificada.",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 8º-A",
+        "IV"
+      ],
+      "amendments": [
+        "(Incluído pela Lei nº 15.141, de 2025)"
+      ],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 67,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art8B",
+      "document_id": "lai",
+      "parent_id": null,
+      "kind": "article",
+      "label": "Art. 8º-B",
+      "text": "Os conselhos de fiscalização profissional devem divulgar, de forma nominal e individualizada, lista das parcelas remuneratórias e indenizatórias, ainda que eventuais, incluídos os auxílios, as ajudas de custo, as gratificações, os jetons e quaisquer outras vantagens pecuniárias, que os empregados possam receber em virtude de condições específicas.",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 8º-B"
+      ],
+      "amendments": [
+        "(Incluído pela Lei nº 15.141, de 2025)"
+      ],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 68,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art9",
+      "document_id": "lai",
+      "parent_id": null,
+      "kind": "article",
+      "label": "Art. 9º",
+      "text": "O acesso a informações públicas será assegurado mediante:",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 9º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 69,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art9:incI",
+      "document_id": "lai",
+      "parent_id": "lai:art9",
+      "kind": "inciso",
+      "label": "I",
+      "text": "criação de serviço de informações ao cidadão, nos órgãos e entidades do poder público, em local com condições apropriadas para:",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 9º",
+        "I"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 70,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art9:incI:alia",
+      "document_id": "lai",
+      "parent_id": "lai:art9:incI",
+      "kind": "alinea",
+      "label": "a)",
+      "text": "atender e orientar o público quanto ao acesso a informações;",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 9º",
+        "I",
+        "a)"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 71,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art9:incI:alib",
+      "document_id": "lai",
+      "parent_id": "lai:art9:incI",
+      "kind": "alinea",
+      "label": "b)",
+      "text": "informar sobre a tramitação de documentos nas suas respectivas unidades;",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 9º",
+        "I",
+        "b)"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 72,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art9:incI:alic",
+      "document_id": "lai",
+      "parent_id": "lai:art9:incI",
+      "kind": "alinea",
+      "label": "c)",
+      "text": "protocolizar documentos e requerimentos de acesso a informações; e",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 9º",
+        "I",
+        "c)"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 73,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art9:incII",
+      "document_id": "lai",
+      "parent_id": "lai:art9",
+      "kind": "inciso",
+      "label": "II",
+      "text": "realização de audiências ou consultas públicas, incentivo à participação popular ou a outras formas de divulgação.",
+      "path": [
+        "CAPÍTULO II — DO ACESSO A INFORMAÇÕES E DA SUA DIVULGAÇÃO",
+        "Art. 9º",
+        "II"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 74,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art10",
+      "document_id": "lai",
+      "parent_id": null,
+      "kind": "article",
+      "label": "Art. 10",
+      "text": "Qualquer interessado poderá apresentar pedido de acesso a informações aos órgãos e entidades referidos no art. 1º desta Lei, por qualquer meio legítimo, devendo o pedido conter a identificação do requerente e a especificação da informação requerida.",
+      "path": [
+        "CAPÍTULO III — DO PROCEDIMENTO DE ACESSO À INFORMAÇÃO",
+        "Seção I — Do Pedido de Acesso",
+        "Art. 10"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 75,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art10:par1",
+      "document_id": "lai",
+      "parent_id": "lai:art10",
+      "kind": "paragraph",
+      "label": "§ 1º",
+      "text": "Para o acesso a informações de interesse público, a identificação do requerente não pode conter exigências que inviabilizem a solicitação.",
+      "path": [
+        "CAPÍTULO III — DO PROCEDIMENTO DE ACESSO À INFORMAÇÃO",
+        "Seção I — Do Pedido de Acesso",
+        "Art. 10",
+        "§ 1º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 76,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art10:par2",
+      "document_id": "lai",
+      "parent_id": "lai:art10",
+      "kind": "paragraph",
+      "label": "§ 2º",
+      "text": "Os órgãos e entidades do poder público devem viabilizar alternativa de encaminhamento de pedidos de acesso por meio de seus sítios oficiais na internet.",
+      "path": [
+        "CAPÍTULO III — DO PROCEDIMENTO DE ACESSO À INFORMAÇÃO",
+        "Seção I — Do Pedido de Acesso",
+        "Art. 10",
+        "§ 2º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 77,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art10:par3",
+      "document_id": "lai",
+      "parent_id": "lai:art10",
+      "kind": "paragraph",
+      "label": "§ 3º",
+      "text": "São vedadas quaisquer exigências relativas aos motivos determinantes da solicitação de informações de interesse público.",
+      "path": [
+        "CAPÍTULO III — DO PROCEDIMENTO DE ACESSO À INFORMAÇÃO",
+        "Seção I — Do Pedido de Acesso",
+        "Art. 10",
+        "§ 3º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 78,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art11",
+      "document_id": "lai",
+      "parent_id": null,
+      "kind": "article",
+      "label": "Art. 11",
+      "text": "O órgão ou entidade pública deverá autorizar ou conceder o acesso imediato à informação disponível.",
+      "path": [
+        "CAPÍTULO III — DO PROCEDIMENTO DE ACESSO À INFORMAÇÃO",
+        "Seção I — Do Pedido de Acesso",
+        "Art. 11"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 79,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art11:par1",
+      "document_id": "lai",
+      "parent_id": "lai:art11",
+      "kind": "paragraph",
+      "label": "§ 1º",
+      "text": "Não sendo possível conceder o acesso imediato, na forma disposta no caput, o órgão ou entidade que receber o pedido deverá, em prazo não superior a 20 (vinte) dias:",
+      "path": [
+        "CAPÍTULO III — DO PROCEDIMENTO DE ACESSO À INFORMAÇÃO",
+        "Seção I — Do Pedido de Acesso",
+        "Art. 11",
+        "§ 1º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 80,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art11:par1:incI",
+      "document_id": "lai",
+      "parent_id": "lai:art11:par1",
+      "kind": "inciso",
+      "label": "I",
+      "text": "comunicar a data, local e modo para se realizar a consulta, efetuar a reprodução ou obter a certidão;",
+      "path": [
+        "CAPÍTULO III — DO PROCEDIMENTO DE ACESSO À INFORMAÇÃO",
+        "Seção I — Do Pedido de Acesso",
+        "Art. 11",
+        "§ 1º",
+        "I"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 81,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art11:par1:incII",
+      "document_id": "lai",
+      "parent_id": "lai:art11:par1",
+      "kind": "inciso",
+      "label": "II",
+      "text": "indicar as razões de fato ou de direito da recusa, total ou parcial, do acesso pretendido; ou",
+      "path": [
+        "CAPÍTULO III — DO PROCEDIMENTO DE ACESSO À INFORMAÇÃO",
+        "Seção I — Do Pedido de Acesso",
+        "Art. 11",
+        "§ 1º",
+        "II"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 82,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art11:par1:incIII",
+      "document_id": "lai",
+      "parent_id": "lai:art11:par1",
+      "kind": "inciso",
+      "label": "III",
+      "text": "comunicar que não possui a informação, indicar, se for do seu conhecimento, o órgão ou a entidade que a detém, ou, ainda, remeter o requerimento a esse órgão ou entidade, cientificando o interessado da remessa de seu pedido de informação.",
+      "path": [
+        "CAPÍTULO III — DO PROCEDIMENTO DE ACESSO À INFORMAÇÃO",
+        "Seção I — Do Pedido de Acesso",
+        "Art. 11",
+        "§ 1º",
+        "III"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 83,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art11:par2",
+      "document_id": "lai",
+      "parent_id": "lai:art11",
+      "kind": "paragraph",
+      "label": "§ 2º",
+      "text": "O prazo referido no § 1º poderá ser prorrogado por mais 10 (dez) dias, mediante justificativa expressa, da qual será cientificado o requerente.",
+      "path": [
+        "CAPÍTULO III — DO PROCEDIMENTO DE ACESSO À INFORMAÇÃO",
+        "Seção I — Do Pedido de Acesso",
+        "Art. 11",
+        "§ 2º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 84,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art11:par3",
+      "document_id": "lai",
+      "parent_id": "lai:art11",
+      "kind": "paragraph",
+      "label": "§ 3º",
+      "text": "Sem prejuízo da segurança e da proteção das informações e do cumprimento da legislação aplicável, o órgão ou entidade poderá oferecer meios para que o próprio requerente possa pesquisar a informação de que necessitar.",
+      "path": [
+        "CAPÍTULO III — DO PROCEDIMENTO DE ACESSO À INFORMAÇÃO",
+        "Seção I — Do Pedido de Acesso",
+        "Art. 11",
+        "§ 3º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 85,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art11:par4",
+      "document_id": "lai",
+      "parent_id": "lai:art11",
+      "kind": "paragraph",
+      "label": "§ 4º",
+      "text": "Quando não for autorizado o acesso por se tratar de informação total ou parcialmente sigilosa, o requerente deverá ser informado sobre a possibilidade de recurso, prazos e condições para sua interposição, devendo, ainda, ser-lhe indicada a autoridade competente para sua apreciação.",
+      "path": [
+        "CAPÍTULO III — DO PROCEDIMENTO DE ACESSO À INFORMAÇÃO",
+        "Seção I — Do Pedido de Acesso",
+        "Art. 11",
+        "§ 4º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 86,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art11:par5",
+      "document_id": "lai",
+      "parent_id": "lai:art11",
+      "kind": "paragraph",
+      "label": "§ 5º",
+      "text": "A informação armazenada em formato digital será fornecida nesse formato, caso haja anuência do requerente.",
+      "path": [
+        "CAPÍTULO III — DO PROCEDIMENTO DE ACESSO À INFORMAÇÃO",
+        "Seção I — Do Pedido de Acesso",
+        "Art. 11",
+        "§ 5º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 87,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art11:par6",
+      "document_id": "lai",
+      "parent_id": "lai:art11",
+      "kind": "paragraph",
+      "label": "§ 6º",
+      "text": "Caso a informação solicitada esteja disponível ao público em formato impresso, eletrônico ou em qualquer outro meio de acesso universal, serão informados ao requerente, por escrito, o lugar e a forma pela qual se poderá consultar, obter ou reproduzir a referida informação, procedimento esse que desonerará o órgão ou entidade pública da obrigação de seu fornecimento direto, salvo se o requerente declarar não dispor de meios para realizar por si mesmo tais procedimentos.",
+      "path": [
+        "CAPÍTULO III — DO PROCEDIMENTO DE ACESSO À INFORMAÇÃO",
+        "Seção I — Do Pedido de Acesso",
+        "Art. 11",
+        "§ 6º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 88,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art12",
+      "document_id": "lai",
+      "parent_id": null,
+      "kind": "article",
+      "label": "Art. 12",
+      "text": "O serviço de busca e de fornecimento de informação é gratuito.",
+      "path": [
+        "CAPÍTULO III — DO PROCEDIMENTO DE ACESSO À INFORMAÇÃO",
+        "Seção I — Do Pedido de Acesso",
+        "Art. 12"
+      ],
+      "amendments": [
+        "(Redação dada pela Lei nº 14.129, de 2021)",
+        "(Vigência)"
+      ],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 89,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art12:par1",
+      "document_id": "lai",
+      "parent_id": "lai:art12",
+      "kind": "paragraph",
+      "label": "§ 1º",
+      "text": "O órgão ou a entidade poderá cobrar exclusivamente o valor necessário ao ressarcimento dos custos dos serviços e dos materiais utilizados, quando o serviço de busca e de fornecimento da informação exigir reprodução de documentos pelo órgão ou pela entidade pública consultada.",
+      "path": [
+        "CAPÍTULO III — DO PROCEDIMENTO DE ACESSO À INFORMAÇÃO",
+        "Seção I — Do Pedido de Acesso",
+        "Art. 12",
+        "§ 1º"
+      ],
+      "amendments": [
+        "(Incluído pela Lei nº 14.129, de 2021)",
+        "(Vigência)"
+      ],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 90,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art12:par2",
+      "document_id": "lai",
+      "parent_id": "lai:art12",
+      "kind": "paragraph",
+      "label": "§ 2º",
+      "text": "Estará isento de ressarcir os custos previstos no § 1º deste artigo aquele cuja situação econômica não lhe permita fazê-lo sem prejuízo do sustento próprio ou da família, declarada nos termos da Lei nº 7.115, de 29 de agosto de 1983.",
+      "path": [
+        "CAPÍTULO III — DO PROCEDIMENTO DE ACESSO À INFORMAÇÃO",
+        "Seção I — Do Pedido de Acesso",
+        "Art. 12",
+        "§ 2º"
+      ],
+      "amendments": [
+        "(Incluído pela Lei nº 14.129, de 2021)",
+        "(Vigência)"
+      ],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 91,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art13",
+      "document_id": "lai",
+      "parent_id": null,
+      "kind": "article",
+      "label": "Art. 13",
+      "text": "Quando se tratar de acesso à informação contida em documento cuja manipulação possa prejudicar sua integridade, deverá ser oferecida a consulta de cópia, com certificação de que esta confere com o original.",
+      "path": [
+        "CAPÍTULO III — DO PROCEDIMENTO DE ACESSO À INFORMAÇÃO",
+        "Seção I — Do Pedido de Acesso",
+        "Art. 13"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 92,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art13:paru",
+      "document_id": "lai",
+      "parent_id": "lai:art13",
+      "kind": "paragraph",
+      "label": "Parágrafo único",
+      "text": "Na impossibilidade de obtenção de cópias, o interessado poderá solicitar que, a suas expensas e sob supervisão de servidor público, a reprodução seja feita por outro meio que não ponha em risco a conservação do documento original.",
+      "path": [
+        "CAPÍTULO III — DO PROCEDIMENTO DE ACESSO À INFORMAÇÃO",
+        "Seção I — Do Pedido de Acesso",
+        "Art. 13",
+        "Parágrafo único"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 93,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art14",
+      "document_id": "lai",
+      "parent_id": null,
+      "kind": "article",
+      "label": "Art. 14",
+      "text": "É direito do requerente obter o inteiro teor de decisão de negativa de acesso, por certidão ou cópia.",
+      "path": [
+        "CAPÍTULO III — DO PROCEDIMENTO DE ACESSO À INFORMAÇÃO",
+        "Seção I — Do Pedido de Acesso",
+        "Art. 14"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 94,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art15",
+      "document_id": "lai",
+      "parent_id": null,
+      "kind": "article",
+      "label": "Art. 15",
+      "text": "No caso de indeferimento de acesso a informações ou às razões da negativa do acesso, poderá o interessado interpor recurso contra a decisão no prazo de 10 (dez) dias a contar da sua ciência.",
+      "path": [
+        "CAPÍTULO III — DO PROCEDIMENTO DE ACESSO À INFORMAÇÃO",
+        "Seção II — Dos Recursos",
+        "Art. 15"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 95,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art15:paru",
+      "document_id": "lai",
+      "parent_id": "lai:art15",
+      "kind": "paragraph",
+      "label": "Parágrafo único",
+      "text": "O recurso será dirigido à autoridade hierarquicamente superior à que exarou a decisão impugnada, que deverá se manifestar no prazo de 5 (cinco) dias.",
+      "path": [
+        "CAPÍTULO III — DO PROCEDIMENTO DE ACESSO À INFORMAÇÃO",
+        "Seção II — Dos Recursos",
+        "Art. 15",
+        "Parágrafo único"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 96,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art16",
+      "document_id": "lai",
+      "parent_id": null,
+      "kind": "article",
+      "label": "Art. 16",
+      "text": "Negado o acesso a informação pelos órgãos ou entidades do Poder Executivo Federal, o requerente poderá recorrer à Controladoria-Geral da União, que deliberará no prazo de 5 (cinco) dias se:",
+      "path": [
+        "CAPÍTULO III — DO PROCEDIMENTO DE ACESSO À INFORMAÇÃO",
+        "Seção II — Dos Recursos",
+        "Art. 16"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 97,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art16:incI",
+      "document_id": "lai",
+      "parent_id": "lai:art16",
+      "kind": "inciso",
+      "label": "I",
+      "text": "o acesso à informação não classificada como sigilosa for negado;",
+      "path": [
+        "CAPÍTULO III — DO PROCEDIMENTO DE ACESSO À INFORMAÇÃO",
+        "Seção II — Dos Recursos",
+        "Art. 16",
+        "I"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 98,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art16:incII",
+      "document_id": "lai",
+      "parent_id": "lai:art16",
+      "kind": "inciso",
+      "label": "II",
+      "text": "a decisão de negativa de acesso à informação total ou parcialmente classificada como sigilosa não indicar a autoridade classificadora ou a hierarquicamente superior a quem possa ser dirigido pedido de acesso ou desclassificação;",
+      "path": [
+        "CAPÍTULO III — DO PROCEDIMENTO DE ACESSO À INFORMAÇÃO",
+        "Seção II — Dos Recursos",
+        "Art. 16",
+        "II"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 99,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art16:incIII",
+      "document_id": "lai",
+      "parent_id": "lai:art16",
+      "kind": "inciso",
+      "label": "III",
+      "text": "os procedimentos de classificação de informação sigilosa estabelecidos nesta Lei não tiverem sido observados; e",
+      "path": [
+        "CAPÍTULO III — DO PROCEDIMENTO DE ACESSO À INFORMAÇÃO",
+        "Seção II — Dos Recursos",
+        "Art. 16",
+        "III"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 100,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art16:incIV",
+      "document_id": "lai",
+      "parent_id": "lai:art16",
+      "kind": "inciso",
+      "label": "IV",
+      "text": "estiverem sendo descumpridos prazos ou outros procedimentos previstos nesta Lei.",
+      "path": [
+        "CAPÍTULO III — DO PROCEDIMENTO DE ACESSO À INFORMAÇÃO",
+        "Seção II — Dos Recursos",
+        "Art. 16",
+        "IV"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 101,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art16:par1",
+      "document_id": "lai",
+      "parent_id": "lai:art16",
+      "kind": "paragraph",
+      "label": "§ 1º",
+      "text": "O recurso previsto neste artigo somente poderá ser dirigido à Controladoria-Geral da União depois de submetido à apreciação de pelo menos uma autoridade hierarquicamente superior àquela que exarou a decisão impugnada, que deliberará no prazo de 5 (cinco) dias.",
+      "path": [
+        "CAPÍTULO III — DO PROCEDIMENTO DE ACESSO À INFORMAÇÃO",
+        "Seção II — Dos Recursos",
+        "Art. 16",
+        "§ 1º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 102,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art16:par2",
+      "document_id": "lai",
+      "parent_id": "lai:art16",
+      "kind": "paragraph",
+      "label": "§ 2º",
+      "text": "Verificada a procedência das razões do recurso, a Controladoria-Geral da União determinará ao órgão ou entidade que adote as providências necessárias para dar cumprimento ao disposto nesta Lei.",
+      "path": [
+        "CAPÍTULO III — DO PROCEDIMENTO DE ACESSO À INFORMAÇÃO",
+        "Seção II — Dos Recursos",
+        "Art. 16",
+        "§ 2º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 103,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art16:par3",
+      "document_id": "lai",
+      "parent_id": "lai:art16",
+      "kind": "paragraph",
+      "label": "§ 3º",
+      "text": "Negado o acesso à informação pela Controladoria-Geral da União, poderá ser interposto recurso à Comissão Mista de Reavaliação de Informações, a que se refere o art. 35.",
+      "path": [
+        "CAPÍTULO III — DO PROCEDIMENTO DE ACESSO À INFORMAÇÃO",
+        "Seção II — Dos Recursos",
+        "Art. 16",
+        "§ 3º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 104,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art17",
+      "document_id": "lai",
+      "parent_id": null,
+      "kind": "article",
+      "label": "Art. 17",
+      "text": "No caso de indeferimento de pedido de desclassificação de informação protocolado em órgão da administração pública federal, poderá o requerente recorrer ao Ministro de Estado da área, sem prejuízo das competências da Comissão Mista de Reavaliação de Informações, previstas no art. 35, e do disposto no art. 16.",
+      "path": [
+        "CAPÍTULO III — DO PROCEDIMENTO DE ACESSO À INFORMAÇÃO",
+        "Seção II — Dos Recursos",
+        "Art. 17"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 105,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art17:par1",
+      "document_id": "lai",
+      "parent_id": "lai:art17",
+      "kind": "paragraph",
+      "label": "§ 1º",
+      "text": "O recurso previsto neste artigo somente poderá ser dirigido às autoridades mencionadas depois de submetido à apreciação de pelo menos uma autoridade hierarquicamente superior à autoridade que exarou a decisão impugnada e, no caso das Forças Armadas, ao respectivo Comando.",
+      "path": [
+        "CAPÍTULO III — DO PROCEDIMENTO DE ACESSO À INFORMAÇÃO",
+        "Seção II — Dos Recursos",
+        "Art. 17",
+        "§ 1º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 106,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art17:par2",
+      "document_id": "lai",
+      "parent_id": "lai:art17",
+      "kind": "paragraph",
+      "label": "§ 2º",
+      "text": "Indeferido o recurso previsto no caput que tenha como objeto a desclassificação de informação secreta ou ultrassecreta, caberá recurso à Comissão Mista de Reavaliação de Informações prevista no art. 35.",
+      "path": [
+        "CAPÍTULO III — DO PROCEDIMENTO DE ACESSO À INFORMAÇÃO",
+        "Seção II — Dos Recursos",
+        "Art. 17",
+        "§ 2º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 107,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art18",
+      "document_id": "lai",
+      "parent_id": null,
+      "kind": "article",
+      "label": "Art. 18",
+      "text": "Os procedimentos de revisão de decisões denegatórias proferidas no recurso previsto no art. 15 e de revisão de classificação de documentos sigilosos serão objeto de regulamentação própria dos Poderes Legislativo e Judiciário e do Ministério Público, em seus respectivos âmbitos, assegurado ao solicitante, em qualquer caso, o direito de ser informado sobre o andamento de seu pedido.",
+      "path": [
+        "CAPÍTULO III — DO PROCEDIMENTO DE ACESSO À INFORMAÇÃO",
+        "Seção II — Dos Recursos",
+        "Art. 18"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 108,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art19",
+      "document_id": "lai",
+      "parent_id": null,
+      "kind": "article",
+      "label": "Art. 19",
+      "text": "",
+      "path": [
+        "CAPÍTULO III — DO PROCEDIMENTO DE ACESSO À INFORMAÇÃO",
+        "Seção II — Dos Recursos",
+        "Art. 19"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": true,
+      "ordinal": 109,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art19:par1",
+      "document_id": "lai",
+      "parent_id": "lai:art19",
+      "kind": "paragraph",
+      "label": "§ 1º",
+      "text": "",
+      "path": [
+        "CAPÍTULO III — DO PROCEDIMENTO DE ACESSO À INFORMAÇÃO",
+        "Seção II — Dos Recursos",
+        "Art. 19",
+        "§ 1º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": true,
+      "ordinal": 110,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art19:par2",
+      "document_id": "lai",
+      "parent_id": "lai:art19",
+      "kind": "paragraph",
+      "label": "§ 2º",
+      "text": "Os órgãos do Poder Judiciário e do Ministério Público informarão ao Conselho Nacional de Justiça e ao Conselho Nacional do Ministério Público, respectivamente, as decisões que, em grau de recurso, negarem acesso a informações de interesse público.",
+      "path": [
+        "CAPÍTULO III — DO PROCEDIMENTO DE ACESSO À INFORMAÇÃO",
+        "Seção II — Dos Recursos",
+        "Art. 19",
+        "§ 2º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 111,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art20",
+      "document_id": "lai",
+      "parent_id": null,
+      "kind": "article",
+      "label": "Art. 20",
+      "text": "Aplica-se subsidiariamente, no que couber, a Lei nº 9.784, de 29 de janeiro de 1999, ao procedimento de que trata este Capítulo.",
+      "path": [
+        "CAPÍTULO III — DO PROCEDIMENTO DE ACESSO À INFORMAÇÃO",
+        "Seção II — Dos Recursos",
+        "Art. 20"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 112,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art21",
+      "document_id": "lai",
+      "parent_id": null,
+      "kind": "article",
+      "label": "Art. 21",
+      "text": "Não poderá ser negado acesso à informação necessária à tutela judicial ou administrativa de direitos fundamentais.",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção I — Disposições Gerais",
+        "Art. 21"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 113,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art21:paru",
+      "document_id": "lai",
+      "parent_id": "lai:art21",
+      "kind": "paragraph",
+      "label": "Parágrafo único",
+      "text": "As informações ou documentos que versem sobre condutas que impliquem violação dos direitos humanos praticada por agentes públicos ou a mando de autoridades públicas não poderão ser objeto de restrição de acesso.",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção I — Disposições Gerais",
+        "Art. 21",
+        "Parágrafo único"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 114,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art22",
+      "document_id": "lai",
+      "parent_id": null,
+      "kind": "article",
+      "label": "Art. 22",
+      "text": "O disposto nesta Lei não exclui as demais hipóteses legais de sigilo e de segredo de justiça nem as hipóteses de segredo industrial decorrentes da exploração direta de atividade econômica pelo Estado ou por pessoa física ou entidade privada que tenha qualquer vínculo com o poder público.",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção I — Disposições Gerais",
+        "Art. 22"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 115,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art23",
+      "document_id": "lai",
+      "parent_id": null,
+      "kind": "article",
+      "label": "Art. 23",
+      "text": "São consideradas imprescindíveis à segurança da sociedade ou do Estado e, portanto, passíveis de classificação as informações cuja divulgação ou acesso irrestrito possam:",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção II — Da Classificação da Informação quanto ao Grau e Prazos de Sigilo",
+        "Art. 23"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 116,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art23:incI",
+      "document_id": "lai",
+      "parent_id": "lai:art23",
+      "kind": "inciso",
+      "label": "I",
+      "text": "pôr em risco a defesa e a soberania nacionais ou a integridade do território nacional;",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção II — Da Classificação da Informação quanto ao Grau e Prazos de Sigilo",
+        "Art. 23",
+        "I"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 117,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art23:incII",
+      "document_id": "lai",
+      "parent_id": "lai:art23",
+      "kind": "inciso",
+      "label": "II",
+      "text": "prejudicar ou pôr em risco a condução de negociações ou as relações internacionais do País, ou as que tenham sido fornecidas em caráter sigiloso por outros Estados e organismos internacionais;",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção II — Da Classificação da Informação quanto ao Grau e Prazos de Sigilo",
+        "Art. 23",
+        "II"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 118,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art23:incIII",
+      "document_id": "lai",
+      "parent_id": "lai:art23",
+      "kind": "inciso",
+      "label": "III",
+      "text": "pôr em risco a vida, a segurança ou a saúde da população;",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção II — Da Classificação da Informação quanto ao Grau e Prazos de Sigilo",
+        "Art. 23",
+        "III"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 119,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art23:incIV",
+      "document_id": "lai",
+      "parent_id": "lai:art23",
+      "kind": "inciso",
+      "label": "IV",
+      "text": "oferecer elevado risco à estabilidade financeira, econômica ou monetária do País;",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção II — Da Classificação da Informação quanto ao Grau e Prazos de Sigilo",
+        "Art. 23",
+        "IV"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 120,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art23:incV",
+      "document_id": "lai",
+      "parent_id": "lai:art23",
+      "kind": "inciso",
+      "label": "V",
+      "text": "prejudicar ou causar risco a planos ou operações estratégicos das Forças Armadas;",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção II — Da Classificação da Informação quanto ao Grau e Prazos de Sigilo",
+        "Art. 23",
+        "V"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 121,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art23:incVI",
+      "document_id": "lai",
+      "parent_id": "lai:art23",
+      "kind": "inciso",
+      "label": "VI",
+      "text": "prejudicar ou causar risco a projetos de pesquisa e desenvolvimento científico ou tecnológico, assim como a sistemas, bens, instalações ou áreas de interesse estratégico nacional;",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção II — Da Classificação da Informação quanto ao Grau e Prazos de Sigilo",
+        "Art. 23",
+        "VI"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 122,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art23:incVII",
+      "document_id": "lai",
+      "parent_id": "lai:art23",
+      "kind": "inciso",
+      "label": "VII",
+      "text": "pôr em risco a segurança de instituições ou de altas autoridades nacionais ou estrangeiras e seus familiares; ou",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção II — Da Classificação da Informação quanto ao Grau e Prazos de Sigilo",
+        "Art. 23",
+        "VII"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 123,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art23:incVIII",
+      "document_id": "lai",
+      "parent_id": "lai:art23",
+      "kind": "inciso",
+      "label": "VIII",
+      "text": "comprometer atividades de inteligência, bem como de investigação ou fiscalização em andamento, relacionadas com a prevenção ou repressão de infrações.",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção II — Da Classificação da Informação quanto ao Grau e Prazos de Sigilo",
+        "Art. 23",
+        "VIII"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 124,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art24",
+      "document_id": "lai",
+      "parent_id": null,
+      "kind": "article",
+      "label": "Art. 24",
+      "text": "A informação em poder dos órgãos e entidades públicas, observado o seu teor e em razão de sua imprescindibilidade à segurança da sociedade ou do Estado, poderá ser classificada como ultrassecreta, secreta ou reservada.",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção II — Da Classificação da Informação quanto ao Grau e Prazos de Sigilo",
+        "Art. 24"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 125,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art24:par1",
+      "document_id": "lai",
+      "parent_id": "lai:art24",
+      "kind": "paragraph",
+      "label": "§ 1º",
+      "text": "Os prazos máximos de restrição de acesso à informação, conforme a classificação prevista no caput, vigoram a partir da data de sua produção e são os seguintes:",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção II — Da Classificação da Informação quanto ao Grau e Prazos de Sigilo",
+        "Art. 24",
+        "§ 1º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 126,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art24:par1:incI",
+      "document_id": "lai",
+      "parent_id": "lai:art24:par1",
+      "kind": "inciso",
+      "label": "I",
+      "text": "ultrassecreta: 25 (vinte e cinco) anos;",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção II — Da Classificação da Informação quanto ao Grau e Prazos de Sigilo",
+        "Art. 24",
+        "§ 1º",
+        "I"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 127,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art24:par1:incII",
+      "document_id": "lai",
+      "parent_id": "lai:art24:par1",
+      "kind": "inciso",
+      "label": "II",
+      "text": "secreta: 15 (quinze) anos; e",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção II — Da Classificação da Informação quanto ao Grau e Prazos de Sigilo",
+        "Art. 24",
+        "§ 1º",
+        "II"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 128,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art24:par1:incIII",
+      "document_id": "lai",
+      "parent_id": "lai:art24:par1",
+      "kind": "inciso",
+      "label": "III",
+      "text": "reservada: 5 (cinco) anos.",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção II — Da Classificação da Informação quanto ao Grau e Prazos de Sigilo",
+        "Art. 24",
+        "§ 1º",
+        "III"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 129,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art24:par2",
+      "document_id": "lai",
+      "parent_id": "lai:art24",
+      "kind": "paragraph",
+      "label": "§ 2º",
+      "text": "As informações que puderem colocar em risco a segurança do Presidente e Vice-Presidente da República e respectivos cônjuges e filhos(as) serão classificadas como reservadas e ficarão sob sigilo até o término do mandato em exercício ou do último mandato, em caso de reeleição.",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção II — Da Classificação da Informação quanto ao Grau e Prazos de Sigilo",
+        "Art. 24",
+        "§ 2º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 130,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art24:par3",
+      "document_id": "lai",
+      "parent_id": "lai:art24",
+      "kind": "paragraph",
+      "label": "§ 3º",
+      "text": "Alternativamente aos prazos previstos no § 1º, poderá ser estabelecida como termo final de restrição de acesso a ocorrência de determinado evento, desde que este ocorra antes do transcurso do prazo máximo de classificação.",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção II — Da Classificação da Informação quanto ao Grau e Prazos de Sigilo",
+        "Art. 24",
+        "§ 3º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 131,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art24:par4",
+      "document_id": "lai",
+      "parent_id": "lai:art24",
+      "kind": "paragraph",
+      "label": "§ 4º",
+      "text": "Transcorrido o prazo de classificação ou consumado o evento que defina o seu termo final, a informação tornar-se-á, automaticamente, de acesso público.",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção II — Da Classificação da Informação quanto ao Grau e Prazos de Sigilo",
+        "Art. 24",
+        "§ 4º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 132,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art24:par5",
+      "document_id": "lai",
+      "parent_id": "lai:art24",
+      "kind": "paragraph",
+      "label": "§ 5º",
+      "text": "Para a classificação da informação em determinado grau de sigilo, deverá ser observado o interesse público da informação e utilizado o critério menos restritivo possível, considerados:",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção II — Da Classificação da Informação quanto ao Grau e Prazos de Sigilo",
+        "Art. 24",
+        "§ 5º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 133,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art24:par5:incI",
+      "document_id": "lai",
+      "parent_id": "lai:art24:par5",
+      "kind": "inciso",
+      "label": "I",
+      "text": "a gravidade do risco ou dano à segurança da sociedade e do Estado; e",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção II — Da Classificação da Informação quanto ao Grau e Prazos de Sigilo",
+        "Art. 24",
+        "§ 5º",
+        "I"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 134,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art24:par5:incII",
+      "document_id": "lai",
+      "parent_id": "lai:art24:par5",
+      "kind": "inciso",
+      "label": "II",
+      "text": "o prazo máximo de restrição de acesso ou o evento que defina seu termo final.",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção II — Da Classificação da Informação quanto ao Grau e Prazos de Sigilo",
+        "Art. 24",
+        "§ 5º",
+        "II"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 135,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art25",
+      "document_id": "lai",
+      "parent_id": null,
+      "kind": "article",
+      "label": "Art. 25",
+      "text": "É dever do Estado controlar o acesso e a divulgação de informações sigilosas produzidas por seus órgãos e entidades, assegurando a sua proteção.",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção III — Da Proteção e do Controle de Informações Sigilosas",
+        "Art. 25"
+      ],
+      "amendments": [
+        "(Regulamento)"
+      ],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 136,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art25:par1",
+      "document_id": "lai",
+      "parent_id": "lai:art25",
+      "kind": "paragraph",
+      "label": "§ 1º",
+      "text": "O acesso, a divulgação e o tratamento de informação classificada como sigilosa ficarão restritos a pessoas que tenham necessidade de conhecê-la e que sejam devidamente credenciadas na forma do regulamento, sem prejuízo das atribuições dos agentes públicos autorizados por lei.",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção III — Da Proteção e do Controle de Informações Sigilosas",
+        "Art. 25",
+        "§ 1º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 137,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art25:par2",
+      "document_id": "lai",
+      "parent_id": "lai:art25",
+      "kind": "paragraph",
+      "label": "§ 2º",
+      "text": "O acesso à informação classificada como sigilosa cria a obrigação para aquele que a obteve de resguardar o sigilo.",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção III — Da Proteção e do Controle de Informações Sigilosas",
+        "Art. 25",
+        "§ 2º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 138,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art25:par3",
+      "document_id": "lai",
+      "parent_id": "lai:art25",
+      "kind": "paragraph",
+      "label": "§ 3º",
+      "text": "Regulamento disporá sobre procedimentos e medidas a serem adotados para o tratamento de informação sigilosa, de modo a protegê-la contra perda, alteração indevida, acesso, transmissão e divulgação não autorizados.",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção III — Da Proteção e do Controle de Informações Sigilosas",
+        "Art. 25",
+        "§ 3º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 139,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art26",
+      "document_id": "lai",
+      "parent_id": null,
+      "kind": "article",
+      "label": "Art. 26",
+      "text": "As autoridades públicas adotarão as providências necessárias para que o pessoal a elas subordinado hierarquicamente conheça as normas e observe as medidas e procedimentos de segurança para tratamento de informações sigilosas.",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção III — Da Proteção e do Controle de Informações Sigilosas",
+        "Art. 26"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 140,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art26:paru",
+      "document_id": "lai",
+      "parent_id": "lai:art26",
+      "kind": "paragraph",
+      "label": "Parágrafo único",
+      "text": "A pessoa física ou entidade privada que, em razão de qualquer vínculo com o poder público, executar atividades de tratamento de informações sigilosas adotará as providências necessárias para que seus empregados, prepostos ou representantes observem as medidas e procedimentos de segurança das informações resultantes da aplicação desta Lei.",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção III — Da Proteção e do Controle de Informações Sigilosas",
+        "Art. 26",
+        "Parágrafo único"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 141,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art27",
+      "document_id": "lai",
+      "parent_id": null,
+      "kind": "article",
+      "label": "Art. 27",
+      "text": "A classificação do sigilo de informações no âmbito da administração pública federal é de competência:",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção IV — Dos Procedimentos de Classificação, Reclassificação e Desclassificação",
+        "Art. 27"
+      ],
+      "amendments": [
+        "(Regulamento)"
+      ],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 142,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art27:incI",
+      "document_id": "lai",
+      "parent_id": "lai:art27",
+      "kind": "inciso",
+      "label": "I",
+      "text": "no grau de ultrassecreto, das seguintes autoridades:",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção IV — Dos Procedimentos de Classificação, Reclassificação e Desclassificação",
+        "Art. 27",
+        "I"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 143,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art27:incI:alia",
+      "document_id": "lai",
+      "parent_id": "lai:art27:incI",
+      "kind": "alinea",
+      "label": "a)",
+      "text": "Presidente da República;",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção IV — Dos Procedimentos de Classificação, Reclassificação e Desclassificação",
+        "Art. 27",
+        "I",
+        "a)"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 144,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art27:incI:alib",
+      "document_id": "lai",
+      "parent_id": "lai:art27:incI",
+      "kind": "alinea",
+      "label": "b)",
+      "text": "Vice-Presidente da República;",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção IV — Dos Procedimentos de Classificação, Reclassificação e Desclassificação",
+        "Art. 27",
+        "I",
+        "b)"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 145,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art27:incI:alic",
+      "document_id": "lai",
+      "parent_id": "lai:art27:incI",
+      "kind": "alinea",
+      "label": "c)",
+      "text": "Ministros de Estado e autoridades com as mesmas prerrogativas;",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção IV — Dos Procedimentos de Classificação, Reclassificação e Desclassificação",
+        "Art. 27",
+        "I",
+        "c)"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 146,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art27:incI:alid",
+      "document_id": "lai",
+      "parent_id": "lai:art27:incI",
+      "kind": "alinea",
+      "label": "d)",
+      "text": "Comandantes da Marinha, do Exército e da Aeronáutica; e",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção IV — Dos Procedimentos de Classificação, Reclassificação e Desclassificação",
+        "Art. 27",
+        "I",
+        "d)"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 147,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art27:incI:alie",
+      "document_id": "lai",
+      "parent_id": "lai:art27:incI",
+      "kind": "alinea",
+      "label": "e)",
+      "text": "Chefes de Missões Diplomáticas e Consulares permanentes no exterior;",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção IV — Dos Procedimentos de Classificação, Reclassificação e Desclassificação",
+        "Art. 27",
+        "I",
+        "e)"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 148,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art27:incII",
+      "document_id": "lai",
+      "parent_id": "lai:art27",
+      "kind": "inciso",
+      "label": "II",
+      "text": "no grau de secreto, das autoridades referidas no inciso I, dos titulares de autarquias, fundações ou empresas públicas e sociedades de economia mista; e",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção IV — Dos Procedimentos de Classificação, Reclassificação e Desclassificação",
+        "Art. 27",
+        "II"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 149,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art27:incIII",
+      "document_id": "lai",
+      "parent_id": "lai:art27",
+      "kind": "inciso",
+      "label": "III",
+      "text": "no grau de reservado, das autoridades referidas nos incisos I e II e das que exerçam funções de direção, comando ou chefia, nível DAS 101.5, ou superior, do Grupo-Direção e Assessoramento Superiores, ou de hierarquia equivalente, de acordo com regulamentação específica de cada órgão ou entidade, observado o disposto nesta Lei.",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção IV — Dos Procedimentos de Classificação, Reclassificação e Desclassificação",
+        "Art. 27",
+        "III"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 150,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art27:par1",
+      "document_id": "lai",
+      "parent_id": "lai:art27",
+      "kind": "paragraph",
+      "label": "§ 1º",
+      "text": "A competência prevista nos incisos I e II, no que se refere à classificação como ultrassecreta e secreta, poderá ser delegada pela autoridade responsável a agente público, inclusive em missão no exterior, vedada a subdelegação.",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção IV — Dos Procedimentos de Classificação, Reclassificação e Desclassificação",
+        "Art. 27",
+        "§ 1º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 151,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art27:par2",
+      "document_id": "lai",
+      "parent_id": "lai:art27",
+      "kind": "paragraph",
+      "label": "§ 2º",
+      "text": "A classificação de informação no grau de sigilo ultrassecreto pelas autoridades previstas nas alíneas “d” e “e” do inciso I deverá ser ratificada pelos respectivos Ministros de Estado, no prazo previsto em regulamento.",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção IV — Dos Procedimentos de Classificação, Reclassificação e Desclassificação",
+        "Art. 27",
+        "§ 2º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 152,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art27:par3",
+      "document_id": "lai",
+      "parent_id": "lai:art27",
+      "kind": "paragraph",
+      "label": "§ 3º",
+      "text": "A autoridade ou outro agente público que classificar informação como ultrassecreta deverá encaminhar a decisão de que trata o art. 28 à Comissão Mista de Reavaliação de Informações, a que se refere o art. 35, no prazo previsto em regulamento.",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção IV — Dos Procedimentos de Classificação, Reclassificação e Desclassificação",
+        "Art. 27",
+        "§ 3º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 153,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art28",
+      "document_id": "lai",
+      "parent_id": null,
+      "kind": "article",
+      "label": "Art. 28",
+      "text": "A classificação de informação em qualquer grau de sigilo deverá ser formalizada em decisão que conterá, no mínimo, os seguintes elementos:",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção IV — Dos Procedimentos de Classificação, Reclassificação e Desclassificação",
+        "Art. 28"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 154,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art28:incI",
+      "document_id": "lai",
+      "parent_id": "lai:art28",
+      "kind": "inciso",
+      "label": "I",
+      "text": "assunto sobre o qual versa a informação;",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção IV — Dos Procedimentos de Classificação, Reclassificação e Desclassificação",
+        "Art. 28",
+        "I"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 155,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art28:incII",
+      "document_id": "lai",
+      "parent_id": "lai:art28",
+      "kind": "inciso",
+      "label": "II",
+      "text": "fundamento da classificação, observados os critérios estabelecidos no art. 24;",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção IV — Dos Procedimentos de Classificação, Reclassificação e Desclassificação",
+        "Art. 28",
+        "II"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 156,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art28:incIII",
+      "document_id": "lai",
+      "parent_id": "lai:art28",
+      "kind": "inciso",
+      "label": "III",
+      "text": "indicação do prazo de sigilo, contado em anos, meses ou dias, ou do evento que defina o seu termo final, conforme limites previstos no art. 24; e",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção IV — Dos Procedimentos de Classificação, Reclassificação e Desclassificação",
+        "Art. 28",
+        "III"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 157,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art28:incIV",
+      "document_id": "lai",
+      "parent_id": "lai:art28",
+      "kind": "inciso",
+      "label": "IV",
+      "text": "identificação da autoridade que a classificou.",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção IV — Dos Procedimentos de Classificação, Reclassificação e Desclassificação",
+        "Art. 28",
+        "IV"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 158,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art28:paru",
+      "document_id": "lai",
+      "parent_id": "lai:art28",
+      "kind": "paragraph",
+      "label": "Parágrafo único",
+      "text": "A decisão referida no caput será mantida no mesmo grau de sigilo da informação classificada.",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção IV — Dos Procedimentos de Classificação, Reclassificação e Desclassificação",
+        "Art. 28",
+        "Parágrafo único"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 159,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art29",
+      "document_id": "lai",
+      "parent_id": null,
+      "kind": "article",
+      "label": "Art. 29",
+      "text": "A classificação das informações será reavaliada pela autoridade classificadora ou por autoridade hierarquicamente superior, mediante provocação ou de ofício, nos termos e prazos previstos em regulamento, com vistas à sua desclassificação ou à redução do prazo de sigilo, observado o disposto no art. 24.",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção IV — Dos Procedimentos de Classificação, Reclassificação e Desclassificação",
+        "Art. 29"
+      ],
+      "amendments": [
+        "(Regulamento)"
+      ],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 160,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art29:par1",
+      "document_id": "lai",
+      "parent_id": "lai:art29",
+      "kind": "paragraph",
+      "label": "§ 1º",
+      "text": "O regulamento a que se refere o caput deverá considerar as peculiaridades das informações produzidas no exterior por autoridades ou agentes públicos.",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção IV — Dos Procedimentos de Classificação, Reclassificação e Desclassificação",
+        "Art. 29",
+        "§ 1º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 161,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art29:par2",
+      "document_id": "lai",
+      "parent_id": "lai:art29",
+      "kind": "paragraph",
+      "label": "§ 2º",
+      "text": "Na reavaliação a que se refere o caput, deverão ser examinadas a permanência dos motivos do sigilo e a possibilidade de danos decorrentes do acesso ou da divulgação da informação.",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção IV — Dos Procedimentos de Classificação, Reclassificação e Desclassificação",
+        "Art. 29",
+        "§ 2º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 162,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art29:par3",
+      "document_id": "lai",
+      "parent_id": "lai:art29",
+      "kind": "paragraph",
+      "label": "§ 3º",
+      "text": "Na hipótese de redução do prazo de sigilo da informação, o novo prazo de restrição manterá como termo inicial a data da sua produção.",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção IV — Dos Procedimentos de Classificação, Reclassificação e Desclassificação",
+        "Art. 29",
+        "§ 3º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 163,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art30",
+      "document_id": "lai",
+      "parent_id": null,
+      "kind": "article",
+      "label": "Art. 30",
+      "text": "A autoridade máxima de cada órgão ou entidade publicará, anualmente, em sítio à disposição na internet e destinado à veiculação de dados e informações administrativas, nos termos de regulamento:",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção IV — Dos Procedimentos de Classificação, Reclassificação e Desclassificação",
+        "Art. 30"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 164,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art30:incI",
+      "document_id": "lai",
+      "parent_id": "lai:art30",
+      "kind": "inciso",
+      "label": "I",
+      "text": "rol das informações que tenham sido desclassificadas nos últimos 12 (doze) meses;",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção IV — Dos Procedimentos de Classificação, Reclassificação e Desclassificação",
+        "Art. 30",
+        "I"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 165,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art30:incII",
+      "document_id": "lai",
+      "parent_id": "lai:art30",
+      "kind": "inciso",
+      "label": "II",
+      "text": "rol de documentos classificados em cada grau de sigilo, com identificação para referência futura;",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção IV — Dos Procedimentos de Classificação, Reclassificação e Desclassificação",
+        "Art. 30",
+        "II"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 166,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art30:incIII",
+      "document_id": "lai",
+      "parent_id": "lai:art30",
+      "kind": "inciso",
+      "label": "III",
+      "text": "relatório estatístico contendo a quantidade de pedidos de informação recebidos, atendidos e indeferidos, bem como informações genéricas sobre os solicitantes.",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção IV — Dos Procedimentos de Classificação, Reclassificação e Desclassificação",
+        "Art. 30",
+        "III"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 167,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art30:par1",
+      "document_id": "lai",
+      "parent_id": "lai:art30",
+      "kind": "paragraph",
+      "label": "§ 1º",
+      "text": "Os órgãos e entidades deverão manter exemplar da publicação prevista no caput para consulta pública em suas sedes.",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção IV — Dos Procedimentos de Classificação, Reclassificação e Desclassificação",
+        "Art. 30",
+        "§ 1º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 168,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art30:par2",
+      "document_id": "lai",
+      "parent_id": "lai:art30",
+      "kind": "paragraph",
+      "label": "§ 2º",
+      "text": "Os órgãos e entidades manterão extrato com a lista de informações classificadas, acompanhadas da data, do grau de sigilo e dos fundamentos da classificação.",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção IV — Dos Procedimentos de Classificação, Reclassificação e Desclassificação",
+        "Art. 30",
+        "§ 2º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 169,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art31",
+      "document_id": "lai",
+      "parent_id": null,
+      "kind": "article",
+      "label": "Art. 31",
+      "text": "O tratamento das informações pessoais deve ser feito de forma transparente e com respeito à intimidade, vida privada, honra e imagem das pessoas, bem como às liberdades e garantias individuais.",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção V — Das Informações Pessoais",
+        "Art. 31"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 170,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art31:par1",
+      "document_id": "lai",
+      "parent_id": "lai:art31",
+      "kind": "paragraph",
+      "label": "§ 1º",
+      "text": "As informações pessoais, a que se refere este artigo, relativas à intimidade, vida privada, honra e imagem:",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção V — Das Informações Pessoais",
+        "Art. 31",
+        "§ 1º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 171,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art31:par1:incI",
+      "document_id": "lai",
+      "parent_id": "lai:art31:par1",
+      "kind": "inciso",
+      "label": "I",
+      "text": "terão seu acesso restrito, independentemente de classificação de sigilo e pelo prazo máximo de 100 (cem) anos a contar da sua data de produção, a agentes públicos legalmente autorizados e à pessoa a que elas se referirem; e",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção V — Das Informações Pessoais",
+        "Art. 31",
+        "§ 1º",
+        "I"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 172,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art31:par1:incII",
+      "document_id": "lai",
+      "parent_id": "lai:art31:par1",
+      "kind": "inciso",
+      "label": "II",
+      "text": "poderão ter autorizada sua divulgação ou acesso por terceiros diante de previsão legal ou consentimento expresso da pessoa a que elas se referirem.",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção V — Das Informações Pessoais",
+        "Art. 31",
+        "§ 1º",
+        "II"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 173,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art31:par2",
+      "document_id": "lai",
+      "parent_id": "lai:art31",
+      "kind": "paragraph",
+      "label": "§ 2º",
+      "text": "Aquele que obtiver acesso às informações de que trata este artigo será responsabilizado por seu uso indevido.",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção V — Das Informações Pessoais",
+        "Art. 31",
+        "§ 2º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 174,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art31:par3",
+      "document_id": "lai",
+      "parent_id": "lai:art31",
+      "kind": "paragraph",
+      "label": "§ 3º",
+      "text": "O consentimento referido no inciso II do § 1º não será exigido quando as informações forem necessárias:",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção V — Das Informações Pessoais",
+        "Art. 31",
+        "§ 3º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 175,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art31:par3:incI",
+      "document_id": "lai",
+      "parent_id": "lai:art31:par3",
+      "kind": "inciso",
+      "label": "I",
+      "text": "à prevenção e diagnóstico médico, quando a pessoa estiver física ou legalmente incapaz, e para utilização única e exclusivamente para o tratamento médico;",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção V — Das Informações Pessoais",
+        "Art. 31",
+        "§ 3º",
+        "I"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 176,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art31:par3:incII",
+      "document_id": "lai",
+      "parent_id": "lai:art31:par3",
+      "kind": "inciso",
+      "label": "II",
+      "text": "à realização de estatísticas e pesquisas científicas de evidente interesse público ou geral, previstos em lei, sendo vedada a identificação da pessoa a que as informações se referirem;",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção V — Das Informações Pessoais",
+        "Art. 31",
+        "§ 3º",
+        "II"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 177,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art31:par3:incIII",
+      "document_id": "lai",
+      "parent_id": "lai:art31:par3",
+      "kind": "inciso",
+      "label": "III",
+      "text": "ao cumprimento de ordem judicial;",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção V — Das Informações Pessoais",
+        "Art. 31",
+        "§ 3º",
+        "III"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 178,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art31:par3:incIV",
+      "document_id": "lai",
+      "parent_id": "lai:art31:par3",
+      "kind": "inciso",
+      "label": "IV",
+      "text": "à defesa de direitos humanos; ou",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção V — Das Informações Pessoais",
+        "Art. 31",
+        "§ 3º",
+        "IV"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 179,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art31:par3:incV",
+      "document_id": "lai",
+      "parent_id": "lai:art31:par3",
+      "kind": "inciso",
+      "label": "V",
+      "text": "à proteção do interesse público e geral preponderante.",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção V — Das Informações Pessoais",
+        "Art. 31",
+        "§ 3º",
+        "V"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 180,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art31:par4",
+      "document_id": "lai",
+      "parent_id": "lai:art31",
+      "kind": "paragraph",
+      "label": "§ 4º",
+      "text": "A restrição de acesso à informação relativa à vida privada, honra e imagem de pessoa não poderá ser invocada com o intuito de prejudicar processo de apuração de irregularidades em que o titular das informações estiver envolvido, bem como em ações voltadas para a recuperação de fatos históricos de maior relevância.",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção V — Das Informações Pessoais",
+        "Art. 31",
+        "§ 4º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 181,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art31:par5",
+      "document_id": "lai",
+      "parent_id": "lai:art31",
+      "kind": "paragraph",
+      "label": "§ 5º",
+      "text": "Regulamento disporá sobre os procedimentos para tratamento de informação pessoal.",
+      "path": [
+        "CAPÍTULO IV — DAS RESTRIÇÕES DE ACESSO À INFORMAÇÃO",
+        "Seção V — Das Informações Pessoais",
+        "Art. 31",
+        "§ 5º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 182,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art32",
+      "document_id": "lai",
+      "parent_id": null,
+      "kind": "article",
+      "label": "Art. 32",
+      "text": "Constituem condutas ilícitas que ensejam responsabilidade do agente público ou militar:",
+      "path": [
+        "CAPÍTULO V — DAS RESPONSABILIDADES",
+        "Art. 32"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 183,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art32:incI",
+      "document_id": "lai",
+      "parent_id": "lai:art32",
+      "kind": "inciso",
+      "label": "I",
+      "text": "recusar-se a fornecer informação requerida nos termos desta Lei, retardar deliberadamente o seu fornecimento ou fornecê-la intencionalmente de forma incorreta, incompleta ou imprecisa;",
+      "path": [
+        "CAPÍTULO V — DAS RESPONSABILIDADES",
+        "Art. 32",
+        "I"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 184,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art32:incII",
+      "document_id": "lai",
+      "parent_id": "lai:art32",
+      "kind": "inciso",
+      "label": "II",
+      "text": "utilizar indevidamente, bem como subtrair, destruir, inutilizar, desfigurar, alterar ou ocultar, total ou parcialmente, informação que se encontre sob sua guarda ou a que tenha acesso ou conhecimento em razão do exercício das atribuições de cargo, emprego ou função pública;",
+      "path": [
+        "CAPÍTULO V — DAS RESPONSABILIDADES",
+        "Art. 32",
+        "II"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 185,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art32:incIII",
+      "document_id": "lai",
+      "parent_id": "lai:art32",
+      "kind": "inciso",
+      "label": "III",
+      "text": "agir com dolo ou má-fé na análise das solicitações de acesso à informação;",
+      "path": [
+        "CAPÍTULO V — DAS RESPONSABILIDADES",
+        "Art. 32",
+        "III"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 186,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art32:incIV",
+      "document_id": "lai",
+      "parent_id": "lai:art32",
+      "kind": "inciso",
+      "label": "IV",
+      "text": "divulgar ou permitir a divulgação ou acessar ou permitir acesso indevido à informação sigilosa ou informação pessoal;",
+      "path": [
+        "CAPÍTULO V — DAS RESPONSABILIDADES",
+        "Art. 32",
+        "IV"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 187,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art32:incV",
+      "document_id": "lai",
+      "parent_id": "lai:art32",
+      "kind": "inciso",
+      "label": "V",
+      "text": "impor sigilo à informação para obter proveito pessoal ou de terceiro, ou para fins de ocultação de ato ilegal cometido por si ou por outrem;",
+      "path": [
+        "CAPÍTULO V — DAS RESPONSABILIDADES",
+        "Art. 32",
+        "V"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 188,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art32:incVI",
+      "document_id": "lai",
+      "parent_id": "lai:art32",
+      "kind": "inciso",
+      "label": "VI",
+      "text": "ocultar da revisão de autoridade superior competente informação sigilosa para beneficiar a si ou a outrem, ou em prejuízo de terceiros; e",
+      "path": [
+        "CAPÍTULO V — DAS RESPONSABILIDADES",
+        "Art. 32",
+        "VI"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 189,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art32:incVII",
+      "document_id": "lai",
+      "parent_id": "lai:art32",
+      "kind": "inciso",
+      "label": "VII",
+      "text": "destruir ou subtrair, por qualquer meio, documentos concernentes a possíveis violações de direitos humanos por parte de agentes do Estado.",
+      "path": [
+        "CAPÍTULO V — DAS RESPONSABILIDADES",
+        "Art. 32",
+        "VII"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 190,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art32:par1",
+      "document_id": "lai",
+      "parent_id": "lai:art32",
+      "kind": "paragraph",
+      "label": "§ 1º",
+      "text": "Atendido o princípio do contraditório, da ampla defesa e do devido processo legal, as condutas descritas no caput serão consideradas:",
+      "path": [
+        "CAPÍTULO V — DAS RESPONSABILIDADES",
+        "Art. 32",
+        "§ 1º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 191,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art32:par1:incI",
+      "document_id": "lai",
+      "parent_id": "lai:art32:par1",
+      "kind": "inciso",
+      "label": "I",
+      "text": "para fins dos regulamentos disciplinares das Forças Armadas, transgressões militares médias ou graves, segundo os critérios neles estabelecidos, desde que não tipificadas em lei como crime ou contravenção penal; ou",
+      "path": [
+        "CAPÍTULO V — DAS RESPONSABILIDADES",
+        "Art. 32",
+        "§ 1º",
+        "I"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 192,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art32:par1:incII",
+      "document_id": "lai",
+      "parent_id": "lai:art32:par1",
+      "kind": "inciso",
+      "label": "II",
+      "text": "para fins do disposto na Lei nº 8.112, de 11 de dezembro de 1990, e suas alterações, infrações administrativas, que deverão ser apenadas, no mínimo, com suspensão, segundo os critérios nela estabelecidos.",
+      "path": [
+        "CAPÍTULO V — DAS RESPONSABILIDADES",
+        "Art. 32",
+        "§ 1º",
+        "II"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 193,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art32:par2",
+      "document_id": "lai",
+      "parent_id": "lai:art32",
+      "kind": "paragraph",
+      "label": "§ 2º",
+      "text": "Pelas condutas descritas no caput, poderá o militar ou agente público responder, também, por improbidade administrativa, conforme o disposto nas Leis nºs 1.079, de 10 de abril de 1950, e 8.429, de 2 de junho de 1992.",
+      "path": [
+        "CAPÍTULO V — DAS RESPONSABILIDADES",
+        "Art. 32",
+        "§ 2º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 194,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art33",
+      "document_id": "lai",
+      "parent_id": null,
+      "kind": "article",
+      "label": "Art. 33",
+      "text": "A pessoa física ou entidade privada que detiver informações em virtude de vínculo de qualquer natureza com o poder público e deixar de observar o disposto nesta Lei estará sujeita às seguintes sanções:",
+      "path": [
+        "CAPÍTULO V — DAS RESPONSABILIDADES",
+        "Art. 33"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 195,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art33:incI",
+      "document_id": "lai",
+      "parent_id": "lai:art33",
+      "kind": "inciso",
+      "label": "I",
+      "text": "advertência;",
+      "path": [
+        "CAPÍTULO V — DAS RESPONSABILIDADES",
+        "Art. 33",
+        "I"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 196,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art33:incII",
+      "document_id": "lai",
+      "parent_id": "lai:art33",
+      "kind": "inciso",
+      "label": "II",
+      "text": "multa;",
+      "path": [
+        "CAPÍTULO V — DAS RESPONSABILIDADES",
+        "Art. 33",
+        "II"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 197,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art33:incIII",
+      "document_id": "lai",
+      "parent_id": "lai:art33",
+      "kind": "inciso",
+      "label": "III",
+      "text": "rescisão do vínculo com o poder público;",
+      "path": [
+        "CAPÍTULO V — DAS RESPONSABILIDADES",
+        "Art. 33",
+        "III"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 198,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art33:incIV",
+      "document_id": "lai",
+      "parent_id": "lai:art33",
+      "kind": "inciso",
+      "label": "IV",
+      "text": "suspensão temporária de participar em licitação e impedimento de contratar com a administração pública por prazo não superior a 2 (dois) anos; e",
+      "path": [
+        "CAPÍTULO V — DAS RESPONSABILIDADES",
+        "Art. 33",
+        "IV"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 199,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art33:incV",
+      "document_id": "lai",
+      "parent_id": "lai:art33",
+      "kind": "inciso",
+      "label": "V",
+      "text": "declaração de inidoneidade para licitar ou contratar com a administração pública, até que seja promovida a reabilitação perante a própria autoridade que aplicou a penalidade.",
+      "path": [
+        "CAPÍTULO V — DAS RESPONSABILIDADES",
+        "Art. 33",
+        "V"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 200,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art33:par1",
+      "document_id": "lai",
+      "parent_id": "lai:art33",
+      "kind": "paragraph",
+      "label": "§ 1º",
+      "text": "As sanções previstas nos incisos I, III e IV poderão ser aplicadas juntamente com a do inciso II, assegurado o direito de defesa do interessado, no respectivo processo, no prazo de 10 (dez) dias.",
+      "path": [
+        "CAPÍTULO V — DAS RESPONSABILIDADES",
+        "Art. 33",
+        "§ 1º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 201,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art33:par2",
+      "document_id": "lai",
+      "parent_id": "lai:art33",
+      "kind": "paragraph",
+      "label": "§ 2º",
+      "text": "A reabilitação referida no inciso V será autorizada somente quando o interessado efetivar o ressarcimento ao órgão ou entidade dos prejuízos resultantes e após decorrido o prazo da sanção aplicada com base no inciso IV.",
+      "path": [
+        "CAPÍTULO V — DAS RESPONSABILIDADES",
+        "Art. 33",
+        "§ 2º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 202,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art33:par3",
+      "document_id": "lai",
+      "parent_id": "lai:art33",
+      "kind": "paragraph",
+      "label": "§ 3º",
+      "text": "A aplicação da sanção prevista no inciso V é de competência exclusiva da autoridade máxima do órgão ou entidade pública, facultada a defesa do interessado, no respectivo processo, no prazo de 10 (dez) dias da abertura de vista.",
+      "path": [
+        "CAPÍTULO V — DAS RESPONSABILIDADES",
+        "Art. 33",
+        "§ 3º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 203,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art34",
+      "document_id": "lai",
+      "parent_id": null,
+      "kind": "article",
+      "label": "Art. 34",
+      "text": "Os órgãos e entidades públicas respondem diretamente pelos danos causados em decorrência da divulgação não autorizada ou utilização indevida de informações sigilosas ou informações pessoais, cabendo a apuração de responsabilidade funcional nos casos de dolo ou culpa, assegurado o respectivo direito de regresso.",
+      "path": [
+        "CAPÍTULO V — DAS RESPONSABILIDADES",
+        "Art. 34"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 204,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art34:paru",
+      "document_id": "lai",
+      "parent_id": "lai:art34",
+      "kind": "paragraph",
+      "label": "Parágrafo único",
+      "text": "O disposto neste artigo aplica-se à pessoa física ou entidade privada que, em virtude de vínculo de qualquer natureza com órgãos ou entidades, tenha acesso a informação sigilosa ou pessoal e a submeta a tratamento indevido.",
+      "path": [
+        "CAPÍTULO V — DAS RESPONSABILIDADES",
+        "Art. 34",
+        "Parágrafo único"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 205,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art35",
+      "document_id": "lai",
+      "parent_id": null,
+      "kind": "article",
+      "label": "Art. 35",
+      "text": "",
+      "path": [
+        "CAPÍTULO VI — DISPOSIÇÕES FINAIS E TRANSITÓRIAS",
+        "Art. 35"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": true,
+      "ordinal": 206,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art35:par1",
+      "document_id": "lai",
+      "parent_id": "lai:art35",
+      "kind": "paragraph",
+      "label": "§ 1º",
+      "text": "É instituída a Comissão Mista de Reavaliação de Informações, que decidirá, no âmbito da administração pública federal, sobre o tratamento e a classificação de informações sigilosas e terá competência para:",
+      "path": [
+        "CAPÍTULO VI — DISPOSIÇÕES FINAIS E TRANSITÓRIAS",
+        "Art. 35",
+        "§ 1º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 207,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art35:par1:incI",
+      "document_id": "lai",
+      "parent_id": "lai:art35:par1",
+      "kind": "inciso",
+      "label": "I",
+      "text": "requisitar da autoridade que classificar informação como ultrassecreta e secreta esclarecimento ou conteúdo, parcial ou integral da informação;",
+      "path": [
+        "CAPÍTULO VI — DISPOSIÇÕES FINAIS E TRANSITÓRIAS",
+        "Art. 35",
+        "§ 1º",
+        "I"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 208,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art35:par1:incII",
+      "document_id": "lai",
+      "parent_id": "lai:art35:par1",
+      "kind": "inciso",
+      "label": "II",
+      "text": "rever a classificação de informações ultrassecretas ou secretas, de ofício ou mediante provocação de pessoa interessada, observado o disposto no art. 7º e demais dispositivos desta Lei; e",
+      "path": [
+        "CAPÍTULO VI — DISPOSIÇÕES FINAIS E TRANSITÓRIAS",
+        "Art. 35",
+        "§ 1º",
+        "II"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 209,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art35:par1:incIII",
+      "document_id": "lai",
+      "parent_id": "lai:art35:par1",
+      "kind": "inciso",
+      "label": "III",
+      "text": "prorrogar o prazo de sigilo de informação classificada como ultrassecreta, sempre por prazo determinado, enquanto o seu acesso ou divulgação puder ocasionar ameaça externa à soberania nacional ou à integridade do território nacional ou grave risco às relações internacionais do País, observado o prazo previsto no § 1º do art. 24.",
+      "path": [
+        "CAPÍTULO VI — DISPOSIÇÕES FINAIS E TRANSITÓRIAS",
+        "Art. 35",
+        "§ 1º",
+        "III"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 210,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art35:par2",
+      "document_id": "lai",
+      "parent_id": "lai:art35",
+      "kind": "paragraph",
+      "label": "§ 2º",
+      "text": "O prazo referido no inciso III é limitado a uma única renovação.",
+      "path": [
+        "CAPÍTULO VI — DISPOSIÇÕES FINAIS E TRANSITÓRIAS",
+        "Art. 35",
+        "§ 2º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 211,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art35:par3",
+      "document_id": "lai",
+      "parent_id": "lai:art35",
+      "kind": "paragraph",
+      "label": "§ 3º",
+      "text": "A revisão de ofício a que se refere o inciso II do § 1º deverá ocorrer, no máximo, a cada 4 (quatro) anos, após a reavaliação prevista no art. 39, quando se tratar de documentos ultrassecretos ou secretos.",
+      "path": [
+        "CAPÍTULO VI — DISPOSIÇÕES FINAIS E TRANSITÓRIAS",
+        "Art. 35",
+        "§ 3º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 212,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art35:par4",
+      "document_id": "lai",
+      "parent_id": "lai:art35",
+      "kind": "paragraph",
+      "label": "§ 4º",
+      "text": "A não deliberação sobre a revisão pela Comissão Mista de Reavaliação de Informações nos prazos previstos no § 3º implicará a desclassificação automática das informações.",
+      "path": [
+        "CAPÍTULO VI — DISPOSIÇÕES FINAIS E TRANSITÓRIAS",
+        "Art. 35",
+        "§ 4º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 213,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art35:par5",
+      "document_id": "lai",
+      "parent_id": "lai:art35",
+      "kind": "paragraph",
+      "label": "§ 5º",
+      "text": "Regulamento disporá sobre a composição, organização e funcionamento da Comissão Mista de Reavaliação de Informações, observado o mandato de 2 (dois) anos para seus integrantes e demais disposições desta Lei.",
+      "path": [
+        "CAPÍTULO VI — DISPOSIÇÕES FINAIS E TRANSITÓRIAS",
+        "Art. 35",
+        "§ 5º"
+      ],
+      "amendments": [
+        "(Regulamento)"
+      ],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 214,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art36",
+      "document_id": "lai",
+      "parent_id": null,
+      "kind": "article",
+      "label": "Art. 36",
+      "text": "O tratamento de informação sigilosa resultante de tratados, acordos ou atos internacionais atenderá às normas e recomendações constantes desses instrumentos.",
+      "path": [
+        "CAPÍTULO VI — DISPOSIÇÕES FINAIS E TRANSITÓRIAS",
+        "Art. 36"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 215,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art37",
+      "document_id": "lai",
+      "parent_id": null,
+      "kind": "article",
+      "label": "Art. 37",
+      "text": "É instituído, no âmbito do Gabinete de Segurança Institucional da Presidência da República, o Núcleo de Segurança e Credenciamento (NSC), que tem por objetivos:",
+      "path": [
+        "CAPÍTULO VI — DISPOSIÇÕES FINAIS E TRANSITÓRIAS",
+        "Art. 37"
+      ],
+      "amendments": [
+        "(Regulamento)"
+      ],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 216,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art37:incI",
+      "document_id": "lai",
+      "parent_id": "lai:art37",
+      "kind": "inciso",
+      "label": "I",
+      "text": "promover e propor a regulamentação do credenciamento de segurança de pessoas físicas, empresas, órgãos e entidades para tratamento de informações sigilosas; e",
+      "path": [
+        "CAPÍTULO VI — DISPOSIÇÕES FINAIS E TRANSITÓRIAS",
+        "Art. 37",
+        "I"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 217,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art37:incII",
+      "document_id": "lai",
+      "parent_id": "lai:art37",
+      "kind": "inciso",
+      "label": "II",
+      "text": "garantir a segurança de informações sigilosas, inclusive aquelas provenientes de países ou organizações internacionais com os quais a República Federativa do Brasil tenha firmado tratado, acordo, contrato ou qualquer outro ato internacional, sem prejuízo das atribuições do Ministério das Relações Exteriores e dos demais órgãos competentes.",
+      "path": [
+        "CAPÍTULO VI — DISPOSIÇÕES FINAIS E TRANSITÓRIAS",
+        "Art. 37",
+        "II"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 218,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art37:paru",
+      "document_id": "lai",
+      "parent_id": "lai:art37",
+      "kind": "paragraph",
+      "label": "Parágrafo único",
+      "text": "Regulamento disporá sobre a composição, organização e funcionamento do NSC.",
+      "path": [
+        "CAPÍTULO VI — DISPOSIÇÕES FINAIS E TRANSITÓRIAS",
+        "Art. 37",
+        "Parágrafo único"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 219,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art38",
+      "document_id": "lai",
+      "parent_id": null,
+      "kind": "article",
+      "label": "Art. 38",
+      "text": "Aplica-se, no que couber, a Lei nº 9.507, de 12 de novembro de 1997, em relação à informação de pessoa, física ou jurídica, constante de registro ou banco de dados de entidades governamentais ou de caráter público.",
+      "path": [
+        "CAPÍTULO VI — DISPOSIÇÕES FINAIS E TRANSITÓRIAS",
+        "Art. 38"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 220,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art39",
+      "document_id": "lai",
+      "parent_id": null,
+      "kind": "article",
+      "label": "Art. 39",
+      "text": "Os órgãos e entidades públicas deverão proceder à reavaliação das informações classificadas como ultrassecretas e secretas no prazo máximo de 2 (dois) anos, contado do termo inicial de vigência desta Lei.",
+      "path": [
+        "CAPÍTULO VI — DISPOSIÇÕES FINAIS E TRANSITÓRIAS",
+        "Art. 39"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 221,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art39:par1",
+      "document_id": "lai",
+      "parent_id": "lai:art39",
+      "kind": "paragraph",
+      "label": "§ 1º",
+      "text": "A restrição de acesso a informações, em razão da reavaliação prevista no caput, deverá observar os prazos e condições previstos nesta Lei.",
+      "path": [
+        "CAPÍTULO VI — DISPOSIÇÕES FINAIS E TRANSITÓRIAS",
+        "Art. 39",
+        "§ 1º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 222,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art39:par2",
+      "document_id": "lai",
+      "parent_id": "lai:art39",
+      "kind": "paragraph",
+      "label": "§ 2º",
+      "text": "No âmbito da administração pública federal, a reavaliação prevista no caput poderá ser revista, a qualquer tempo, pela Comissão Mista de Reavaliação de Informações, observados os termos desta Lei.",
+      "path": [
+        "CAPÍTULO VI — DISPOSIÇÕES FINAIS E TRANSITÓRIAS",
+        "Art. 39",
+        "§ 2º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 223,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art39:par3",
+      "document_id": "lai",
+      "parent_id": "lai:art39",
+      "kind": "paragraph",
+      "label": "§ 3º",
+      "text": "Enquanto não transcorrido o prazo de reavaliação previsto no caput, será mantida a classificação da informação nos termos da legislação precedente.",
+      "path": [
+        "CAPÍTULO VI — DISPOSIÇÕES FINAIS E TRANSITÓRIAS",
+        "Art. 39",
+        "§ 3º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 224,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art39:par4",
+      "document_id": "lai",
+      "parent_id": "lai:art39",
+      "kind": "paragraph",
+      "label": "§ 4º",
+      "text": "As informações classificadas como secretas e ultrassecretas não reavaliadas no prazo previsto no caput serão consideradas, automaticamente, de acesso público.",
+      "path": [
+        "CAPÍTULO VI — DISPOSIÇÕES FINAIS E TRANSITÓRIAS",
+        "Art. 39",
+        "§ 4º"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 225,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art40",
+      "document_id": "lai",
+      "parent_id": null,
+      "kind": "article",
+      "label": "Art. 40",
+      "text": "No prazo de 60 (sessenta) dias, a contar da vigência desta Lei, o dirigente máximo de cada órgão ou entidade da administração pública federal direta e indireta designará autoridade que lhe seja diretamente subordinada para, no âmbito do respectivo órgão ou entidade, exercer as seguintes atribuições:",
+      "path": [
+        "CAPÍTULO VI — DISPOSIÇÕES FINAIS E TRANSITÓRIAS",
+        "Art. 40"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 226,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art40:incI",
+      "document_id": "lai",
+      "parent_id": "lai:art40",
+      "kind": "inciso",
+      "label": "I",
+      "text": "assegurar o cumprimento das normas relativas ao acesso a informação, de forma eficiente e adequada aos objetivos desta Lei;",
+      "path": [
+        "CAPÍTULO VI — DISPOSIÇÕES FINAIS E TRANSITÓRIAS",
+        "Art. 40",
+        "I"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 227,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art40:incII",
+      "document_id": "lai",
+      "parent_id": "lai:art40",
+      "kind": "inciso",
+      "label": "II",
+      "text": "monitorar a implementação do disposto nesta Lei e apresentar relatórios periódicos sobre o seu cumprimento;",
+      "path": [
+        "CAPÍTULO VI — DISPOSIÇÕES FINAIS E TRANSITÓRIAS",
+        "Art. 40",
+        "II"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 228,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art40:incIII",
+      "document_id": "lai",
+      "parent_id": "lai:art40",
+      "kind": "inciso",
+      "label": "III",
+      "text": "recomendar as medidas indispensáveis à implementação e ao aperfeiçoamento das normas e procedimentos necessários ao correto cumprimento do disposto nesta Lei; e",
+      "path": [
+        "CAPÍTULO VI — DISPOSIÇÕES FINAIS E TRANSITÓRIAS",
+        "Art. 40",
+        "III"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 229,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art40:incIV",
+      "document_id": "lai",
+      "parent_id": "lai:art40",
+      "kind": "inciso",
+      "label": "IV",
+      "text": "orientar as respectivas unidades no que se refere ao cumprimento do disposto nesta Lei e seus regulamentos.",
+      "path": [
+        "CAPÍTULO VI — DISPOSIÇÕES FINAIS E TRANSITÓRIAS",
+        "Art. 40",
+        "IV"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 230,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art41",
+      "document_id": "lai",
+      "parent_id": null,
+      "kind": "article",
+      "label": "Art. 41",
+      "text": "O Poder Executivo Federal designará órgão da administração pública federal responsável:",
+      "path": [
+        "CAPÍTULO VI — DISPOSIÇÕES FINAIS E TRANSITÓRIAS",
+        "Art. 41"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 231,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art41:incI",
+      "document_id": "lai",
+      "parent_id": "lai:art41",
+      "kind": "inciso",
+      "label": "I",
+      "text": "pela promoção de campanha de abrangência nacional de fomento à cultura da transparência na administração pública e conscientização do direito fundamental de acesso à informação;",
+      "path": [
+        "CAPÍTULO VI — DISPOSIÇÕES FINAIS E TRANSITÓRIAS",
+        "Art. 41",
+        "I"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 232,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art41:incII",
+      "document_id": "lai",
+      "parent_id": "lai:art41",
+      "kind": "inciso",
+      "label": "II",
+      "text": "pelo treinamento de agentes públicos no que se refere ao desenvolvimento de práticas relacionadas à transparência na administração pública;",
+      "path": [
+        "CAPÍTULO VI — DISPOSIÇÕES FINAIS E TRANSITÓRIAS",
+        "Art. 41",
+        "II"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 233,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art41:incIII",
+      "document_id": "lai",
+      "parent_id": "lai:art41",
+      "kind": "inciso",
+      "label": "III",
+      "text": "pelo monitoramento da aplicação da lei no âmbito da administração pública federal, concentrando e consolidando a publicação de informações estatísticas relacionadas no art. 30;",
+      "path": [
+        "CAPÍTULO VI — DISPOSIÇÕES FINAIS E TRANSITÓRIAS",
+        "Art. 41",
+        "III"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 234,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art41:incIV",
+      "document_id": "lai",
+      "parent_id": "lai:art41",
+      "kind": "inciso",
+      "label": "IV",
+      "text": "pelo encaminhamento ao Congresso Nacional de relatório anual com informações atinentes à implementação desta Lei.",
+      "path": [
+        "CAPÍTULO VI — DISPOSIÇÕES FINAIS E TRANSITÓRIAS",
+        "Art. 41",
+        "IV"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 235,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art42",
+      "document_id": "lai",
+      "parent_id": null,
+      "kind": "article",
+      "label": "Art. 42",
+      "text": "O Poder Executivo regulamentará o disposto nesta Lei no prazo de 180 (cento e oitenta) dias a contar da data de sua publicação.",
+      "path": [
+        "CAPÍTULO VI — DISPOSIÇÕES FINAIS E TRANSITÓRIAS",
+        "Art. 42"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 236,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art43",
+      "document_id": "lai",
+      "parent_id": null,
+      "kind": "article",
+      "label": "Art. 43",
+      "text": "O inciso VI do art. 116 da Lei no 8.112, de 11 de dezembro de 1990, passa a vigorar com a seguinte redação: “Art. 116. (...) VI - levar as irregularidades de que tiver ciência em razão do cargo ao conhecimento da autoridade superior ou, quando houver suspeita de envolvimento desta, ao conhecimento de outra autoridade competente para apuração; (...) ” (NR)",
+      "path": [
+        "CAPÍTULO VI — DISPOSIÇÕES FINAIS E TRANSITÓRIAS",
+        "Art. 43"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 237,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art44",
+      "document_id": "lai",
+      "parent_id": null,
+      "kind": "article",
+      "label": "Art. 44",
+      "text": "O Capítulo IV do Título IV da Lei nº 8.112, de 1990, passa a vigorar acrescido do seguinte art. 126-A: “Art. 126-A. Nenhum servidor poderá ser responsabilizado civil, penal ou administrativamente por dar ciência à autoridade superior ou, quando houver suspeita de envolvimento desta, a outra autoridade competente para apuração de informação concernente à prática de crimes ou improbidade de que tenha conhecimento, ainda que em decorrência do exercício de cargo, emprego ou função pública.”",
+      "path": [
+        "CAPÍTULO VI — DISPOSIÇÕES FINAIS E TRANSITÓRIAS",
+        "Art. 44"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 238,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art45",
+      "document_id": "lai",
+      "parent_id": null,
+      "kind": "article",
+      "label": "Art. 45",
+      "text": "Cabe aos Estados, ao Distrito Federal e aos Municípios, em legislação própria, obedecidas as normas gerais estabelecidas nesta Lei, definir regras específicas, especialmente quanto ao disposto no art. 9º e na Seção II do Capítulo III.",
+      "path": [
+        "CAPÍTULO VI — DISPOSIÇÕES FINAIS E TRANSITÓRIAS",
+        "Art. 45"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 239,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art46",
+      "document_id": "lai",
+      "parent_id": null,
+      "kind": "article",
+      "label": "Art. 46",
+      "text": "Revogam-se:",
+      "path": [
+        "CAPÍTULO VI — DISPOSIÇÕES FINAIS E TRANSITÓRIAS",
+        "Art. 46"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 240,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art46:incI",
+      "document_id": "lai",
+      "parent_id": "lai:art46",
+      "kind": "inciso",
+      "label": "I",
+      "text": "a Lei nº 11.111, de 5 de maio de 2005; e",
+      "path": [
+        "CAPÍTULO VI — DISPOSIÇÕES FINAIS E TRANSITÓRIAS",
+        "Art. 46",
+        "I"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 241,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art46:incII",
+      "document_id": "lai",
+      "parent_id": "lai:art46",
+      "kind": "inciso",
+      "label": "II",
+      "text": "os arts. 22 a 24 da Lei nº 8.159, de 8 de janeiro de 1991.",
+      "path": [
+        "CAPÍTULO VI — DISPOSIÇÕES FINAIS E TRANSITÓRIAS",
+        "Art. 46",
+        "II"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 242,
+      "valid_from": null,
+      "valid_to": null
+    },
+    {
+      "id": "lai:art47",
+      "document_id": "lai",
+      "parent_id": null,
+      "kind": "article",
+      "label": "Art. 47",
+      "text": "Esta Lei entra em vigor 180 (cento e oitenta) dias após a data de sua publicação.",
+      "path": [
+        "CAPÍTULO VI — DISPOSIÇÕES FINAIS E TRANSITÓRIAS",
+        "Art. 47"
+      ],
+      "amendments": [],
+      "revoked": false,
+      "vetoed": false,
+      "ordinal": 243,
+      "valid_from": null,
+      "valid_to": null
+    }
+  ]
+}

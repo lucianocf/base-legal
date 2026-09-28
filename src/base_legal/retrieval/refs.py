@@ -26,11 +26,18 @@ _RESOLUTION_RE = re.compile(
     r"\s*(?:/|,?\s+de\s+(?:\d{1,2}\s+de\s+\w+\s+de\s+)?)(?P<year>\d{4})"
 )
 
+_LAI_RE = re.compile(
+    r"\bLAI\b|(?i:lei\s+de\s+acesso\s+[àa]\s+informa[çc][ãa]o)"
+    r"|(?i:lei)\s+(?i:n)?[º°o.]*\s*12\.?527\b"
+)
+
 
 def _doc_for(question: str) -> str:
     match = _RESOLUTION_RE.search(question)
     if match:
         return f"res-anpd-{int(match['num'])}-{match['year']}"
+    if _LAI_RE.search(question):
+        return "lai"
     return DEFAULT_DOC
 
 
@@ -70,3 +77,29 @@ def candidate_ids(ref: ProvisionRef) -> list[str]:
     if ref.annex is None and ref.doc.startswith("res-"):
         return [str(dataclasses.replace(ref, annex="1")), str(ref)]
     return [str(ref)]
+
+
+# Legal regimes outside the corpus (Brazilian data protection law): foreign laws
+# and other Brazilian codes and acts. Named without any act of the corpus, they
+# put the question out of scope (strict grounding, ADR 0005).
+_OTHER_ACTS = re.compile(
+    r"\b(?:GDPR|RGPD|UK\s+GDPR|CCPA|CPRA|HIPAA|PIPEDA|PIPL|COPPA|FERPA"
+    r"|Regulamento\s+Geral\s+(?:sobre\s+a|de)\s+Prote[çc][ãa]o\s+de\s+Dados"
+    r"|C[óo]digo\s+(?:Penal|Civil|de\s+Processo\s+(?:Penal|Civil)|Tribut[áa]rio"
+    r"|de\s+Tr[âa]nsito|de\s+Defesa\s+do\s+Consumidor|Eleitoral)"
+    r"|CLT|Consolida[çc][ãa]o\s+das\s+Leis\s+do\s+Trabalho|Constitui[çc][ãa]o(?:\s+Federal)?"
+    r"|Marco\s+Civil\s+da\s+Internet|Lei\s+Maria\s+da\s+Penha|Estatuto\s+d[ao]\s+\w+)\b",
+    re.IGNORECASE,
+)
+_CORPUS_ACTS = re.compile(
+    r"\bLGPD\b|Lei\s+Geral\s+de\s+Prote[çc][ãa]o\s+de\s+Dados|13\.?709|\bLAI\b"
+    r"|Lei\s+de\s+Acesso\s+[àa]\s+Informa[çc][ãa]o|12\.?527|\bANPD\b|Resolu[çc][ãa]o\s+CD/ANPD",
+    re.IGNORECASE,
+)
+
+
+def other_acts(question: str) -> list[str]:
+    """Acts outside the corpus that ``question`` names, unless it also names one inside."""
+    if _CORPUS_ACTS.search(question):
+        return []
+    return list(dict.fromkeys(" ".join(m.group(0).split()) for m in _OTHER_ACTS.finditer(question)))

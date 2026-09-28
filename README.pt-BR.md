@@ -3,7 +3,7 @@
 **Cada afirmação cita um inciso — e uma máquina confere.**
 
 Perguntas e respostas verificáveis sobre a legislação brasileira de proteção
-de dados (LGPD + resoluções do Conselho Diretor da ANPD). As respostas citam o
+de dados (LGPD, Lei de Acesso à Informação e resoluções do Conselho Diretor da ANPD). As respostas citam o
 artigo, o parágrafo e o inciso exatos; cada citação é conferida, literalmente,
 contra o texto oficial antes de chegar a você, e quando nada no corpus sustenta
 uma resposta, o Base Legal diz isso. Privacidade desde a concepção, modelo de
@@ -40,6 +40,17 @@ ameaças, avaliações automáticas. Inclui servidor MCP.
   ([THREAT_MODEL.md](docs/THREAT_MODEL.md)); avaliações de recuperação e de
   red team rodam em todo pull request, sem segredos; pesos de modelo e GitHub
   Actions fixados por hash.
+- **A lei como rede, e como ela era.** Remissões como "nos termos do art. 11"
+  viram links nas respostas, na API e num
+  [explorador estático do corpus](https://lucianocf.github.io/base-legal/explorer/).
+  As redações anteriores vêm direto do texto riscado da lei compilada e podem
+  ser consultadas por data. Cada data vem da página do próprio ato que alterou
+  a lei, e uma data que não se pode estabelecer é marcada como incerta, nunca
+  presumida ([ADR 0014](docs/adr/0014-point-in-time-wordings.md)).
+- **Sempre atualizado, com entrega verificável.** Um vigia semanal abre um PR
+  de rascunho quando um texto oficial muda. As versões publicadas trazem SBOM,
+  atestado de procedência do build e imagem de contêiner assinada sem chave
+  (keyless).
 
 ## Início rápido
 
@@ -56,7 +67,9 @@ docker compose exec app base-legal ask "Qual o prazo para comunicar um incidente
 ```
 
 Depois abra <http://127.0.0.1:8000> para a interface web local, ou use a API
-(`POST /ask`, `POST /search`, `GET /provisions/{id}`, documentação em `/docs`).
+(`POST /ask`, `POST /search`, `GET /provisions/{id}`, `GET /provisions/{id}?at=AAAA-MM-DD`
+para a redação vigente numa data passada, `GET /provisions/{id}/history`,
+documentação em `/docs`).
 
 Sem Docker: `uv sync --extra local`, `uv run base-legal model fetch`, aponte
 `DATABASE_URL` para um PostgreSQL com pgvector e use os mesmos comandos
@@ -64,8 +77,8 @@ Sem Docker: `uv sync --extra local`, `uv run base-legal model fetch`, aponte
 
 ### MCP (Claude Desktop, Claude Code)
 
-Um servidor MCP somente leitura oferece `search_provisions`, `get_provision` e
-`verify_citation`; o modelo do seu host MCP escreve a resposta e o Base Legal
+Um servidor MCP somente leitura oferece `search_provisions`, `get_provision`,
+`get_provision_history` e `verify_citation`; o modelo do seu host MCP escreve a resposta e o Base Legal
 não chama nenhum terceiro:
 
 ```bash
@@ -80,7 +93,7 @@ Configuração do Claude Desktop: [docs/MCP.md](docs/MCP.md).
 
 ```
 pergunta ─▶ remoção de PII ─▶ vetor local (voyage-4-nano) ─┐
-                            └▶ busca textual no PostgreSQL ─┼▶ fusão RRF ─▶ top-k dispositivos
+                            └▶ busca textual no PostgreSQL ─┼▶ fusão RRF ─▶ reranker local ─▶ top-k dispositivos
                                                             │   (+ consulta direta de "art. 7º, IX")
 top-k ─▶ Claude (um documento citável por dispositivo) ─▶ validador de citações ─▶ resposta ou recusa
 ```
@@ -93,6 +106,10 @@ top-k ─▶ Claude (um documento citável por dispositivo) ─▶ validador de 
   tamanho e pgvector, fundidas por Reciprocal Rank Fusion, com parte da
   pontuação de cada resultado propagada ao artigo a que pertence
   ([ADR 0004](docs/adr/0004-postgres-hybrid-search-rrf.md)).
+  Os 10 primeiros são reordenados por um pequeno cross-encoder local, e essa
+  ordem é combinada com a híbrida ([ADR 0015](docs/adr/0015-local-cross-encoder-reranker.md)).
+  Perguntas que citam apenas atos fora do corpus (GDPR, Código Penal…) são
+  recusadas antes de qualquer chamada a modelo ([ADR 0016](docs/adr/0016-refuse-questions-about-other-acts.md)).
 - **Geração fundamentada** com Citations do Claude, um documento por
   dispositivo, de modo que cada citação aponta para um identificador canônico
   ([ADR 0005](docs/adr/0005-strict-grounding-verified-citations.md),
@@ -103,22 +120,28 @@ Detalhes: [ARCHITECTURE.md](docs/ARCHITECTURE.md) e os [ADRs](docs/adr/).
 
 ## Avaliação
 
-Conjunto de referência: 45 perguntas sintéticas respondíveis e 8 que devem ser
+Conjunto de referência: 59 perguntas sintéticas respondíveis e 9 que devem ser
 recusadas (`evals/golden.yaml`, pendente de revisão por um DPO), divididas em
 dev (usado para ajuste) e holdout (usado só para confirmar). Recuperação em
-modo `local` (voyage-4-nano para documentos e perguntas), como no CI:
+modo `local` (voyage-4-nano para documentos e perguntas, reranker local), como
+no CI:
 
 | Divisão | recall@5 | recall@10 | MRR | Acerto de recusas | Recusas indevidas |
 |---|---|---|---|---|---|
-| dev (31 + 5) | 67,7 % | 79,0 % | 0,474 | 60,0 % | 0,0 % |
-| holdout (14 + 3) | 67,9 % | 82,1 % | 0,393 | 66,7 % | 0,0 % |
+| dev (41 + 5) | 75,6 % | 79,3 % | 0,591 | 100,0 % | 0,0 % |
+| holdout (18 + 4) | 66,7 % | 69,4 % | 0,500 | 100,0 % | 0,0 % |
 
-Antes do ajuste, o recall@5 no holdout era 42,9 %. O conjunto de red team
-(injeção de prompt, dados pessoais, citações falsas, XSS, entrada gigante)
-passa nas 13 verificações determinísticas. O teste de validação de embeddings
-comparou cinco configurações, e vetorizar a lei com o mesmo modelo local ficou
-em primeiro lugar, à frente dos vetores de documentos do `voyage-4-large`
-([resultados](docs/evals/embedding-gate.md), [ADR 0013](docs/adr/0013-voyage-4-nano-for-documents-by-default.md)).
+A inclusão da LAI tornou a recuperação mais difícil (o recall@5 no holdout caiu
+de 67,9 % para 58,3 %); o reranker local o recuperou. A regra de recusa para
+outros atos foi escrita depois de ler as perguntas de recusa do holdout, então
+os 100 % ali não são um resultado cego ([ADR 0016](docs/adr/0016-refuse-questions-about-other-acts.md)).
+O conjunto de red team (injeção de prompt, dados pessoais, citações falsas,
+XSS, entrada gigante) passa nas 13 verificações determinísticas. O teste de
+validação de embeddings comparou cinco configurações, e vetorizar a lei com o
+mesmo modelo local ficou em primeiro lugar, à frente dos vetores de documentos
+do `voyage-4-large` ([resultados](docs/evals/embedding-gate.md), [ADR 0013](docs/adr/0013-voyage-4-nano-for-documents-by-default.md)).
+`base-legal eval generation` avalia as respostas geradas (recall de citações e
+recusas); ele chama a API da Anthropic, então só roda quando pedido, nunca no CI.
 Relatórios completos: [docs/evals/](docs/evals/).
 
 ## Segurança e privacidade
@@ -132,7 +155,8 @@ Relatórios completos: [docs/evals/](docs/evals/).
 
 ## Corpus e aviso legal
 
-LGPD (Lei nº 13.709/2018, texto compilado) e Resoluções CD/ANPD nº 1/2021,
+LGPD (Lei nº 13.709/2018, texto compilado), LAI (Lei nº 12.527/2011, texto
+compilado) e Resoluções CD/ANPD nº 1/2021,
 2/2022, 4/2023, 15/2024, 18/2024 e 19/2024 (Anexo I), obtidas de
 planalto.gov.br, gov.br/anpd e do Diário Oficial da União. Atos oficiais não
 são protegidos por direitos autorais (Lei nº 9.610/1998, art. 8º, IV); a
@@ -141,15 +165,18 @@ procedência e os hashes estão em `corpus/manifest.yaml`. Veja o
 
 ## Próximos passos
 
-- **A seguir: LAI × LGPD.** Lei nº 12.527/2011 (Lei de Acesso à Informação) e a
-  tensão entre transparência e proteção de dados no setor público.
-- Remissões resolvidas ("nos termos do art. 11" vira um link).
-- Anexo II da Res. CD/ANPD nº 19/2024 (cláusulas-padrão contratuais).
-- Um explorador estático do corpus no GitHub Pages; um reranker local, se as
-  avaliações mostrarem ganho.
-- Consultas no tempo, entre as versões históricas da LGPD.
+Concluído nas fases 2 e 3: a LAI, as remissões resolvidas, o reranker local, o
+vigia de mudanças normativas, o explorador do corpus, a cadeia de suprimentos
+das versões e as redações no tempo. A seguir:
 
-Plano completo: [PLAN.md](docs/PLAN.md). Contribuições: [CONTRIBUTING.md](CONTRIBUTING.md).
+- Uma comparação entre `claude-haiku-4-5` e `claude-sonnet-5` no conjunto de
+  referência (a ferramenta de avaliação está pronta).
+- Anexo II da Res. CD/ANPD nº 19/2024 (cláusulas-padrão contratuais).
+- Os guias da ANPD, quando a licença estiver resolvida ([ADR 0017](docs/adr/0017-anpd-guides-blocked-on-licence.md)).
+- Uma demonstração hospedada, com aviso de privacidade e RIPD próprios, e um
+  mapeamento LGPD ↔ GDPR curado por pessoas.
+
+Plano completo e situação: [PLAN.md](docs/PLAN.md). Contribuições: [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Autoria
 

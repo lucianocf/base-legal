@@ -18,7 +18,9 @@ from typing import Literal, Protocol
 import yaml
 from pydantic import BaseModel, ConfigDict, Field
 
+from base_legal.corpus.history import ProvisionHistory
 from base_legal.corpus.models import Provision, ProvisionKind
+from base_legal.corpus.xrefs import CrossReference
 from base_legal.generation.answer import Answer, RefusalCause, Status
 from base_legal.generation.prompt import SYSTEM_PROMPT, build_messages, system_blocks
 from base_legal.grounding.validator import Citation, check_citation
@@ -251,6 +253,12 @@ class _NoWorkBackend:
         return Answer(status=Status.REFUSED, refusal=RefusalCause.LOW_SCORE)
 
     def provision(self, provision_id: str) -> Provision | None:
+        return None
+
+    def references(self, texts: Mapping[str, str]) -> dict[str, tuple[CrossReference, ...]]:
+        return {}
+
+    def history(self, provision_id: str) -> ProvisionHistory | None:
         return None
 
     def health(self) -> dict[str, str]:

@@ -47,7 +47,7 @@ jobs:
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: models
-          key: models-${{ hashFiles('src/base_legal/embeddings/voyage-4-nano.lock.json') }}
+          key: models-${{ hashFiles('src/base_legal/embeddings/*.lock.json') }}
       - run: uv run base-legal model fetch
       - run: uv run base-legal ingest --mode local
       - name: Eval reports for the site
@@ -60,6 +60,7 @@ jobs:
           mv docs/evals/redteam.md docs/evals/latest-redteam.md
           mv docs/evals/redteam.json docs/evals/latest-redteam.json
       - run: uv run mkdocs build --strict --site-dir site
+      - run: uv run base-legal corpus explorer --out site/explorer
       - run: cp -r site-extra/badges site/badges
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:

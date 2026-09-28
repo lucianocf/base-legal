@@ -46,6 +46,7 @@ nav:
       - Privacy: PRIVACY.md
       - Legal notice: legal-notice.md
   - MCP server: MCP.md
+  - Corpus explorer: https://lucianocf.github.io/base-legal/explorer/
   - Decisions (ADRs):
       - Index: adr/README.md
       - 0001 Own thin code: adr/0001-own-thin-code-no-rag-framework.md
@@ -61,6 +62,10 @@ nav:
       - 0011 One document per provision: adr/0011-one-cited-document-per-provision.md
       - 0012 Nano without remote code: adr/0012-load-voyage-4-nano-without-remote-code.md
       - 0013 Nano for documents: adr/0013-voyage-4-nano-for-documents-by-default.md
+      - 0014 Point in time: adr/0014-point-in-time-wordings.md
+      - 0015 Local reranker: adr/0015-local-cross-encoder-reranker.md
+      - 0016 Other acts: adr/0016-refuse-questions-about-other-acts.md
+      - 0017 ANPD guides: adr/0017-anpd-guides-blocked-on-licence.md
   - Plan: PLAN.md
   - Contributing: contributing.md
 

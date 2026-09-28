@@ -84,9 +84,10 @@ chosen by the user, receives the question under the host's terms.
    opt-out is **optional**. It is still reasonable hygiene if the account is
    ever used for other content. Per Voyage's FAQ, opting out requires a
    payment method and may void free-token credits.
-3. **Local embedding model:** `voyage-4-nano` weights (Apache 2.0) are pinned by
-   revision and SHA-256 and baked into the image, so the runtime makes no
-   model downloads.
+3. **Local models:** the `voyage-4-nano` embedder and the mMiniLMv2 reranker
+   (both Apache 2.0) are pinned by revision and SHA-256 and baked into the
+   image, so the runtime makes no model downloads. The reranker reads the
+   question and the candidate provisions in process memory only (ADR 0015).
 
 ## 5. Why there is no RIPD (DPIA) yet
 

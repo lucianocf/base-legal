@@ -76,8 +76,43 @@ uv run base-legal eval redteam
 4. Legal facts that are not confirmed in an official source are marked
    `TODO(verify)`.
 
+`uv run base-legal corpus check` compares every official source with the
+committed corpus provision by provision (raw-byte changes alone are ignored);
+`--apply --report report.md` writes the changed acts and a review report. The
+`Corpus watch` workflow runs it weekly and opens a draft pull request when the
+law changed.
+
+Earlier wordings (ADR 0014): `corpus build` writes `corpus/history/<doc>.json`
+for compiled texts, and `uv run base-legal corpus acts` records in
+`corpus/acts.yaml` when each amending act came into force, from its own page
+(`--refresh` fetches them again). Run `corpus acts` before `corpus build`
+when an amendment note names a new act, and review both diffs.
+
 ## Golden set
 
 `evals/golden.yaml` holds synthetic questions only, each `unverified` until a
 DPO reviews it. Keep the dev/holdout split stable: never move an item to dev
 because it fails, and never tune on holdout.
+
+## Releasing
+
+Releases are cut by the maintainer only.
+
+1. Set `version` in `pyproject.toml` (e.g. `0.1.0`), run `uv lock`, update the
+   READMEs and merge.
+2. Push a tag `vX.Y.Z` on that commit. The `Release` workflow checks that the
+   tag matches the package version, builds the distributions and the image,
+   and creates a **draft** GitHub release with the wheel, the sdist and a
+   CycloneDX SBOM (`base-legal.cdx.json`).
+3. Review the draft and publish it.
+
+Verify what a release ships:
+
+```bash
+gh attestation verify base_legal-X.Y.Z-py3-none-any.whl --repo lucianocf/base-legal
+gh attestation verify oci://ghcr.io/lucianocf/base-legal:X.Y.Z --repo lucianocf/base-legal
+cosign verify ghcr.io/lucianocf/base-legal:X.Y.Z \
+  --certificate-identity-regexp '^https://github.com/lucianocf/base-legal/\.github/workflows/release\.yml@refs/tags/v' \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com
+```
+
