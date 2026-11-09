@@ -12,8 +12,8 @@ documents:
   layout: planalto
   notes: null
   redistribution_basis: 'Lei nº 9.610/1998, art. 8º, IV: official acts are not protected by copyright'
-  retrieved_at: '2026-09-27'
-  source_sha256: 3afcb0c59762e39cc2f2daf513c2334d430b7fd52250629879307a07c78d8a47
+  retrieved_at: '2026-11-09'
+  source_sha256: 9e00e898f76a91b6120c770d1d74c294d7097fc61379df551e08ac05d8b0e2cb
   embeddings: []
 - id: res-anpd-1-2021
   title: Resolução CD/ANPD nº 1, de 28 de outubro de 2021 — Aprova o Regulamento do Processo de Fiscalização
@@ -103,6 +103,6 @@ documents:
   layout: planalto
   notes: Compiled text kept by the Presidency (amendment notes and struck text inline).
   redistribution_basis: 'Lei nº 9.610/1998, art. 8º, IV: official acts are not protected by copyright'
-  retrieved_at: '2026-09-27'
-  source_sha256: 2a9f14d24dc05740fd2bcc4f8edb0614f24c5eb280241ef4f56e12ca2c633a5c
+  retrieved_at: '2026-11-09'
+  source_sha256: 6167e043617b8e8f37305628f59660d518d83dc7f371e7b19a4f0b6fcea2681a
   embeddings: []
